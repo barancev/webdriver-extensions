@@ -41,7 +41,7 @@ public class WebDriverWrapperTest {
     final WebDriver driver = new StubDriver();
     assertFalse(driver instanceof JavascriptExecutor);
 
-    final WebDriver wrapper = WebDriverWrapper.buildWrapper(driver, SimpleWebDriverWrapper.class);
+    final WebDriver wrapper = WebDriverWrapper.wrapDriver(driver, SimpleWebDriverWrapper.class);
     assertFalse(wrapper instanceof JavascriptExecutor);
   }
 
@@ -50,7 +50,7 @@ public class WebDriverWrapperTest {
     final WebDriver driver = mock(ExtendedDriver.class);
     assertTrue(driver instanceof SomeOtherInterface);
 
-    final WebDriver wrapper = WebDriverWrapper.buildWrapper(driver, SimpleWebDriverWrapper.class);
+    final WebDriver wrapper = WebDriverWrapper.wrapDriver(driver, SimpleWebDriverWrapper.class);
     assertTrue(wrapper instanceof SomeOtherInterface);
   }
 
@@ -107,7 +107,7 @@ public class WebDriverWrapperTest {
 
     public static WebDriver decorate(final WebDriver driver, final AtomicInteger clickCounter) {
       final ClickCountingDriver wrapper = new ClickCountingDriver(driver, clickCounter);
-      return WebDriverWrapper.buildWrapper(driver, wrapper);
+      return WebDriverWrapper.wrapDriver(driver, wrapper);
     }
 
     @Override
