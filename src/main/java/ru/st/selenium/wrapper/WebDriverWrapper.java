@@ -16,6 +16,7 @@
  */
 package ru.st.selenium.wrapper;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -339,10 +340,24 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
      */
     public static WebElement wrapElement(final WebDriverWrapper driverWrapper, final WebElement element, final Class<? extends WebElementWrapper> wrapperClass) {
       WebElementWrapper wrapper = null;
+      Constructor<? extends WebElementWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), WebElement.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, WebElement.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
       try {
-        wrapper = wrapperClass.getConstructor(WebDriverWrapper.class, WebElement.class).newInstance(driverWrapper, element);
-      } catch (NoSuchMethodException e) {
-        throw new Error("Wrapper class " + wrapperClass + " should provide a constructor with WebDriverWrapper and WebElement parameters", e);
+        wrapper = constructor.newInstance(driverWrapper, element);
       } catch (Exception e) {
         throw new Error("Can't create a new wrapper object", e);
       }
