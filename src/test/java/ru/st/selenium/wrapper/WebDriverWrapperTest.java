@@ -107,7 +107,7 @@ public class WebDriverWrapperTest {
 
     public static WebDriver decorate(final WebDriver driver, final AtomicInteger clickCounter) {
       final ClickCountingDriver wrapper = new ClickCountingDriver(driver, clickCounter);
-      return WebDriverWrapper.wrapDriver(driver, wrapper);
+      return wrapper.wrapDriver();
     }
 
     @Override

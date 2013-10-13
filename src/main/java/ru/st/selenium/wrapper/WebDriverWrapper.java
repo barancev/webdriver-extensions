@@ -45,7 +45,7 @@ import org.openqa.selenium.internal.WrapsElement;
  * or
  * <code><pre>
  * MyWebDriverWrapper wrapper = new MyWebDriverWrapper(driver, otherParameter);
- * WebDriver wrapped = WebDriverWrapper.wrapDriver(driver, wrapper);
+ * WebDriver wrapped = wrapper.wrapDriver();
  * </pre></code>
  */
 public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
@@ -172,7 +172,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     } catch (Exception e) {
       throw new Error("Can't create a new wrapper object", e);
     }
-    return wrapDriver(driver, wrapper);
+    return wrapper.wrapDriver();
   }
 
   /**
@@ -182,21 +182,22 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
    * @param driver               the wrapped driver
    * @param wrapper              the object wrapping the driver
    */
-  public static WebDriver wrapDriver(final WebDriver driver, final WebDriverWrapper wrapper) {
-    final Set<Class<?>> wrapperInterfaces = extractInterfaces(wrapper);
+  public WebDriver wrapDriver() {
+    final WebDriver driver = getWrappedDriver();
+    final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
 
     final InvocationHandler handler = new InvocationHandler() {
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
           if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-            wrapper.beforeMethod(method, args);
-            Object result = wrapper.callMethod(method, args);
-            wrapper.afterMethod(method, result, args);
+            beforeMethod(method, args);
+            Object result = callMethod(method, args);
+            afterMethod(method, result, args);
             return result;
           }
           return method.invoke(driver, args);
         } catch (InvocationTargetException e) {
-          wrapper.onError(method, e, args);
+          onError(method, e, args);
           throw e.getTargetException();
         }
       }
@@ -207,7 +208,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
 
     return (WebDriver) Proxy.newProxyInstance(
-        wrapper.getClass().getClassLoader(),
+        this.getClass().getClassLoader(),
         allInterfaces.toArray(allInterfacesArray),
         handler);
   }
@@ -341,35 +342,33 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
       try {
         wrapper = wrapperClass.getConstructor(WebDriverWrapper.class, WebElement.class).newInstance(driverWrapper, element);
       } catch (NoSuchMethodException e) {
-        throw new Error("Wrapper class should provide a constructor with WebDriverWrapper and WebElement parameters", e);
+        throw new Error("Wrapper class " + wrapperClass + " should provide a constructor with WebDriverWrapper and WebElement parameters", e);
       } catch (Exception e) {
         throw new Error("Can't create a new wrapper object", e);
       }
-      return wrapElement(driverWrapper, element, wrapper);
+      return wrapper.wrapElement();
     }
 
     /**
-     * Builds a {@link Proxy} implementing all interfaces of original driver. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original driver.
-     *
-     * @param driver               the wrapped driver
-     * @param wrapper              the object wrapping the driver
+     * Builds a {@link Proxy} implementing all interfaces of original element. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original element.
      */
-    public static WebElement wrapElement(final WebDriverWrapper driverWrapper, final WebElement element, final WebElementWrapper wrapper) {
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(wrapper);
+    public WebElement wrapElement() {
+      final WebElement element = getWrappedElement();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
 
       final InvocationHandler handler = new InvocationHandler() {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
           try {
             if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              wrapper.beforeMethod(method, args);
-              Object result = wrapper.callMethod(method, args);
-              wrapper.afterMethod(method, result, args);
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
               return result;
             }
             return method.invoke(element, args);
           } catch (InvocationTargetException e) {
-            wrapper.onError(method, e, args);
+            onError(method, e, args);
             throw e.getTargetException();
           }
         }
@@ -380,7 +379,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
       Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
 
       return (WebElement) Proxy.newProxyInstance(
-          wrapper.getClass().getClassLoader(),
+          this.getClass().getClassLoader(),
           allInterfaces.toArray(allInterfacesArray),
           handler);
     }
