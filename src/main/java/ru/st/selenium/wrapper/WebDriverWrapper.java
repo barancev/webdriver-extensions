@@ -37,31 +37,41 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 /**
- * Simple {@link WrapsDriver} delegating all calls to the wrapped driver and providing facility to
- * wrap returned {@link WebElement}. This class allows to easily extend WebDriver by adding
- * new functionality to a wrapper. Instantiation should not happen directly but rather with the
- * help of a dynamic proxy to respect the interfaces implemented by the wrapped driver.
- * Example:
+ * This class allows to extend WebDriver by adding new functionality to a wrapper.
+ * Example of use:
  * <code><pre>
- * WebDriver wrapped = WebDriverWrapper.wrapDriver(driver, MyWebDriverWrapper.class);
+ * WebDriver driver = WebDriverWrapper.wrapDriver(originalDriver, MyWebDriverWrapper.class);
  * </pre></code>
  * or
  * <code><pre>
- * MyWebDriverWrapper wrapper = new MyWebDriverWrapper(driver, otherParameter);
- * WebDriver wrapped = wrapper.wrapDriver();
+ * MyWebDriverWrapper wrapper = new MyWebDriverWrapper(originalDriver, otherParameter);
+ * WebDriver driver = wrapper.getDriver();
  * </pre></code>
  */
 public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
 
-  private final WebDriver wrappedDriver;
+  private final WebDriver originalDriver;
+  private WebDriver enhancedDriver = null;
 
   public WebDriverWrapper(WebDriver driver) {
-    wrappedDriver = driver;
+    originalDriver = driver;
   }
 
+  protected Class<? extends WebElementWrapper> getElementWrapperClass() {
+    return WebElementWrapper.class;
+  }
+  
+  protected Class<? extends TargetLocatorWrapper> getTargetLocatorWrapperClass() {
+    return TargetLocatorWrapper.class;
+  }
+  
+  protected Class<? extends NavigationWrapper> getNavigationWrapperClass() {
+    return NavigationWrapper.class;
+  }
+  
   @Override
-  public WebDriver getWrappedDriver() {
-    return wrappedDriver;
+  public final WebDriver getWrappedDriver() {
+    return originalDriver;
   }
 
   @Override
@@ -79,43 +89,27 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     return getWrappedDriver().getTitle();
   }
 
-  /**
-   * Facility to wrap elements returned by {@link #findElement(By)} and {@link #findElements(By)}
-   * from this instance (as well as from {@link WebElementWrapper} when using it).
-   *
-   * @param element the original element
-   * @return the wrapped element.
-   */
+  @Override
+  public WebElement findElement(final By by) {
+    return wrapElement(getWrappedDriver().findElement(by));
+  }
+
+  // TODO: make private
   protected WebElement wrapElement(final WebElement element) {
     return WebElementWrapper.wrapElement(this, element, getElementWrapperClass());
   }
   
-  protected Class<? extends WebElementWrapper> getElementWrapperClass() {
-    return WebElementWrapper.class;
-  }
-  
-  /**
-   * Facility to wrap elements returned by {@link #findElements(By)} from this instance (as well
-   * as from {@link WebElementWrapper} when using it).
-   *
-   * @param elements the original list of elements
-   * @return the default behavior is to call {@link #wrapElement(WebElement)} for each element.
-   */
-  protected List<WebElement> wrapElements(final List<WebElement> elements) {
-    for (ListIterator<WebElement> iterator = elements.listIterator(); iterator.hasNext(); ) {
-      iterator.set(wrapElement(iterator.next()));
-    }
-    return elements;
-  }
-
   @Override
   public List<WebElement> findElements(final By by) {
     return wrapElements(getWrappedDriver().findElements(by));
   }
 
-  @Override
-  public WebElement findElement(final By by) {
-    return wrapElement(getWrappedDriver().findElement(by));
+  // TODO: make private
+  private List<WebElement> wrapElements(final List<WebElement> elements) {
+    for (ListIterator<WebElement> iterator = elements.listIterator(); iterator.hasNext(); ) {
+      iterator.set(wrapElement(iterator.next()));
+    }
+    return elements;
   }
 
   @Override
@@ -143,37 +137,13 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     return getWrappedDriver().getWindowHandle();
   }
 
-  /**
-   * Facility to wrap target locators returned by {@link #switchTo()}.
-   *
-   * @param targetLocator the original target locator
-   * @return the wrapped target locator.
-   */
-  protected TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
-    return TargetLocatorWrapper.wrapTargetLocator(this, targetLocator, getTargetLocatorWrapperClass());
-  }
-  
-  protected Class<? extends TargetLocatorWrapper> getTargetLocatorWrapperClass() {
-    return TargetLocatorWrapper.class;
-  }
-  
   @Override
   public TargetLocator switchTo() {
     return wrapTargetLocator(getWrappedDriver().switchTo());
   }
 
-  /**
-   * Facility to wrap navigator returned by {@link #navigate()}.
-   *
-   * @param navigation the original navigator
-   * @return the wrapped navigator.
-   */
-  protected Navigation wrapNavigation(final Navigation navigator) {
-    return NavigationWrapper.wrapNavigation(this, navigator, getNavigationWrapperClass());
-  }
-  
-  protected Class<? extends NavigationWrapper> getNavigationWrapperClass() {
-    return NavigationWrapper.class;
+  private TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
+    return TargetLocatorWrapper.wrapTargetLocator(this, targetLocator, getTargetLocatorWrapperClass());
   }
   
   @Override
@@ -181,6 +151,10 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     return wrapNavigation(getWrappedDriver().navigate());
   }
 
+  private Navigation wrapNavigation(final Navigation navigator) {
+    return NavigationWrapper.wrapNavigation(this, navigator, getNavigationWrapperClass());
+  }
+  
   @Override
   public Options manage() {
     return getWrappedDriver().manage();
@@ -193,7 +167,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
    * @param driver               the underlying driver
    * @param wrapperClass         the class of a wrapper
    */
-  public static WebDriver wrapDriver(final WebDriver driver, final Class<? extends WebDriverWrapper> wrapperClass) {
+  public final static WebDriver wrapDriver(final WebDriver driver, final Class<? extends WebDriverWrapper> wrapperClass) {
     WebDriverWrapper wrapper = null;
     try {
       wrapper = wrapperClass.getConstructor(WebDriver.class).newInstance(driver);
@@ -202,7 +176,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     } catch (Exception e) {
       throw new Error("Can't create a new wrapper object", e);
     }
-    return wrapper.wrapDriver();
+    return wrapper.getDriver();
   }
 
   /**
@@ -212,7 +186,11 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
    * @param driver               the wrapped driver
    * @param wrapper              the object wrapping the driver
    */
-  public WebDriver wrapDriver() {
+  public final WebDriver getDriver() {
+    if (enhancedDriver != null) {
+      return enhancedDriver;
+    }
+
     final WebDriver driver = getWrappedDriver();
     final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
 
@@ -237,10 +215,12 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     allInterfaces.addAll(wrapperInterfaces);
     Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
 
-    return (WebDriver) Proxy.newProxyInstance(
+    enhancedDriver = (WebDriver) Proxy.newProxyInstance(
         this.getClass().getClassLoader(),
         allInterfaces.toArray(allInterfacesArray),
         handler);
+
+    return enhancedDriver;
   }
 
   protected void beforeMethod(Method method, Object[] args) {
@@ -263,23 +243,20 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
    */
   public static class WebElementWrapper implements WebElement, WrapsElement {
 
-    private final WebElement wrappedElement;
+    private final WebElement originalElement;
     private final WebDriverWrapper driverWrapper;
 
     public WebElementWrapper(final WebDriverWrapper driverWrapper, final WebElement element) {
-      wrappedElement = element;
+      originalElement = element;
       this.driverWrapper = driverWrapper;
     }
 
     @Override
-    public WebElement getWrappedElement() {
-      return wrappedElement;
+    public final WebElement getWrappedElement() {
+      return originalElement;
     }
 
-    /**
-     * Get the related {@link WebDriverWrapper} that will be used to wrap elements.
-     */
-    protected WebDriverWrapper getDriverWrapper() {
+    private WebDriverWrapper getDriverWrapper() {
       return driverWrapper;
     }
 
@@ -330,8 +307,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
 
     @Override
     public List<WebElement> findElements(final By by) {
-      final List<WebElement> elements = getWrappedElement().findElements(by);
-      return getDriverWrapper().wrapElements(elements);
+      return getDriverWrapper().wrapElements(getWrappedElement().findElements(by));
     }
 
     @Override
@@ -367,7 +343,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
      * @param element              the underlying element
      * @param wrapperClass         the class of a wrapper
      */
-    public static WebElement wrapElement(final WebDriverWrapper driverWrapper, final WebElement element, final Class<? extends WebElementWrapper> wrapperClass) {
+    public final static WebElement wrapElement(final WebDriverWrapper driverWrapper, final WebElement element, final Class<? extends WebElementWrapper> wrapperClass) {
       WebElementWrapper wrapper = null;
       Constructor<? extends WebElementWrapper> constructor = null;
       if (wrapperClass.getEnclosingClass() != null) {
@@ -390,14 +366,14 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
       } catch (Exception e) {
         throw new Error("Can't create a new wrapper object", e);
       }
-      return wrapper.wrapElement();
+      return wrapper.getElement();
     }
 
     /**
      * Builds a {@link Proxy} implementing all interfaces of original element. It will delegate calls to
      * wrapper when wrapper implements the requested method otherwise to original element.
      */
-    public WebElement wrapElement() {
+    public final WebElement getElement() {
       final WebElement element = getWrappedElement();
       final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
 
@@ -444,53 +420,55 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
   
   public static class TargetLocatorWrapper implements TargetLocator {
   
-    private final TargetLocator wrappedTargetLocator;
+    private final TargetLocator originalTargetLocator;
     private final WebDriverWrapper driverWrapper;
 
     public TargetLocatorWrapper(final WebDriverWrapper driverWrapper, final TargetLocator targetLocator) {
-      wrappedTargetLocator = targetLocator;
+      originalTargetLocator = targetLocator;
       this.driverWrapper = driverWrapper;
     }
 
-    public TargetLocator getWrappedTargetLocator() {
-      return wrappedTargetLocator;
+    public final TargetLocator getWrappedTargetLocator() {
+      return originalTargetLocator;
     }
 
-    /**
-     * Get the related {@link WebDriverWrapper} that will be used to wrap target locator.
-     */
-    protected WebDriverWrapper getDriverWrapper() {
+    private final WebDriverWrapper getDriverWrapper() {
       return driverWrapper;
     }
 
     @Override
     public WebDriver frame(int frameIndex) {
-      return getWrappedTargetLocator().frame(frameIndex);
+      getWrappedTargetLocator().frame(frameIndex);
+      return getDriverWrapper().getDriver();
     }
   
     @Override
     public WebDriver frame(String frameName) {
-      return getWrappedTargetLocator().frame(frameName);
+      getWrappedTargetLocator().frame(frameName);
+      return getDriverWrapper().getDriver();
     }
   
     @Override
     public WebDriver frame(WebElement frameElement) {
-      return getWrappedTargetLocator().frame(frameElement);
+      getWrappedTargetLocator().frame(frameElement);
+      return getDriverWrapper().getDriver();
     }
   
     @Override
     public WebDriver window(String windowName) {
-      return getWrappedTargetLocator().window(windowName);
+      getWrappedTargetLocator().window(windowName);
+      return getDriverWrapper().getDriver();
     }
   
     @Override
     public WebDriver defaultContent() {
-      return getWrappedTargetLocator().defaultContent();
+      getWrappedTargetLocator().defaultContent();
+      return getDriverWrapper().getDriver();
     }
   
     @Override
     public WebElement activeElement() {
-      return getWrappedTargetLocator().activeElement();
+      return getDriverWrapper().wrapElement(getWrappedTargetLocator().activeElement());
     }
   
     @Override
@@ -506,7 +484,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
      * @param targetLocator        the underlying target locator
      * @param wrapperClass         the class of a wrapper
      */
-    public static TargetLocator wrapTargetLocator(final WebDriverWrapper driverWrapper, final TargetLocator targetLocator, final Class<? extends TargetLocatorWrapper> wrapperClass) {
+    public final static TargetLocator wrapTargetLocator(final WebDriverWrapper driverWrapper, final TargetLocator targetLocator, final Class<? extends TargetLocatorWrapper> wrapperClass) {
       TargetLocatorWrapper wrapper = null;
       Constructor<? extends TargetLocatorWrapper> constructor = null;
       if (wrapperClass.getEnclosingClass() != null) {
@@ -529,14 +507,14 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
       } catch (Exception e) {
         throw new Error("Can't create a new wrapper object", e);
       }
-      return wrapper.wrapTargetLocator();
+      return wrapper.getTargetLocator();
     }
 
     /**
      * Builds a {@link Proxy} implementing all interfaces of original target locator. It will delegate calls to
      * wrapper when wrapper implements the requested method otherwise to original target locator.
      */
-    public TargetLocator wrapTargetLocator() {
+    public final TargetLocator getTargetLocator() {
       final TargetLocator targetLocator = getWrappedTargetLocator();
       final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
 
@@ -583,22 +561,19 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
   
   public static class NavigationWrapper implements Navigation {
     
-    private final Navigation wrappedNavigator;
+    private final Navigation originalNavigator;
     private final WebDriverWrapper driverWrapper;
 
     public NavigationWrapper(final WebDriverWrapper driverWrapper, final Navigation navigator) {
-      wrappedNavigator = navigator;
+      originalNavigator = navigator;
       this.driverWrapper = driverWrapper;
     }
 
-    public Navigation getWrappedNavigation() {
-      return wrappedNavigator;
+    public final Navigation getWrappedNavigation() {
+      return originalNavigator;
     }
 
-    /**
-     * Get the related {@link WebDriverWrapper} that will be used to wrap navigator.
-     */
-    protected WebDriverWrapper getDriverWrapper() {
+    private WebDriverWrapper getDriverWrapper() {
       return driverWrapper;
     }
 
@@ -635,7 +610,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
      * @param navigator            the underlying navigator
      * @param wrapperClass         the class of a wrapper
      */
-    public static Navigation wrapNavigation(final WebDriverWrapper driverWrapper, final Navigation navigator, final Class<? extends NavigationWrapper> wrapperClass) {
+    public final static Navigation wrapNavigation(final WebDriverWrapper driverWrapper, final Navigation navigator, final Class<? extends NavigationWrapper> wrapperClass) {
       NavigationWrapper wrapper = null;
       Constructor<? extends NavigationWrapper> constructor = null;
       if (wrapperClass.getEnclosingClass() != null) {
@@ -665,7 +640,7 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
      * Builds a {@link Proxy} implementing all interfaces of original navigator. It will delegate calls to
      * wrapper when wrapper implements the requested method otherwise to original navigator.
      */
-    public Navigation wrapNavigation() {
+    public final Navigation wrapNavigation() {
       final Navigation navigator = getWrappedNavigation();
       final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
 
