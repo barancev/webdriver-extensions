@@ -28,6 +28,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -35,6 +36,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.security.Credentials;
 
 /**
  * This class allows to extend WebDriver by adding new functionality to a wrapper.
@@ -67,6 +69,10 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
   
   protected Class<? extends NavigationWrapper> getNavigationWrapperClass() {
     return NavigationWrapper.class;
+  }
+  
+  protected Class<? extends AlertWrapper> geAlertWrapperClass() {
+    return AlertWrapper.class;
   }
   
   @Override
@@ -685,6 +691,134 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
     }
   }
   
+  public static class AlertWrapper implements Alert {
+
+    private final Alert originalAlert;
+    private final WebDriverWrapper driverWrapper;
+
+    public AlertWrapper(final WebDriverWrapper driverWrapper, final Alert alert) {
+      originalAlert = alert;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Alert getWrappedAlert() {
+      return originalAlert;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public void accept() {
+      getWrappedAlert().accept();
+    }
+
+    @Override
+    @Beta
+    public void authenticateUsing(Credentials creds) {
+      getWrappedAlert().authenticateUsing(creds);
+    }
+
+    @Override
+    public void dismiss() {
+      getWrappedAlert().dismiss();
+    }
+
+    @Override
+    public String getText() {
+      return getWrappedAlert().getText();
+    }
+
+    @Override
+    public void sendKeys(String text) {
+      getWrappedAlert().sendKeys(text);
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original alert. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original alert.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param alert                the underlying alert
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Alert wrapNavigation(final WebDriverWrapper driverWrapper, final Alert alert, final Class<? extends AlertWrapper> wrapperClass) {
+      AlertWrapper wrapper = null;
+      Constructor<? extends AlertWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Alert.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Alert.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, alert);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapAlert();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original alert. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original alert.
+     */
+    public final Alert wrapAlert() {
+      final Alert alert = getWrappedAlert();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(alert, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(alert);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Alert) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+
+  }
+    
   private static Set<Class<?>> extractInterfaces(final Object object) {
     return extractInterfaces(object.getClass());
   }
