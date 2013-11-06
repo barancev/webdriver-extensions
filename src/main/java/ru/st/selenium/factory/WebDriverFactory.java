@@ -8,7 +8,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
@@ -103,16 +106,20 @@ public class WebDriverFactory {
 
   private static WebDriver createLocalDriver(Capabilities capabilities) {
     String browserType = capabilities.getBrowserName();
-    if (browserType.equals("firefox"))
+    if (browserType.equals(BrowserType.FIREFOX))
       return new FirefoxDriver(capabilities);
-    if (browserType.startsWith("internet explorer"))
+    if (browserType.equals(BrowserType.IE))
       return new InternetExplorerDriver(capabilities);
-    if (browserType.equals("chrome"))
+    if (browserType.equals(BrowserType.CHROME))
       return new ChromeDriver(capabilities);
-    if (browserType.equals("opera"))
+    if (browserType.equals(BrowserType.OPERA))
       return new OperaDriver(capabilities);
-    if (browserType.equals("safari"))
+    if (browserType.equals(BrowserType.SAFARI))
       return new SafariDriver(capabilities);
+    if (browserType.equals(BrowserType.PHANTOMJS))
+      return new PhantomJSDriver(capabilities);
+    if (browserType.equals(BrowserType.HTMLUNIT))
+      return new HtmlUnitDriver(capabilities);
     throw new Error("Unrecognized browser type: " + browserType);
   }
 
