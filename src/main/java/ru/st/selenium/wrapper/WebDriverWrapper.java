@@ -31,8 +31,10 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
@@ -50,7 +52,7 @@ import org.openqa.selenium.security.Credentials;
  * WebDriver driver = wrapper.getDriver();
  * </pre></code>
  */
-public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
+public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecutor {
 
   private final WebDriver originalDriver;
   private WebDriver enhancedDriver = null;
@@ -164,6 +166,26 @@ public abstract class WebDriverWrapper implements WebDriver, WrapsDriver {
   @Override
   public Options manage() {
     return getWrappedDriver().manage();
+  }
+
+  @Override
+  public Object executeScript(String script, Object... args) {
+    WebDriver driver = getWrappedDriver();
+    if (driver instanceof JavascriptExecutor) {
+      return ((JavascriptExecutor) driver).executeScript(script, args);
+    } else {
+      throw new WebDriverException("Wrapped webdriver does not support JavascriptExecutor: " + driver);
+    }
+  }
+
+  @Override
+  public Object executeAsyncScript(String script, Object... args) {
+    WebDriver driver = getWrappedDriver();
+    if (driver instanceof JavascriptExecutor) {
+      return ((JavascriptExecutor) driver).executeAsyncScript(script, args);
+    } else {
+      throw new WebDriverException("Wrapped webdriver does not support JavascriptExecutor: " + driver);
+    }
   }
 
   /**
