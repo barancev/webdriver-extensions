@@ -1,35 +1,40 @@
 package ru.st.selenium;
 
-import java.io.File;
+import net.lightbody.bmp.proxy.ProxyServer;
 
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
 import org.webbitserver.WebServer;
-import org.webbitserver.WebServers;
-import org.webbitserver.handler.StaticFileHandler;
 
 public class TestBase {
 
-  protected WebServer webServer;
-  protected static String STATIC = "/";
-
-  @BeforeClass
-  public void startWebServer() {
-    webServer = WebServers.createWebServer(8080);
-    StaticFileHandler staticFileHandler = new StaticFileHandler(new File("."));
-    staticFileHandler.enableDirectoryListing(true);
-    staticFileHandler.welcomeFile(".");
-    webServer.add(STATIC, staticFileHandler);
-    webServer.start();
-  }
+  protected WebServer webServer = null;
+  protected ProxyServer proxy = null;
+  protected WebDriver driver = null;
   
-  @AfterClass
+  @AfterClass(alwaysRun = true)
   public void stopWebServer() {
-    webServer.stop();
+    if (webServer != null) {
+      webServer.stop();
+    }
   }
   
+  @AfterMethod(alwaysRun = true)
+  public void tearDown() throws Exception {
+    if (driver != null) {
+      driver.quit();
+      driver = null;
+    }
+
+    if (proxy != null) {
+      proxy.stop();
+      proxy = null;
+    }
+  }
+
   public String whereIs(String path) {
-    return "http://127.0.0.1:8080" + path;
+    return "http://localhost:8080/" + path;
   }
   
 }
