@@ -49,18 +49,13 @@
   <classpathentry kind="var" path="M2_REPO/org/seleniumhq/selenium/selenium-support/2.37.0/selenium-support-2.37.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/opera/operadriver/1.5/operadriver-1.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/opera/operalaunchers/1.1/operalaunchers-1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/code/findbugs/jsr305/2.0.1/jsr305-2.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.4.1/protobuf-java-2.4.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-jxpath/commons-jxpath/1.3/commons-jxpath-1.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/ini4j/ini4j/0.5.2/ini4j-0.5.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/github/detro/ghostdriver/phantomjsdriver/1.0.4/phantomjsdriver-1.0.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/lightbody/bmp/browsermob-proxy/2.0-beta-9-SNAPSHOT/browsermob-proxy-2.0-beta-9-SNAPSHOT.jar" sourcepath="M2_REPO/net/lightbody/bmp/browsermob-proxy/2.0-beta-9-SNAPSHOT/browsermob-proxy-2.0-beta-9-SNAPSHOT-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/alexei/.m2/repository/net/lightbody/bmp/browsermob-proxy/2.0-beta-9-SNAPSHOT/browsermob-proxy-2.0-beta-9-SNAPSHOT-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/lightbody/bmp/browsermob-proxy/2.0-beta-8/browsermob-proxy-2.0-beta-8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-jdk14/1.5.3/slf4j-jdk14-1.5.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/sitebricks/sitebricks/0.8.3/sitebricks-0.8.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.18/mvel2-2.0.18.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar"/>
@@ -92,9 +87,6 @@
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-continuation/7.3.0.v20110203/jetty-continuation-7.3.0.v20110203.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-servlet/7.3.0.v20110203/jetty-servlet-7.3.0.v20110203.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-security/7.3.0.v20110203/jetty-security-7.3.0.v20110203.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/sf/uadetector/uadetector-resources/2013.08/uadetector-resources-2013.08.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/sf/uadetector/uadetector-core/0.9.8/uadetector-core-0.9.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/sf/qualitycheck/quality-check/1.3/quality-check-1.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mockito/mockito-core/1.9.5/mockito-core-1.9.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar"/>
