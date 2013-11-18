@@ -49,6 +49,14 @@
           <groupId>org.seleniumhq.selenium</groupId>
           <artifactId>selenium-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpmime</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
