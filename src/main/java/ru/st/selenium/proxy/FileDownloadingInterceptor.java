@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.apache.http.Header;
 import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.entity.StringEntity;
@@ -27,19 +29,14 @@ public class FileDownloadingInterceptor implements HttpResponseInterceptor {
 
   @Override
   public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
-    if (contentTypes.contains(response.getFirstHeader("Content-Type").getValue())) {
-      String filename = "downloaded";
-      Header contentDisposition = response.getFirstHeader("Content-Disposition");
-      if (contentDisposition != null) {
-        String contentDispositionValue = contentDisposition.getValue();
-        System.out.println("contentDispositionValue");
-        filename = contentDispositionValue.substring(
-            contentDispositionValue.indexOf("filename=") + "filename=".length());
-      }
-      tempFile = File.createTempFile("xxx", filename, tempDir);
+    String contentType = response.getFirstHeader("Content-Type").getValue();
+    if (contentTypes.contains(contentType)) {
+      String postfix = contentType.substring(contentType.indexOf('/') + 1);
+      tempFile = File.createTempFile("downloaded", "."+postfix, tempDir);
+      tempFile.deleteOnExit();
+
       FileOutputStream outputStream = new FileOutputStream(tempFile);
-      outputStream.write(
-          EntityUtils.toByteArray(response.getEntity()));
+      outputStream.write(EntityUtils.toByteArray(response.getEntity()));
       outputStream.close();
 
       response.removeHeaders("Content-Type");

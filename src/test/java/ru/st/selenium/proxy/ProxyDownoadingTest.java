@@ -7,7 +7,6 @@ import net.lightbody.bmp.proxy.ProxyServer;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
-import org.apache.http.HttpResponseInterceptor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -28,8 +27,8 @@ public class ProxyDownoadingTest extends TestBase {
 
     proxy = new ProxyServer(8081);
     proxy.start();
-    proxy.setCaptureContent(true);
-    proxy.setCaptureBinaryContent(true);
+    //proxy.setCaptureContent(true);
+    //proxy.setCaptureBinaryContent(true);
     FileDownloadingInterceptor interceptor = new FileDownloadingInterceptor()
         .addContentType("application/pdf");
     proxy.addResponseInterceptor(interceptor);
@@ -40,7 +39,8 @@ public class ProxyDownoadingTest extends TestBase {
     driver = new FirefoxDriver(caps);
     driver.get("http://samplepdf.com/sample.pdf");
 
-    assertThat(driver.findElement(By.tagName("body")).getText(), is("Test passed"));
+    File downloadedFile = new File(driver.findElement(By.tagName("body")).getText());
+    assertThat(downloadedFile.exists(), is(true));
   }
   
 }
