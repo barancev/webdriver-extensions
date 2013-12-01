@@ -26,18 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.security.Credentials;
 
 /**
@@ -64,19 +60,83 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
   protected Class<? extends WebElementWrapper> getElementWrapperClass() {
     return WebElementWrapper.class;
   }
-  
+
+  protected WebElement wrapElement(final WebElement element) {
+    return WebElementWrapper.wrapElement(this, element, getElementWrapperClass());
+  }
+
+  private List<WebElement> wrapElements(final List<WebElement> elements) {
+    for (ListIterator<WebElement> iterator = elements.listIterator(); iterator.hasNext(); ) {
+      iterator.set(wrapElement(iterator.next()));
+    }
+    return elements;
+  }
+
   protected Class<? extends TargetLocatorWrapper> getTargetLocatorWrapperClass() {
     return TargetLocatorWrapper.class;
   }
-  
+
+  private TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
+    return TargetLocatorWrapper.wrapTargetLocator(this, targetLocator, getTargetLocatorWrapperClass());
+  }
+
+  protected Class<? extends AlertWrapper> getAlertWrapperClass() {
+    return AlertWrapper.class;
+  }
+
+  private Alert wrapAlert(final Alert alert) {
+    return AlertWrapper.wrapAlert(this, alert, getAlertWrapperClass());
+  }
+
   protected Class<? extends NavigationWrapper> getNavigationWrapperClass() {
     return NavigationWrapper.class;
   }
-  
-  protected Class<? extends AlertWrapper> geAlertWrapperClass() {
-    return AlertWrapper.class;
+
+  private Navigation wrapNavigation(final Navigation navigator) {
+    return NavigationWrapper.wrapNavigation(this, navigator, getNavigationWrapperClass());
   }
-  
+
+  protected Class<? extends OptionsWrapper> getOptionsWrapperClass() {
+    return OptionsWrapper.class;
+  }
+
+  private Options wrapOptions(final Options options) {
+    return OptionsWrapper.wrapOptions(this, options, getOptionsWrapperClass());
+  }
+
+  protected Class<? extends TimeoutsWrapper> getTimeoutsWrapperClass() {
+    return TimeoutsWrapper.class;
+  }
+
+  private Timeouts wrapTimeouts(final Timeouts timeouts) {
+    return TimeoutsWrapper.wrapTimeouts(this, timeouts, getTimeoutsWrapperClass());
+  }
+
+  protected Class<? extends WindowWrapper> getWindowWrapperClass() {
+    return WindowWrapper.class;
+  }
+
+  private Window wrapWindow(final Window window) {
+    return WindowWrapper.wrapWindow(this, window, getWindowWrapperClass());
+  }
+
+  protected Class<? extends CoordinatesWrapper> getCoordinatesWrapperClass() {
+    return CoordinatesWrapper.class;
+  }
+
+  private Coordinates wrapCoordinates(final Coordinates coordinates) {
+    return CoordinatesWrapper.wrapCoordinates(this, coordinates, getCoordinatesWrapperClass());
+  }
+
+  // TODO: implement proper wrapping for arbitrary objects
+  private Object wrapObject(final Object object) {
+    if (object instanceof WebElement) {
+      return wrapElement((WebElement) object);
+    } else {
+      return object;
+    }
+  }
+
   @Override
   public final WebDriver getWrappedDriver() {
     return originalDriver;
@@ -102,22 +162,9 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
     return wrapElement(getWrappedDriver().findElement(by));
   }
 
-  // TODO: make private
-  protected WebElement wrapElement(final WebElement element) {
-    return WebElementWrapper.wrapElement(this, element, getElementWrapperClass());
-  }
-  
   @Override
   public List<WebElement> findElements(final By by) {
     return wrapElements(getWrappedDriver().findElements(by));
-  }
-
-  // TODO: make private
-  private List<WebElement> wrapElements(final List<WebElement> elements) {
-    for (ListIterator<WebElement> iterator = elements.listIterator(); iterator.hasNext(); ) {
-      iterator.set(wrapElement(iterator.next()));
-    }
-    return elements;
   }
 
   @Override
@@ -150,29 +197,21 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
     return wrapTargetLocator(getWrappedDriver().switchTo());
   }
 
-  private TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
-    return TargetLocatorWrapper.wrapTargetLocator(this, targetLocator, getTargetLocatorWrapperClass());
-  }
-  
   @Override
   public Navigation navigate() {
     return wrapNavigation(getWrappedDriver().navigate());
   }
 
-  private Navigation wrapNavigation(final Navigation navigator) {
-    return NavigationWrapper.wrapNavigation(this, navigator, getNavigationWrapperClass());
-  }
-  
   @Override
   public Options manage() {
-    return getWrappedDriver().manage();
+    return wrapOptions(getWrappedDriver().manage());
   }
 
   @Override
   public Object executeScript(String script, Object... args) {
     WebDriver driver = getWrappedDriver();
     if (driver instanceof JavascriptExecutor) {
-      return ((JavascriptExecutor) driver).executeScript(script, args);
+      return wrapObject(((JavascriptExecutor) driver).executeScript(script, args));
     } else {
       throw new WebDriverException("Wrapped webdriver does not support JavascriptExecutor: " + driver);
     }
@@ -182,7 +221,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
   public Object executeAsyncScript(String script, Object... args) {
     WebDriver driver = getWrappedDriver();
     if (driver instanceof JavascriptExecutor) {
-      return ((JavascriptExecutor) driver).executeAsyncScript(script, args);
+      return wrapObject(((JavascriptExecutor) driver).executeAsyncScript(script, args));
     } else {
       throw new WebDriverException("Wrapped webdriver does not support JavascriptExecutor: " + driver);
     }
@@ -210,9 +249,6 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
   /**
    * Builds a {@link Proxy} implementing all interfaces of original driver. It will delegate calls to
    * wrapper when wrapper implements the requested method otherwise to original driver.
-   *
-   * @param driver               the wrapped driver
-   * @param wrapper              the object wrapping the driver
    */
   public final WebDriver getDriver() {
     if (enhancedDriver != null) {
@@ -363,6 +399,11 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
       return getWrappedElement().getCssValue(propertyName);
     }
 
+    public Coordinates getCoordinates() {
+      Locatable locatable = (Locatable) getWrappedElement();
+      return getDriverWrapper().wrapCoordinates(locatable.getCoordinates());
+    }
+
     /**
      * Builds a {@link Proxy} implementing all interfaces of original element. It will delegate calls to
      * wrapper when wrapper implements the requested method otherwise to original element.
@@ -501,7 +542,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
   
     @Override
     public Alert alert() {
-      return getWrappedTargetLocator().alert();
+        return getDriverWrapper().wrapAlert(getWrappedTargetLocator().alert());
     }
 
     /**
@@ -765,7 +806,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
      * @param alert                the underlying alert
      * @param wrapperClass         the class of a wrapper
      */
-    public final static Alert wrapNavigation(final WebDriverWrapper driverWrapper, final Alert alert, final Class<? extends AlertWrapper> wrapperClass) {
+    public final static Alert wrapAlert(final WebDriverWrapper driverWrapper, final Alert alert, final Class<? extends AlertWrapper> wrapperClass) {
       AlertWrapper wrapper = null;
       Constructor<? extends AlertWrapper> constructor = null;
       if (wrapperClass.getEnclosingClass() != null) {
@@ -838,9 +879,525 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
 
     protected void onError(Method method, InvocationTargetException e, Object[] args) {
     }
-
   }
-    
+
+  public static class OptionsWrapper implements Options {
+
+    private final Options originalOptions;
+    private final WebDriverWrapper driverWrapper;
+
+    public OptionsWrapper(final WebDriverWrapper driverWrapper, final Options options) {
+      originalOptions = options;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Options getWrappedOptions() {
+      return originalOptions;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public void addCookie(Cookie cookie) {
+      getWrappedOptions().addCookie(cookie);
+    }
+
+    @Override
+    public void deleteCookieNamed(String name) {
+      getWrappedOptions().deleteCookieNamed(name);
+    }
+
+    @Override
+    public void deleteCookie(Cookie cookie) {
+      getWrappedOptions().deleteCookie(cookie);
+    }
+
+    @Override
+    public void deleteAllCookies() {
+      getWrappedOptions().deleteAllCookies();
+    }
+
+    @Override
+    public Set<Cookie> getCookies() {
+      return getWrappedOptions().getCookies();
+    }
+
+    @Override
+    public Cookie getCookieNamed(String name) {
+      return getWrappedOptions().getCookieNamed(name);
+    }
+
+    @Override
+    public Timeouts timeouts() {
+      return getDriverWrapper().wrapTimeouts(getWrappedOptions().timeouts());
+    }
+
+    @Override
+    public ImeHandler ime() {
+      return getWrappedOptions().ime();
+    }
+
+    @Override
+    public Window window() {
+      return getDriverWrapper().wrapWindow(getWrappedOptions().window());
+    }
+
+    @Override
+    public Logs logs() {
+      return getWrappedOptions().logs();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original options. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original options.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param options              the underlying options
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Options wrapOptions(final WebDriverWrapper driverWrapper, final Options options, final Class<? extends OptionsWrapper> wrapperClass) {
+      OptionsWrapper wrapper = null;
+      Constructor<? extends OptionsWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Options.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Options.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, options);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapOptions();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original options. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original options.
+     */
+    public final Options wrapOptions() {
+      final Options options = getWrappedOptions();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(options, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(options);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Options) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
+  public static class TimeoutsWrapper implements Timeouts {
+
+    private final Timeouts originalTimeouts;
+    private final WebDriverWrapper driverWrapper;
+
+    public TimeoutsWrapper(final WebDriverWrapper driverWrapper, final Timeouts timeouts) {
+      originalTimeouts = timeouts;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Timeouts getWrappedTimeouts() {
+      return originalTimeouts;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public Timeouts implicitlyWait(long timeout, TimeUnit timeUnit) {
+      getWrappedTimeouts().implicitlyWait(timeout, timeUnit);
+      return this;
+    }
+
+    @Override
+    public Timeouts setScriptTimeout(long timeout, TimeUnit timeUnit) {
+      getWrappedTimeouts().setScriptTimeout(timeout, timeUnit);
+      return this;
+    }
+
+    @Override
+    public Timeouts pageLoadTimeout(long timeout, TimeUnit timeUnit) {
+      getWrappedTimeouts().pageLoadTimeout(timeout, timeUnit);
+      return this;
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original timeouts. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original timeouts.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param timeouts             the underlying timeouts
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Timeouts wrapTimeouts(final WebDriverWrapper driverWrapper, final Timeouts timeouts, final Class<? extends TimeoutsWrapper> wrapperClass) {
+      TimeoutsWrapper wrapper = null;
+      Constructor<? extends TimeoutsWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Timeouts.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Timeouts.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, timeouts);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapTimeouts();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original timeouts. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original timeouts.
+     */
+    public final Timeouts wrapTimeouts() {
+      final Timeouts timeouts = getWrappedTimeouts();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(timeouts, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(timeouts);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Timeouts) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
+  public static class WindowWrapper implements Window {
+
+    private final Window originalWindow;
+    private final WebDriverWrapper driverWrapper;
+
+    public WindowWrapper(final WebDriverWrapper driverWrapper, final Window window) {
+      originalWindow = window;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Window getWrappedWindow() {
+      return originalWindow;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public void setSize(Dimension size) {
+      getWrappedWindow().setSize(size);
+    }
+
+    @Override
+    public void setPosition(Point position) {
+      getWrappedWindow().setPosition(position);
+    }
+
+    @Override
+    public Dimension getSize() {
+      return getWrappedWindow().getSize();
+    }
+
+    @Override
+    public Point getPosition() {
+      return getWrappedWindow().getPosition();
+    }
+
+    @Override
+    public void maximize() {
+      getWrappedWindow().maximize();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original window. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original window.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param window               the underlying window
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Window wrapWindow(final WebDriverWrapper driverWrapper, final Window window, final Class<? extends WindowWrapper> wrapperClass) {
+      WindowWrapper wrapper = null;
+      Constructor<? extends WindowWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Window.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Window.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, window);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapWindow();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original window. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original window.
+     */
+    public final Window wrapWindow() {
+      final Window window = getWrappedWindow();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(window, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(window);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Window) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
+  public static class CoordinatesWrapper implements Coordinates {
+
+    private final Coordinates originalCoordinates;
+    private final WebDriverWrapper driverWrapper;
+
+    public CoordinatesWrapper(final WebDriverWrapper driverWrapper, final Coordinates coordinates) {
+      originalCoordinates = coordinates;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Coordinates getWrappedCoordinates() {
+      return originalCoordinates;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public Point onScreen() {
+      return getWrappedCoordinates().onScreen();
+    }
+
+    @Override
+    public Point inViewPort() {
+      return getWrappedCoordinates().inViewPort();
+    }
+
+    @Override
+    public Point onPage() {
+      return getWrappedCoordinates().onPage();
+    }
+
+    @Override
+    public Object getAuxiliary() {
+      return getDriverWrapper().wrapObject(getWrappedCoordinates().getAuxiliary());
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original coordinates. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original coordinates.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param coordinates          the underlying coordinates
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Coordinates wrapCoordinates(final WebDriverWrapper driverWrapper, final Coordinates coordinates, final Class<? extends CoordinatesWrapper> wrapperClass) {
+      CoordinatesWrapper wrapper = null;
+      Constructor<? extends CoordinatesWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Coordinates.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Coordinates.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, coordinates);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapCoordinates();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original coordinates. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original coordinates.
+     */
+    public final Coordinates wrapCoordinates() {
+      final Coordinates coordinates = getWrappedCoordinates();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(coordinates, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(coordinates);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Coordinates) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
   private static Set<Class<?>> extractInterfaces(final Object object) {
     return extractInterfaces(object.getClass());
   }
@@ -867,5 +1424,4 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
     }
     extractInterfaces(collector, clazz.getSuperclass());
   }
-
 }
