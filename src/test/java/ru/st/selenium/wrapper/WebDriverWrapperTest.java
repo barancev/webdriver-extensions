@@ -16,9 +16,8 @@
  */
 package ru.st.selenium.wrapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,10 +26,7 @@ import static org.mockito.Mockito.when;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import ru.st.selenium.StubDriver;
 
@@ -39,52 +35,19 @@ public class WebDriverWrapperTest {
   @Test
   public void shouldNotAddInterfacesNotAvailableInTheOriginalDriver() {
     final WebDriver driver = new StubDriver();
-    assertFalse(driver instanceof JavascriptExecutor);
+    assertThat(driver, not(instanceOf(SomeOtherInterface.class)));
 
     final WebDriver wrapper = WebDriverWrapper.wrapDriver(driver, SimpleWebDriverWrapper.class);
-    assertFalse(wrapper instanceof JavascriptExecutor);
+    assertThat(wrapper, not(instanceOf(SomeOtherInterface.class)));
   }
 
   @Test
   public void shouldRespectInterfacesAvailableInTheOriginalDriver() {
     final WebDriver driver = mock(ExtendedDriver.class);
-    assertTrue(driver instanceof SomeOtherInterface);
+    assertThat(driver, instanceOf(SomeOtherInterface.class));
 
     final WebDriver wrapper = WebDriverWrapper.wrapDriver(driver, SimpleWebDriverWrapper.class);
-    assertTrue(wrapper instanceof SomeOtherInterface);
-  }
-
-  @Test
-  public void click() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
-    final WebElement mockedElement = mock(WebElement.class);
-    final WebElement mockedElement2 = mock(WebElement.class, "elt2");
-
-    when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
-    when(mockedElement.findElement(By.tagName("DIV"))).thenReturn(mockedElement2);
-    when(mockedElement2.isDisplayed()).thenReturn(true);
-
-    final AtomicInteger counter = new AtomicInteger();
-    final WebDriver testedDriver = ClickCountingDriver.decorate(mockedDriver, counter);
-
-    // check for element wrapped by the driver
-    final WebElement firstElement = testedDriver.findElement(By.name("foo"));
-    firstElement.click();
-    assertEquals(1, counter.get());
-
-    // check that elements returned by WebElement.findElement are wrapped too 
-    final WebElement nestedElement = firstElement.findElement(By.tagName("DIV"));
-    nestedElement.click();
-    assertEquals(2, counter.get());
-
-    // check that methods that are not overwritten works normally 
-    assertTrue(nestedElement.isDisplayed());
-
-    verify(mockedDriver, times(1)).findElement(By.name("foo"));
-    verify(mockedElement, times(1)).click();
-    verify(mockedElement, times(1)).findElement(By.tagName("DIV"));
-    verify(mockedElement2, times(1)).click();
-    verify(mockedElement2, times(1)).isDisplayed();
+    assertThat(wrapper, instanceOf(SomeOtherInterface.class));
   }
 
   private static class SimpleWebDriverWrapper extends WebDriverWrapper {
@@ -97,17 +60,45 @@ public class WebDriverWrapperTest {
 
   private static interface ExtendedDriver extends WebDriver, SomeOtherInterface {}
 
+  @Test
+  public void canWrapASingleMethod() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class, "element1");
+    final WebElement mockedElement2 = mock(WebElement.class, "element2");
+
+    when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
+    when(mockedElement.findElement(By.tagName("div"))).thenReturn(mockedElement2);
+    when(mockedElement2.isDisplayed()).thenReturn(true);
+
+    final AtomicInteger counter = new AtomicInteger();
+    final WebDriver driver = new ClickCountingDriver(mockedDriver, counter).getDriver();
+
+    // check for element wrapped by the driver
+    final WebElement firstElement = driver.findElement(By.name("foo"));
+    firstElement.click();
+    assertThat(counter.get(), is(1));
+
+    // check that elements returned by WebElement.findElement are wrapped too 
+    final WebElement nestedElement = firstElement.findElement(By.tagName("div"));
+    nestedElement.click();
+    assertThat(counter.get(), is(2));
+
+    // check that methods that are not overwritten works normally 
+    assertThat(nestedElement.isDisplayed(), is(true));
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(1)).click();
+    verify(mockedElement, times(1)).findElement(By.tagName("div"));
+    verify(mockedElement2, times(1)).click();
+    verify(mockedElement2, times(1)).isDisplayed();
+  }
+
   private static class ClickCountingDriver extends WebDriverWrapper {
     private final AtomicInteger counter;
 
     private ClickCountingDriver(final WebDriver driver, final AtomicInteger clickCounter) {
       super(driver);
       counter = clickCounter;
-    }
-
-    public static WebDriver decorate(final WebDriver driver, final AtomicInteger clickCounter) {
-      final ClickCountingDriver wrapper = new ClickCountingDriver(driver, clickCounter);
-      return wrapper.getDriver();
     }
 
     @Override
@@ -120,6 +111,17 @@ public class WebDriverWrapperTest {
         }
       };
     }
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void canPropagateExceptions() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+
+    when(mockedDriver.findElement(By.name("foo"))).thenThrow(NoSuchElementException.class);
+
+    final WebDriver driver = new WebDriverWrapper(mockedDriver).getDriver();
+
+    driver.findElement(By.name("foo"));
   }
 
 }
