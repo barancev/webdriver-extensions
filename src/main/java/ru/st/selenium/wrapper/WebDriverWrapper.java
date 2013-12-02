@@ -29,7 +29,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.internal.TouchAction;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
@@ -48,7 +50,8 @@ import org.openqa.selenium.security.Credentials;
  * WebDriver driver = wrapper.getDriver();
  * </pre></code>
  */
-public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecutor {
+public class WebDriverWrapper implements WebDriver, WrapsDriver,
+    JavascriptExecutor, HasInputDevices, HasTouchScreen {
 
   private final WebDriver originalDriver;
   private WebDriver enhancedDriver = null;
@@ -126,6 +129,30 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
 
   private Coordinates wrapCoordinates(final Coordinates coordinates) {
     return CoordinatesWrapper.wrapCoordinates(this, coordinates, getCoordinatesWrapperClass());
+  }
+
+  protected Class<? extends KeyboardWrapper> getKeyboardWrapperClass() {
+    return KeyboardWrapper.class;
+  }
+
+  private Keyboard wrapKeyboard(final Keyboard keyboard) {
+    return KeyboardWrapper.wrapKeyboard(this, keyboard, getKeyboardWrapperClass());
+  }
+
+  protected Class<? extends MouseWrapper> getMouseWrapperClass() {
+    return MouseWrapper.class;
+  }
+
+  private Mouse wrapMouse(final Mouse mouse) {
+    return MouseWrapper.wrapMouse(this, mouse, getMouseWrapperClass());
+  }
+
+  protected Class<? extends TouchScreenWrapper> getTouchScreenWrapperClass() {
+    return TouchScreenWrapper.class;
+  }
+
+  private TouchScreen wrapTouchScreen(final TouchScreen touchScreen) {
+    return TouchScreenWrapper.wrapTouchScreen(this, touchScreen, getTouchScreenWrapperClass());
   }
 
   // TODO: implement proper wrapping for arbitrary objects
@@ -225,6 +252,21 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
     } else {
       throw new WebDriverException("Wrapped webdriver does not support JavascriptExecutor: " + driver);
     }
+  }
+
+  @Override
+  public Keyboard getKeyboard() {
+    return wrapKeyboard(((HasInputDevices) getWrappedDriver()).getKeyboard());
+  }
+
+  @Override
+  public Mouse getMouse() {
+    return wrapMouse(((HasInputDevices) getWrappedDriver()).getMouse());
+  }
+
+  @Override
+  public TouchScreen getTouch() {
+    return wrapTouchScreen(((HasTouchScreen) getWrappedDriver()).getTouch());
   }
 
   /**
@@ -1379,6 +1421,409 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver, JavascriptExecu
       Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
 
       return (Coordinates) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
+  public static class KeyboardWrapper implements Keyboard {
+
+    private final Keyboard originalKeyboard;
+    private final WebDriverWrapper driverWrapper;
+
+    public KeyboardWrapper(final WebDriverWrapper driverWrapper, final Keyboard keyboard) {
+      originalKeyboard = keyboard;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Keyboard getWrappedKeyboard() {
+      return originalKeyboard;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public void sendKeys(CharSequence... charSequences) {
+      getWrappedKeyboard().sendKeys(charSequences);
+    }
+
+    @Override
+    public void pressKey(CharSequence charSequence) {
+      getWrappedKeyboard().pressKey(charSequence);
+    }
+
+    @Override
+    public void releaseKey(CharSequence charSequence) {
+      getWrappedKeyboard().releaseKey(charSequence);
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original keyboard. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original keyboard.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param keyboard             the underlying keyboard
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Keyboard wrapKeyboard(final WebDriverWrapper driverWrapper, final Keyboard keyboard, final Class<? extends KeyboardWrapper> wrapperClass) {
+      KeyboardWrapper wrapper = null;
+      Constructor<? extends KeyboardWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Keyboard.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Keyboard.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, keyboard);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapKeyboard();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original keyboard. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original keyboard.
+     */
+    public final Keyboard wrapKeyboard() {
+      final Keyboard keyboard = getWrappedKeyboard();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(keyboard, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(keyboard);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Keyboard) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
+  public static class MouseWrapper implements Mouse {
+
+    private final Mouse originalMouse;
+    private final WebDriverWrapper driverWrapper;
+
+    public MouseWrapper(final WebDriverWrapper driverWrapper, final Mouse mouse) {
+      originalMouse = mouse;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final Mouse getWrappedMouse() {
+      return originalMouse;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public void click(Coordinates coordinates) {
+      getWrappedMouse().click(coordinates);
+    }
+
+    @Override
+    public void doubleClick(Coordinates coordinates) {
+      getWrappedMouse().doubleClick(coordinates);
+    }
+
+    @Override
+    public void mouseDown(Coordinates coordinates) {
+      getWrappedMouse().mouseDown(coordinates);
+    }
+
+    @Override
+    public void mouseUp(Coordinates coordinates) {
+      getWrappedMouse().mouseUp(coordinates);
+    }
+
+    @Override
+    public void mouseMove(Coordinates coordinates) {
+      getWrappedMouse().mouseMove(coordinates);
+    }
+
+    @Override
+    public void mouseMove(Coordinates coordinates, long x, long y) {
+      getWrappedMouse().mouseMove(coordinates, x, y);
+    }
+
+    @Override
+    public void contextClick(Coordinates coordinates) {
+      getWrappedMouse().contextClick(coordinates);
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original mouse. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original mouse.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param mouse             the underlying mouse
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static Mouse wrapMouse(final WebDriverWrapper driverWrapper, final Mouse mouse, final Class<? extends MouseWrapper> wrapperClass) {
+      MouseWrapper wrapper = null;
+      Constructor<? extends MouseWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Mouse.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Mouse.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, mouse);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapMouse();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original mouse. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original mouse.
+     */
+    public final Mouse wrapMouse() {
+      final Mouse mouse = getWrappedMouse();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(mouse, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(mouse);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (Mouse) Proxy.newProxyInstance(
+          this.getClass().getClassLoader(),
+          allInterfaces.toArray(allInterfacesArray),
+          handler);
+    }
+
+    protected void beforeMethod(Method method, Object[] args) {
+    }
+
+    protected Object callMethod(Method method, Object[] args) throws Throwable {
+      return method.invoke(this, args);
+    }
+
+    protected void afterMethod(Method method, Object res, Object[] args) {
+    }
+
+    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    }
+  }
+
+  public static class TouchScreenWrapper implements TouchScreen {
+
+    private final TouchScreen originalTouchScreen;
+    private final WebDriverWrapper driverWrapper;
+
+    public TouchScreenWrapper(final WebDriverWrapper driverWrapper, final TouchScreen touchScreen) {
+      originalTouchScreen = touchScreen;
+      this.driverWrapper = driverWrapper;
+    }
+
+    public final TouchScreen getWrappedTouchScreen() {
+      return originalTouchScreen;
+    }
+
+    private WebDriverWrapper getDriverWrapper() {
+      return driverWrapper;
+    }
+
+    @Override
+    public void singleTap(Coordinates coordinates) {
+      getWrappedTouchScreen().singleTap(coordinates);
+    }
+
+    @Override
+    public void down(int x, int y) {
+      getWrappedTouchScreen().down(x, y);
+    }
+
+    @Override
+    public void up(int x, int y) {
+      getWrappedTouchScreen().up(x, y);
+    }
+
+    @Override
+    public void move(int x, int y) {
+      getWrappedTouchScreen().move(x, y);
+    }
+
+    @Override
+    public void scroll(Coordinates coordinates, int x, int y) {
+      getWrappedTouchScreen().scroll(coordinates, x, y);
+    }
+
+    @Override
+    public void doubleTap(Coordinates coordinates) {
+      getWrappedTouchScreen().doubleTap(coordinates);
+    }
+
+    @Override
+    public void longPress(Coordinates coordinates) {
+      getWrappedTouchScreen().longPress(coordinates);
+    }
+
+    @Override
+    public void scroll(int x, int y) {
+      getWrappedTouchScreen().scroll(x, y);
+    }
+
+    @Override
+    public void flick(int xSpeed, int ySpeed) {
+      getWrappedTouchScreen().flick(xSpeed, ySpeed);
+    }
+
+    @Override
+    public void flick(Coordinates coordinates, int x, int y, int speed) {
+      getWrappedTouchScreen().flick(coordinates, x, y, speed);
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original touchScreen. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original touchScreen.
+     *
+     * @param driverWrapper        the underlying driver's wrapper
+     * @param touchScreen             the underlying touchScreen
+     * @param wrapperClass         the class of a wrapper
+     */
+    public final static TouchScreen wrapTouchScreen(final WebDriverWrapper driverWrapper, final TouchScreen touchScreen, final Class<? extends TouchScreenWrapper> wrapperClass) {
+      TouchScreenWrapper wrapper = null;
+      Constructor<? extends TouchScreenWrapper> constructor = null;
+      if (wrapperClass.getEnclosingClass() != null) {
+        try {
+          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), TouchScreen.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        try {
+          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, TouchScreen.class);
+        } catch (Exception e) {
+        }
+      }
+      if (constructor == null) {
+        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
+      }
+      try {
+        wrapper = constructor.newInstance(driverWrapper, touchScreen);
+      } catch (Exception e) {
+        throw new Error("Can't create a new wrapper object", e);
+      }
+      return wrapper.wrapTouchScreen();
+    }
+
+    /**
+     * Builds a {@link Proxy} implementing all interfaces of original touchScreen. It will delegate calls to
+     * wrapper when wrapper implements the requested method otherwise to original touchScreen.
+     */
+    public final TouchScreen wrapTouchScreen() {
+      final TouchScreen touchScreen = getWrappedTouchScreen();
+      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
+
+      final InvocationHandler handler = new InvocationHandler() {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+          try {
+            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
+              beforeMethod(method, args);
+              Object result = callMethod(method, args);
+              afterMethod(method, result, args);
+              return result;
+            }
+            return method.invoke(touchScreen, args);
+          } catch (InvocationTargetException e) {
+            onError(method, e, args);
+            throw e.getTargetException();
+          }
+        }
+      };
+
+      Set<Class<?>> allInterfaces = extractInterfaces(touchScreen);
+      allInterfaces.addAll(wrapperInterfaces);
+      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+
+      return (TouchScreen) Proxy.newProxyInstance(
           this.getClass().getClassLoader(),
           allInterfaces.toArray(allInterfacesArray),
           handler);
