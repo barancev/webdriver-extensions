@@ -28,6 +28,7 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.interactions.internal.Coordinates;
@@ -311,8 +312,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
           }
           return method.invoke(driver, args);
         } catch (InvocationTargetException e) {
-          onError(method, e, args);
-          throw e.getTargetException();
+          return onError(method, e, args);
         }
       }
     };
@@ -339,7 +339,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   protected void afterMethod(Method method, Object res, Object[] args) {
   }
 
-  protected void onError(Method method, InvocationTargetException e, Object[] args) {
+  protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+    throw Throwables.propagate(e.getTargetException());
   }
 
   /**
@@ -499,8 +500,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(element, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -525,7 +525,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
   
@@ -640,8 +641,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(targetLocator, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -666,7 +666,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
   
@@ -766,8 +767,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(navigator, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -792,7 +792,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
   
@@ -893,8 +894,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(alert, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -919,7 +919,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1044,8 +1045,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(options, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1070,7 +1070,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1163,8 +1164,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(timeouts, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1189,7 +1189,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1289,8 +1290,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(window, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1315,7 +1315,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1410,8 +1411,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(coordinates, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1436,7 +1436,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1526,8 +1527,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(keyboard, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1552,7 +1552,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1662,8 +1663,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(mouse, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1688,7 +1688,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 
@@ -1813,8 +1814,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
             }
             return method.invoke(touchScreen, args);
           } catch (InvocationTargetException e) {
-            onError(method, e, args);
-            throw e.getTargetException();
+            return onError(method, e, args);
           }
         }
       };
@@ -1839,7 +1839,8 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     protected void afterMethod(Method method, Object res, Object[] args) {
     }
 
-    protected void onError(Method method, InvocationTargetException e, Object[] args) {
+    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 

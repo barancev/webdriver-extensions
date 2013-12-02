@@ -18,13 +18,17 @@ package ru.st.selenium.wrapper;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.google.common.base.Throwables;
 import org.junit.Test;
 import org.openqa.selenium.*;
 
@@ -122,6 +126,22 @@ public class WebDriverWrapperTest {
     final WebDriver driver = new WebDriverWrapper(mockedDriver).getDriver();
 
     driver.findElement(By.name("foo"));
+  }
+
+  @Test
+  public void canPreventExceptions() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+
+    when(mockedDriver.findElement(By.name("foo"))).thenThrow(NoSuchElementException.class);
+
+    final WebDriver driver = new WebDriverWrapper(mockedDriver) {
+      @Override
+      protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+        return null;
+      }
+    }.getDriver();
+
+    assertThat(driver.findElement(By.name("foo")), is(nullValue()));
   }
 
 }
