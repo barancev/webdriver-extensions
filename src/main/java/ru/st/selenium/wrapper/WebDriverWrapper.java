@@ -16,23 +16,16 @@
  */
 package ru.st.selenium.wrapper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.interactions.internal.TouchAction;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
@@ -48,17 +41,16 @@ import org.openqa.selenium.security.Credentials;
  * or
  * <code><pre>
  * MyWebDriverWrapper wrapper = new MyWebDriverWrapper(originalDriver, otherParameter);
- * WebDriver driver = wrapper.getDriver();
+ * WebDriver driver = new MyWebDriverWrapper(originalDriver, otherParameter).getDriver();
  * </pre></code>
  */
-public class WebDriverWrapper implements WebDriver, WrapsDriver,
-    JavascriptExecutor, HasInputDevices, HasTouchScreen {
+public class WebDriverWrapper extends AbstractWrapper<WebDriver>
+    implements WebDriver, WrapsDriver, JavascriptExecutor, HasInputDevices, HasTouchScreen {
 
-  private final WebDriver originalDriver;
   private WebDriver enhancedDriver = null;
 
   public WebDriverWrapper(WebDriver driver) {
-    originalDriver = driver;
+    super(null, driver);
   }
 
   protected Class<? extends WebElementWrapper> getElementWrapperClass() {
@@ -66,7 +58,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   protected WebElement wrapElement(final WebElement element) {
-    return WebElementWrapper.wrapElement(this, element, getElementWrapperClass());
+    return WebElementWrapper.wrapOriginal(this, element, getElementWrapperClass());
   }
 
   private List<WebElement> wrapElements(final List<WebElement> elements) {
@@ -81,7 +73,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
-    return TargetLocatorWrapper.wrapTargetLocator(this, targetLocator, getTargetLocatorWrapperClass());
+    return TargetLocatorWrapper.wrapOriginal(this, targetLocator, getTargetLocatorWrapperClass());
   }
 
   protected Class<? extends AlertWrapper> getAlertWrapperClass() {
@@ -89,7 +81,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Alert wrapAlert(final Alert alert) {
-    return AlertWrapper.wrapAlert(this, alert, getAlertWrapperClass());
+    return AlertWrapper.wrapOriginal(this, alert, getAlertWrapperClass());
   }
 
   protected Class<? extends NavigationWrapper> getNavigationWrapperClass() {
@@ -97,7 +89,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Navigation wrapNavigation(final Navigation navigator) {
-    return NavigationWrapper.wrapNavigation(this, navigator, getNavigationWrapperClass());
+    return NavigationWrapper.wrapOriginal(this, navigator, getNavigationWrapperClass());
   }
 
   protected Class<? extends OptionsWrapper> getOptionsWrapperClass() {
@@ -105,7 +97,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Options wrapOptions(final Options options) {
-    return OptionsWrapper.wrapOptions(this, options, getOptionsWrapperClass());
+    return OptionsWrapper.wrapOriginal(this, options, getOptionsWrapperClass());
   }
 
   protected Class<? extends TimeoutsWrapper> getTimeoutsWrapperClass() {
@@ -113,7 +105,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Timeouts wrapTimeouts(final Timeouts timeouts) {
-    return TimeoutsWrapper.wrapTimeouts(this, timeouts, getTimeoutsWrapperClass());
+    return TimeoutsWrapper.wrapOriginal(this, timeouts, getTimeoutsWrapperClass());
   }
 
   protected Class<? extends WindowWrapper> getWindowWrapperClass() {
@@ -121,7 +113,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Window wrapWindow(final Window window) {
-    return WindowWrapper.wrapWindow(this, window, getWindowWrapperClass());
+    return WindowWrapper.wrapOriginal(this, window, getWindowWrapperClass());
   }
 
   protected Class<? extends CoordinatesWrapper> getCoordinatesWrapperClass() {
@@ -129,7 +121,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Coordinates wrapCoordinates(final Coordinates coordinates) {
-    return CoordinatesWrapper.wrapCoordinates(this, coordinates, getCoordinatesWrapperClass());
+    return CoordinatesWrapper.wrapOriginal(this, coordinates, getCoordinatesWrapperClass());
   }
 
   protected Class<? extends KeyboardWrapper> getKeyboardWrapperClass() {
@@ -137,7 +129,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Keyboard wrapKeyboard(final Keyboard keyboard) {
-    return KeyboardWrapper.wrapKeyboard(this, keyboard, getKeyboardWrapperClass());
+    return KeyboardWrapper.wrapOriginal(this, keyboard, getKeyboardWrapperClass());
   }
 
   protected Class<? extends MouseWrapper> getMouseWrapperClass() {
@@ -145,7 +137,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private Mouse wrapMouse(final Mouse mouse) {
-    return MouseWrapper.wrapMouse(this, mouse, getMouseWrapperClass());
+    return MouseWrapper.wrapOriginal(this, mouse, getMouseWrapperClass());
   }
 
   protected Class<? extends TouchScreenWrapper> getTouchScreenWrapperClass() {
@@ -153,7 +145,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
   }
 
   private TouchScreen wrapTouchScreen(final TouchScreen touchScreen) {
-    return TouchScreenWrapper.wrapTouchScreen(this, touchScreen, getTouchScreenWrapperClass());
+    return TouchScreenWrapper.wrapOriginal(this, touchScreen, getTouchScreenWrapperClass());
   }
 
   // TODO: implement proper wrapping for arbitrary objects
@@ -167,7 +159,7 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
 
   @Override
   public final WebDriver getWrappedDriver() {
-    return originalDriver;
+    return getWrappedOriginal();
   }
 
   @Override
@@ -277,70 +269,19 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
    * @param driver               the underlying driver
    * @param wrapperClass         the class of a wrapper
    */
-  public final static WebDriver wrapDriver(final WebDriver driver, final Class<? extends WebDriverWrapper> wrapperClass) {
-    WebDriverWrapper wrapper = null;
-    try {
-      wrapper = wrapperClass.getConstructor(WebDriver.class).newInstance(driver);
-    } catch (NoSuchMethodException e) {
-      throw new Error("Wrapper class should provide a constructor with a single WebDriver parameter", e);
-    } catch (Exception e) {
-      throw new Error("Can't create a new wrapper object", e);
-    }
-    return wrapper.getDriver();
+  public static WebDriver wrapDriver(final WebDriver driver, final Class<? extends WebDriverWrapper> wrapperClass) {
+    return wrapOriginal(null, driver, wrapperClass);
   }
 
   /**
    * Builds a {@link Proxy} implementing all interfaces of original driver. It will delegate calls to
    * wrapper when wrapper implements the requested method otherwise to original driver.
    */
-  public final WebDriver getDriver() {
-    if (enhancedDriver != null) {
-      return enhancedDriver;
+  public WebDriver getDriver() {
+    if (enhancedDriver == null) {
+      enhancedDriver = wrapOriginal();
     }
-
-    final WebDriver driver = getWrappedDriver();
-    final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-    final InvocationHandler handler = new InvocationHandler() {
-      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        try {
-          if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-            beforeMethod(method, args);
-            Object result = callMethod(method, args);
-            afterMethod(method, result, args);
-            return result;
-          }
-          return method.invoke(driver, args);
-        } catch (InvocationTargetException e) {
-          return onError(method, e, args);
-        }
-      }
-    };
-
-    Set<Class<?>> allInterfaces = extractInterfaces(driver);
-    allInterfaces.addAll(wrapperInterfaces);
-    Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-    enhancedDriver = (WebDriver) Proxy.newProxyInstance(
-        this.getClass().getClassLoader(),
-        allInterfaces.toArray(allInterfacesArray),
-        handler);
-
     return enhancedDriver;
-  }
-
-  protected void beforeMethod(Method method, Object[] args) {
-  }
-
-  protected Object callMethod(Method method, Object[] args) throws Throwable {
-    return method.invoke(this, args);
-  }
-
-  protected void afterMethod(Method method, Object res, Object[] args) {
-  }
-
-  protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-    throw Throwables.propagate(e.getTargetException());
   }
 
   /**
@@ -348,23 +289,15 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
    * The methods {@link WebDriverWrapper#wrapElement(WebElement)}/{@link WebDriverWrapper#wrapElements(List<WebElement>)} will
    * be called on the related {@link WebDriverWrapper} to wrap the elements returned by {@link #findElement(By)}/{@link #findElements(By)}.
    */
-  public static class WebElementWrapper implements WebElement, WrapsElement {
-
-    private final WebElement originalElement;
-    private final WebDriverWrapper driverWrapper;
+  public static class WebElementWrapper extends AbstractWrapper<WebElement> implements WebElement, WrapsElement {
 
     public WebElementWrapper(final WebDriverWrapper driverWrapper, final WebElement element) {
-      originalElement = element;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, element);
     }
 
     @Override
     public final WebElement getWrappedElement() {
-      return originalElement;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -446,106 +379,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
       Locatable locatable = (Locatable) getWrappedElement();
       return getDriverWrapper().wrapCoordinates(locatable.getCoordinates());
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original element. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original element.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param element              the underlying element
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static WebElement wrapElement(final WebDriverWrapper driverWrapper, final WebElement element, final Class<? extends WebElementWrapper> wrapperClass) {
-      WebElementWrapper wrapper = null;
-      Constructor<? extends WebElementWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), WebElement.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, WebElement.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, element);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.getElement();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original element. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original element.
-     */
-    public final WebElement getElement() {
-      final WebElement element = getWrappedElement();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(element, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(element);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (WebElement) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
   
-  public static class TargetLocatorWrapper implements TargetLocator {
+  public static class TargetLocatorWrapper extends AbstractWrapper<TargetLocator> implements TargetLocator {
   
-    private final TargetLocator originalTargetLocator;
-    private final WebDriverWrapper driverWrapper;
-
     public TargetLocatorWrapper(final WebDriverWrapper driverWrapper, final TargetLocator targetLocator) {
-      originalTargetLocator = targetLocator;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, targetLocator);
     }
 
     public final TargetLocator getWrappedTargetLocator() {
-      return originalTargetLocator;
-    }
-
-    private final WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -587,106 +430,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public Alert alert() {
         return getDriverWrapper().wrapAlert(getWrappedTargetLocator().alert());
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original target locator. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original target locator.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param targetLocator        the underlying target locator
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static TargetLocator wrapTargetLocator(final WebDriverWrapper driverWrapper, final TargetLocator targetLocator, final Class<? extends TargetLocatorWrapper> wrapperClass) {
-      TargetLocatorWrapper wrapper = null;
-      Constructor<? extends TargetLocatorWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), TargetLocator.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, TargetLocator.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, targetLocator);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.getTargetLocator();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original target locator. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original target locator.
-     */
-    public final TargetLocator getTargetLocator() {
-      final TargetLocator targetLocator = getWrappedTargetLocator();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(targetLocator, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(targetLocator);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (TargetLocator) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
   
-  public static class NavigationWrapper implements Navigation {
+  public static class NavigationWrapper extends AbstractWrapper<Navigation> implements Navigation {
     
-    private final Navigation originalNavigator;
-    private final WebDriverWrapper driverWrapper;
-
     public NavigationWrapper(final WebDriverWrapper driverWrapper, final Navigation navigator) {
-      originalNavigator = navigator;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, navigator);
     }
 
     public final Navigation getWrappedNavigation() {
-      return originalNavigator;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -713,106 +466,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public void refresh() {
       getWrappedNavigation().refresh();
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original navigator. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original navigator.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param navigator            the underlying navigator
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Navigation wrapNavigation(final WebDriverWrapper driverWrapper, final Navigation navigator, final Class<? extends NavigationWrapper> wrapperClass) {
-      NavigationWrapper wrapper = null;
-      Constructor<? extends NavigationWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Navigation.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Navigation.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, navigator);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapNavigation();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original navigator. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original navigator.
-     */
-    public final Navigation wrapNavigation() {
-      final Navigation navigator = getWrappedNavigation();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(navigator, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(navigator);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Navigation) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
   
-  public static class AlertWrapper implements Alert {
-
-    private final Alert originalAlert;
-    private final WebDriverWrapper driverWrapper;
+  public static class AlertWrapper extends AbstractWrapper<Alert> implements Alert {
 
     public AlertWrapper(final WebDriverWrapper driverWrapper, final Alert alert) {
-      originalAlert = alert;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, alert);
     }
 
     public final Alert getWrappedAlert() {
-      return originalAlert;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -840,106 +503,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public void sendKeys(String text) {
       getWrappedAlert().sendKeys(text);
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original alert. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original alert.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param alert                the underlying alert
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Alert wrapAlert(final WebDriverWrapper driverWrapper, final Alert alert, final Class<? extends AlertWrapper> wrapperClass) {
-      AlertWrapper wrapper = null;
-      Constructor<? extends AlertWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Alert.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Alert.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, alert);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapAlert();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original alert. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original alert.
-     */
-    public final Alert wrapAlert() {
-      final Alert alert = getWrappedAlert();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(alert, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(alert);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Alert) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class OptionsWrapper implements Options {
-
-    private final Options originalOptions;
-    private final WebDriverWrapper driverWrapper;
+  public static class OptionsWrapper extends AbstractWrapper<Options> implements Options {
 
     public OptionsWrapper(final WebDriverWrapper driverWrapper, final Options options) {
-      originalOptions = options;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, options);
     }
 
     public final Options getWrappedOptions() {
-      return originalOptions;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -991,106 +564,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public Logs logs() {
       return getWrappedOptions().logs();
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original options. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original options.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param options              the underlying options
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Options wrapOptions(final WebDriverWrapper driverWrapper, final Options options, final Class<? extends OptionsWrapper> wrapperClass) {
-      OptionsWrapper wrapper = null;
-      Constructor<? extends OptionsWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Options.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Options.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, options);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapOptions();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original options. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original options.
-     */
-    public final Options wrapOptions() {
-      final Options options = getWrappedOptions();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(options, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(options);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Options) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class TimeoutsWrapper implements Timeouts {
-
-    private final Timeouts originalTimeouts;
-    private final WebDriverWrapper driverWrapper;
+  public static class TimeoutsWrapper extends AbstractWrapper<Timeouts> implements Timeouts {
 
     public TimeoutsWrapper(final WebDriverWrapper driverWrapper, final Timeouts timeouts) {
-      originalTimeouts = timeouts;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, timeouts);
     }
 
     public final Timeouts getWrappedTimeouts() {
-      return originalTimeouts;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -1110,106 +593,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
       getWrappedTimeouts().pageLoadTimeout(timeout, timeUnit);
       return this;
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original timeouts. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original timeouts.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param timeouts             the underlying timeouts
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Timeouts wrapTimeouts(final WebDriverWrapper driverWrapper, final Timeouts timeouts, final Class<? extends TimeoutsWrapper> wrapperClass) {
-      TimeoutsWrapper wrapper = null;
-      Constructor<? extends TimeoutsWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Timeouts.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Timeouts.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, timeouts);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapTimeouts();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original timeouts. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original timeouts.
-     */
-    public final Timeouts wrapTimeouts() {
-      final Timeouts timeouts = getWrappedTimeouts();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(timeouts, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(timeouts);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Timeouts) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class WindowWrapper implements Window {
-
-    private final Window originalWindow;
-    private final WebDriverWrapper driverWrapper;
+  public static class WindowWrapper extends AbstractWrapper<Window> implements Window {
 
     public WindowWrapper(final WebDriverWrapper driverWrapper, final Window window) {
-      originalWindow = window;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, window);
     }
 
     public final Window getWrappedWindow() {
-      return originalWindow;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -1236,106 +629,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public void maximize() {
       getWrappedWindow().maximize();
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original window. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original window.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param window               the underlying window
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Window wrapWindow(final WebDriverWrapper driverWrapper, final Window window, final Class<? extends WindowWrapper> wrapperClass) {
-      WindowWrapper wrapper = null;
-      Constructor<? extends WindowWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Window.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Window.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, window);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapWindow();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original window. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original window.
-     */
-    public final Window wrapWindow() {
-      final Window window = getWrappedWindow();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(window, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(window);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Window) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class CoordinatesWrapper implements Coordinates {
-
-    private final Coordinates originalCoordinates;
-    private final WebDriverWrapper driverWrapper;
+  public static class CoordinatesWrapper extends AbstractWrapper<Coordinates> implements Coordinates {
 
     public CoordinatesWrapper(final WebDriverWrapper driverWrapper, final Coordinates coordinates) {
-      originalCoordinates = coordinates;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, coordinates);
     }
 
     public final Coordinates getWrappedCoordinates() {
-      return originalCoordinates;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -1357,106 +660,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public Object getAuxiliary() {
       return getDriverWrapper().wrapObject(getWrappedCoordinates().getAuxiliary());
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original coordinates. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original coordinates.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param coordinates          the underlying coordinates
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Coordinates wrapCoordinates(final WebDriverWrapper driverWrapper, final Coordinates coordinates, final Class<? extends CoordinatesWrapper> wrapperClass) {
-      CoordinatesWrapper wrapper = null;
-      Constructor<? extends CoordinatesWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Coordinates.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Coordinates.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, coordinates);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapCoordinates();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original coordinates. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original coordinates.
-     */
-    public final Coordinates wrapCoordinates() {
-      final Coordinates coordinates = getWrappedCoordinates();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(coordinates, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(coordinates);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Coordinates) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class KeyboardWrapper implements Keyboard {
-
-    private final Keyboard originalKeyboard;
-    private final WebDriverWrapper driverWrapper;
+  public static class KeyboardWrapper extends AbstractWrapper<Keyboard> implements Keyboard {
 
     public KeyboardWrapper(final WebDriverWrapper driverWrapper, final Keyboard keyboard) {
-      originalKeyboard = keyboard;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, keyboard);
     }
 
     public final Keyboard getWrappedKeyboard() {
-      return originalKeyboard;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -1473,106 +686,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public void releaseKey(CharSequence charSequence) {
       getWrappedKeyboard().releaseKey(charSequence);
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original keyboard. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original keyboard.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param keyboard             the underlying keyboard
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Keyboard wrapKeyboard(final WebDriverWrapper driverWrapper, final Keyboard keyboard, final Class<? extends KeyboardWrapper> wrapperClass) {
-      KeyboardWrapper wrapper = null;
-      Constructor<? extends KeyboardWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Keyboard.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Keyboard.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, keyboard);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapKeyboard();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original keyboard. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original keyboard.
-     */
-    public final Keyboard wrapKeyboard() {
-      final Keyboard keyboard = getWrappedKeyboard();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(keyboard, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(keyboard);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Keyboard) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class MouseWrapper implements Mouse {
-
-    private final Mouse originalMouse;
-    private final WebDriverWrapper driverWrapper;
+  public static class MouseWrapper extends AbstractWrapper<Mouse> implements Mouse {
 
     public MouseWrapper(final WebDriverWrapper driverWrapper, final Mouse mouse) {
-      originalMouse = mouse;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, mouse);
     }
 
     public final Mouse getWrappedMouse() {
-      return originalMouse;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -1609,106 +732,16 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public void contextClick(Coordinates coordinates) {
       getWrappedMouse().contextClick(coordinates);
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original mouse. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original mouse.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param mouse             the underlying mouse
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static Mouse wrapMouse(final WebDriverWrapper driverWrapper, final Mouse mouse, final Class<? extends MouseWrapper> wrapperClass) {
-      MouseWrapper wrapper = null;
-      Constructor<? extends MouseWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), Mouse.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, Mouse.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, mouse);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapMouse();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original mouse. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original mouse.
-     */
-    public final Mouse wrapMouse() {
-      final Mouse mouse = getWrappedMouse();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(mouse, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(mouse);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (Mouse) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
   }
 
-  public static class TouchScreenWrapper implements TouchScreen {
-
-    private final TouchScreen originalTouchScreen;
-    private final WebDriverWrapper driverWrapper;
+  public static class TouchScreenWrapper extends AbstractWrapper<TouchScreen> implements TouchScreen {
 
     public TouchScreenWrapper(final WebDriverWrapper driverWrapper, final TouchScreen touchScreen) {
-      originalTouchScreen = touchScreen;
-      this.driverWrapper = driverWrapper;
+      super(driverWrapper, touchScreen);
     }
 
     public final TouchScreen getWrappedTouchScreen() {
-      return originalTouchScreen;
-    }
-
-    private WebDriverWrapper getDriverWrapper() {
-      return driverWrapper;
+      return getWrappedOriginal();
     }
 
     @Override
@@ -1760,114 +793,5 @@ public class WebDriverWrapper implements WebDriver, WrapsDriver,
     public void flick(Coordinates coordinates, int x, int y, int speed) {
       getWrappedTouchScreen().flick(coordinates, x, y, speed);
     }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original touchScreen. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original touchScreen.
-     *
-     * @param driverWrapper        the underlying driver's wrapper
-     * @param touchScreen             the underlying touchScreen
-     * @param wrapperClass         the class of a wrapper
-     */
-    public final static TouchScreen wrapTouchScreen(final WebDriverWrapper driverWrapper, final TouchScreen touchScreen, final Class<? extends TouchScreenWrapper> wrapperClass) {
-      TouchScreenWrapper wrapper = null;
-      Constructor<? extends TouchScreenWrapper> constructor = null;
-      if (wrapperClass.getEnclosingClass() != null) {
-        try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), TouchScreen.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, TouchScreen.class);
-        } catch (Exception e) {
-        }
-      }
-      if (constructor == null) {
-        throw new Error("Element wrapper class " + wrapperClass + " does not provide an appropriate constructor");
-      }
-      try {
-        wrapper = constructor.newInstance(driverWrapper, touchScreen);
-      } catch (Exception e) {
-        throw new Error("Can't create a new wrapper object", e);
-      }
-      return wrapper.wrapTouchScreen();
-    }
-
-    /**
-     * Builds a {@link Proxy} implementing all interfaces of original touchScreen. It will delegate calls to
-     * wrapper when wrapper implements the requested method otherwise to original touchScreen.
-     */
-    public final TouchScreen wrapTouchScreen() {
-      final TouchScreen touchScreen = getWrappedTouchScreen();
-      final Set<Class<?>> wrapperInterfaces = extractInterfaces(this);
-
-      final InvocationHandler handler = new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          try {
-            if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-              beforeMethod(method, args);
-              Object result = callMethod(method, args);
-              afterMethod(method, result, args);
-              return result;
-            }
-            return method.invoke(touchScreen, args);
-          } catch (InvocationTargetException e) {
-            return onError(method, e, args);
-          }
-        }
-      };
-
-      Set<Class<?>> allInterfaces = extractInterfaces(touchScreen);
-      allInterfaces.addAll(wrapperInterfaces);
-      Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
-
-      return (TouchScreen) Proxy.newProxyInstance(
-          this.getClass().getClassLoader(),
-          allInterfaces.toArray(allInterfacesArray),
-          handler);
-    }
-
-    protected void beforeMethod(Method method, Object[] args) {
-    }
-
-    protected Object callMethod(Method method, Object[] args) throws Throwable {
-      return method.invoke(this, args);
-    }
-
-    protected void afterMethod(Method method, Object res, Object[] args) {
-    }
-
-    protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-      throw Throwables.propagate(e.getTargetException());
-    }
-  }
-
-  private static Set<Class<?>> extractInterfaces(final Object object) {
-    return extractInterfaces(object.getClass());
-  }
-
-  private static Set<Class<?>> extractInterfaces(final Class<?> clazz) {
-    Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
-    extractInterfaces(allInterfaces, clazz);
-
-    return allInterfaces;
-  }
-
-  private static void extractInterfaces(final Set<Class<?>> collector, final Class<?> clazz) {
-    if (clazz == null || Object.class.equals(clazz)) {
-      return;
-    }
-
-    final Class<?>[] classes = clazz.getInterfaces();
-    for (Class<?> interfaceClass : classes) {
-      collector.add(interfaceClass);
-      for (Class<?> superInterface : interfaceClass.getInterfaces()) {
-        collector.add(superInterface);
-        extractInterfaces(collector, superInterface);
-      }
-    }
-    extractInterfaces(collector, clazz.getSuperclass());
   }
 }
