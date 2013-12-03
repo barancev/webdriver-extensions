@@ -16,9 +16,6 @@
  */
 package ru.st.selenium.wrapper;
 
-import com.google.common.base.Throwables;
-import org.openqa.selenium.WebDriver;
-
 import java.lang.reflect.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,14 +50,11 @@ public abstract class AbstractWrapper<T> {
    * @param original             the underlying original object
    * @param wrapperClass         the class of a wrapper
    */
-  public final static <T> T wrapOriginal(final WebDriverWrapper driverWrapper, final T original, final Class<? extends AbstractWrapper<T>> wrapperClass) {
-    AbstractWrapper<T> wrapper = null;
+  public static <T> T wrapOriginal(final WebDriverWrapper driverWrapper, final T original, final Class<? extends AbstractWrapper<T>> wrapperClass) {
+    AbstractWrapper<T> wrapper;
     Constructor<? extends AbstractWrapper<T>> constructor = null;
     if (driverWrapper == null) { // top level WebDriverWrapper
-      try {
-        constructor = wrapperClass.getConstructor(WebDriver.class);
-      } catch (Exception e) {
-      }
+      constructor = findMatchingConstructor(wrapperClass, original.getClass());
       if (constructor == null) {
         throw new Error("Wrapper class " + wrapperClass + " does not provide an appropriate constructor");
       }
@@ -71,15 +65,16 @@ public abstract class AbstractWrapper<T> {
       }
 
     } else { // enclosed wrapper
+      System.out.println(original.getClass());
       if (wrapperClass.getEnclosingClass() != null) {
         try {
-          constructor = wrapperClass.getConstructor(wrapperClass.getEnclosingClass(), original.getClass());
+          constructor = findMatchingConstructor(wrapperClass, wrapperClass.getEnclosingClass(), original.getClass());
         } catch (Exception e) {
         }
       }
       if (constructor == null) {
         try {
-          constructor = wrapperClass.getConstructor(WebDriverWrapper.class, original.getClass());
+          constructor = findMatchingConstructor(wrapperClass, WebDriverWrapper.class, original.getClass());
         } catch (Exception e) {
         }
       }
@@ -141,8 +136,32 @@ public abstract class AbstractWrapper<T> {
     getDriverWrapper().afterMethodGlobal(this, method, res, args);
   }
 
-  protected Object onError(Method method, InvocationTargetException e, Object[] args) {
+  protected Object onError(Method method, InvocationTargetException e, Object[] args) throws Throwable {
     return getDriverWrapper().onErrorGlobal(this, method, e, args);
+  }
+
+  private static <T> Constructor<? extends AbstractWrapper<T>> findMatchingConstructor(
+      Class<? extends AbstractWrapper<T>> wrapperClass, Class<?>... classes)
+  {
+    for (Constructor<?> ctor : wrapperClass.getConstructors()) {
+      if (isMatchingConstructor(ctor, classes)) {
+        return (Constructor<? extends AbstractWrapper<T>>) ctor;
+      }
+    }
+    return null;
+  }
+
+  private static boolean isMatchingConstructor(Constructor<?> ctor, Class<?>... classes) {
+    Class<?>[] parameterTypes = ctor.getParameterTypes();
+    if (parameterTypes.length != classes.length) {
+      return false;
+    }
+    for (int i = 0; i < parameterTypes.length; i++) {
+      if (! parameterTypes[i].isAssignableFrom(classes[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static Set<Class<?>> extractInterfaces(final Object object) {

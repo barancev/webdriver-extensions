@@ -170,7 +170,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
   protected void afterMethodGlobal(Object target, Method method, Object res, Object[] args) {
   }
 
-  protected Object onErrorGlobal(Object target, Method method, InvocationTargetException e, Object[] args) {
+  protected Object onErrorGlobal(Object target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
     throw Throwables.propagate(e.getTargetException());
   }
 
