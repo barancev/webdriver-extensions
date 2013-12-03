@@ -16,6 +16,8 @@
  */
 package ru.st.selenium.wrapper;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.interactions.internal.Coordinates;
@@ -155,6 +158,20 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     } else {
       return object;
     }
+  }
+
+  protected void beforeMethodGlobal(Object target, Method method, Object[] args) {
+  }
+
+  protected Object callMethodGlobal(Object target, Method method, Object[] args) throws Throwable {
+    return method.invoke(target, args);
+  }
+
+  protected void afterMethodGlobal(Object target, Method method, Object res, Object[] args) {
+  }
+
+  protected Object onErrorGlobal(Object target, Method method, InvocationTargetException e, Object[] args) {
+    throw Throwables.propagate(e.getTargetException());
   }
 
   @Override

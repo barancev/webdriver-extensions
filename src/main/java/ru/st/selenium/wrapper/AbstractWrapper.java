@@ -30,7 +30,11 @@ public abstract class AbstractWrapper<T> {
 
   public AbstractWrapper(final WebDriverWrapper driverWrapper, final T original) {
     this.original = original;
-    this.driverWrapper = driverWrapper;
+    if (this instanceof WebDriverWrapper) {
+      this.driverWrapper = (WebDriverWrapper) this;
+    } else {
+      this.driverWrapper = driverWrapper;
+    }
   }
 
   public final T getWrappedOriginal() {
@@ -126,17 +130,19 @@ public abstract class AbstractWrapper<T> {
   }
 
   protected void beforeMethod(Method method, Object[] args) {
+    getDriverWrapper().beforeMethodGlobal(this, method, args);
   }
 
   protected Object callMethod(Method method, Object[] args) throws Throwable {
-    return method.invoke(this, args);
+    return getDriverWrapper().callMethodGlobal(this, method, args);
   }
 
   protected void afterMethod(Method method, Object res, Object[] args) {
+    getDriverWrapper().afterMethodGlobal(this, method, res, args);
   }
 
   protected Object onError(Method method, InvocationTargetException e, Object[] args) {
-    throw Throwables.propagate(e.getTargetException());
+    return getDriverWrapper().onErrorGlobal(this, method, e, args);
   }
 
   private static Set<Class<?>> extractInterfaces(final Object object) {
