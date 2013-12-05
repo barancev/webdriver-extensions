@@ -65,7 +65,6 @@ public abstract class AbstractWrapper<T> {
       }
 
     } else { // enclosed wrapper
-      System.out.println(original.getClass());
       if (wrapperClass.getEnclosingClass() != null) {
         try {
           constructor = findMatchingConstructor(wrapperClass, wrapperClass.getEnclosingClass(), original.getClass());
