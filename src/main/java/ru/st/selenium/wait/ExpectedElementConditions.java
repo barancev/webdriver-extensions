@@ -29,6 +29,15 @@ public class ExpectedElementConditions {
     return new ExpectedElementCondition<Boolean>() {
       @Override
       public Boolean apply(WebElement element) {
+        return true;
+      }
+    };
+  }
+
+  public static ExpectedElementCondition<Boolean> isNotStale() {
+    return new ExpectedElementCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebElement element) {
         try {
           element.getTagName();
           return true;
@@ -39,7 +48,7 @@ public class ExpectedElementConditions {
     };
   }
 
-  public static ExpectedElementCondition<Boolean> isDisplayed() {
+  public static ExpectedElementCondition<Boolean> isVisible() {
     return new ExpectedElementCondition<Boolean>() {
       @Override
       public Boolean apply(WebElement element) {

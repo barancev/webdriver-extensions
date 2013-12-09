@@ -19,9 +19,8 @@ package ru.st.selenium.wait;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import com.google.common.base.Function;
 
@@ -35,7 +34,7 @@ public class ExpectedConditions {
       final WebElement element, final Function<WebElement, Boolean> condition) {
   return new ExpectedCondition<WebElement>() {
     @Override
-    public WebElement apply(WebDriver driver) {
+    public WebElement apply(SearchContext context) {
       if (element != null && condition.apply(element)) {
         return element;
       } else {
@@ -49,8 +48,8 @@ public class ExpectedConditions {
         final By locator, final Function<WebElement, Boolean> condition) {
     return new ExpectedCondition<WebElement>() {
       @Override
-      public WebElement apply(WebDriver driver) {
-        WebElement element = findElement(driver, locator);
+      public WebElement apply(SearchContext context) {
+        WebElement element = findElement(context, locator);
         if (element != null) {
           return condition.apply(element) ? element : null;
         } else {
@@ -64,8 +63,8 @@ public class ExpectedConditions {
         final By locator, final Function<WebElement, Boolean> condition) {
     return new ExpectedCondition<WebElement>() {
       @Override
-      public WebElement apply(WebDriver driver) {
-        List<WebElement> elements = driver.findElements(locator);
+      public WebElement apply(SearchContext context) {
+        List<WebElement> elements = context.findElements(locator);
         for (WebElement element : elements) {
           if (element != null && condition.apply(element)) {
             return element;
@@ -80,8 +79,8 @@ public class ExpectedConditions {
       final By locator, final Function<List<WebElement>, Boolean> condition) {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
-      public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> elements = driver.findElements(locator);
+      public List<WebElement> apply(SearchContext context) {
+        List<WebElement> elements = context.findElements(locator);
         return condition.apply(elements) ? elements : null;
       }
     };
@@ -91,8 +90,8 @@ public class ExpectedConditions {
       final By locator, final Function<WebElement, Boolean> condition) {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
-      public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> elements = driver.findElements(locator);
+      public List<WebElement> apply(SearchContext context) {
+        List<WebElement> elements = context.findElements(locator);
         for (WebElement element : elements) {
           if (! condition.apply(element)) {
             return null;
@@ -103,8 +102,8 @@ public class ExpectedConditions {
     };
   }
 
-  private static WebElement findElement(WebDriver driver, By locator) {
-    List<WebElement> elements = driver.findElements(locator);
+  private static WebElement findElement(SearchContext context, By locator) {
+    List<WebElement> elements = context.findElements(locator);
     return elements.size() > 0 ? elements.get(0) : null;
   }
 }
