@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
-package ru.st.selenium.wrapper;
+package ru.st.selenium.wait;
 
 import org.openqa.selenium.*;
 import ru.st.selenium.wait.ActionRepeater;
+import ru.st.selenium.wrapper.WebDriverWrapper;
 
 import static ru.st.selenium.wait.ActionRepeater.*;
 import static ru.st.selenium.wait.RepeatableActions.*;
