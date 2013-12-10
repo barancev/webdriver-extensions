@@ -17,8 +17,6 @@
 package ru.st.selenium.wait;
 
 import com.google.common.collect.Lists;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.openqa.selenium.*;
 import org.testng.annotations.Test;
 
@@ -355,6 +353,47 @@ public class RepeatableActionsTest {
         .tryTo(checkIsSelected());
 
     verify(mockedElement, times(3)).isSelected();
+  }
+
+  @Test
+  public void isEnabledCheckShouldCallIsSelected() {
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedElement.isEnabled()).thenReturn(true);
+
+    boolean res = new ActionRepeater<WebElement>(mockedElement, 1, 1)
+        .tryTo(checkIsEnabled());
+
+    assertThat(res, is(true));
+    verify(mockedElement, times(1)).isEnabled();
+  }
+
+  @Test
+  public void isEnabledCheckShouldNotWaitForTheElementToBeEnabled() {
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedElement.isEnabled()).thenReturn(false);
+
+    boolean res = new ActionRepeater<WebElement>(mockedElement, 1, 1)
+        .tryTo(checkIsEnabled());
+
+    assertThat(res, is(false));
+    verify(mockedElement, times(1)).isEnabled();
+  }
+
+  @Test
+  public void isEnabledCheckShouldIgnoreElementNotVisibleException() {
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedElement.isEnabled())
+        .thenThrow(ElementNotVisibleException.class)
+        .thenThrow(ElementNotVisibleException.class)
+        .thenReturn(true);
+
+    new ActionRepeater<WebElement>(mockedElement, 1, 1)
+        .tryTo(checkIsEnabled());
+
+    verify(mockedElement, times(3)).isEnabled();
   }
 
 }
