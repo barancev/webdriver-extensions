@@ -139,4 +139,17 @@ public class RepeatableActions {
     };
   }
 
+  public static RepeatableAction<WebDriver, Alert> performSwitchToAlert() {
+    return new AbstractRepeatableAction<WebDriver, Alert>() {
+      @Override
+      public Alert apply(WebDriver driver) {
+        return driver.switchTo().alert();
+      }
+      @Override
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof NoAlertPresentException;
+      }
+    };
+  }
+
 }

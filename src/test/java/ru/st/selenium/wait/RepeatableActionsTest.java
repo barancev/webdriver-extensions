@@ -396,4 +396,41 @@ public class RepeatableActionsTest {
     verify(mockedElement, times(3)).isEnabled();
   }
 
+  @Test
+  public void switchToAlertActionShouldCallSwitchToAlert() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+    final Alert mockedAlert = mock(Alert.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.alert()).thenReturn(mockedAlert);
+
+    Alert alert = new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+        .tryTo(performSwitchToAlert());
+
+    verify(mockedDriver, times(1)).switchTo();
+    verify(mockedSwitch, times(1)).alert();
+    assertThat(alert, is(mockedAlert));
+  }
+
+  @Test
+  public void switchToAlertActionShouldIgnoreNoAlertPresentException() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+    final Alert mockedAlert = mock(Alert.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.alert())
+        .thenThrow(NoAlertPresentException.class)
+        .thenThrow(NoAlertPresentException.class)
+        .thenReturn(mockedAlert);
+
+    Alert alert = new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+        .tryTo(performSwitchToAlert());
+
+    verify(mockedDriver, times(3)).switchTo();
+    verify(mockedSwitch, times(3)).alert();
+    assertThat(alert, is(mockedAlert));
+  }
+
 }
