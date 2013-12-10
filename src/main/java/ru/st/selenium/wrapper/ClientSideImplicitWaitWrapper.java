@@ -32,6 +32,11 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     return ImplicitWaitElementWrapper.class;
   }
 
+  @Override
+  protected Class<? extends TargetLocatorWrapper> getTargetLocatorWrapperClass() {
+    return ImplicitWaitTargetLocatorWrapper.class;
+  }
+
   private static final int DEFAULT_TIMEOUT = 10;
 
   private int timeout = DEFAULT_TIMEOUT;
@@ -119,4 +124,15 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     }
   }
 
+  public class ImplicitWaitTargetLocatorWrapper extends TargetLocatorWrapper {
+
+    public ImplicitWaitTargetLocatorWrapper(WebDriverWrapper driverWrapper, TargetLocator targetLocator) {
+      super(driverWrapper, targetLocator);
+    }
+
+    @Override
+    public Alert alert() {
+      return withWebDriver().tryTo(performSwitchToAlert());
+    }
+  }
 }
