@@ -34,7 +34,8 @@ public class ActionRepeaterTest {
     when(mockedDriver.findElement(By.name("foo")))
         .thenReturn(mockedElement);
 
-    WebElement element = new ActionRepeater<WebDriver>(mockedDriver).tryTo(performFindElement(By.name("foo")));
+    WebElement element = new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+        .tryTo(performFindElement(By.name("foo")));
 
     verify(mockedDriver, times(1)).findElement(By.name("foo"));
     assertThat(element, is(mockedElement));
@@ -50,7 +51,8 @@ public class ActionRepeaterTest {
         .thenThrow(NoSuchElementException.class)
         .thenReturn(mockedElement);
 
-    WebElement element = new ActionRepeater<WebDriver>(mockedDriver, 1, 100).tryTo(performFindElement(By.name("foo")));
+    WebElement element = new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+        .tryTo(performFindElement(By.name("foo")));
 
     verify(mockedDriver, times(3)).findElement(By.name("foo"));
     assertThat(element, is(mockedElement));
@@ -64,7 +66,8 @@ public class ActionRepeaterTest {
         .thenThrow(NoSuchElementException.class);
 
     try {
-      new ActionRepeater<WebDriver>(mockedDriver, 1, 100).tryTo(performFindElement(By.name("foo")));
+      new ActionRepeater<WebDriver>(mockedDriver, 1, 100)
+          .tryTo(performFindElement(By.name("foo")));
       fail("Exception expected");
     } catch (Throwable t) {
       assertThat(t, instanceOf(TimeoutException.class));
@@ -82,7 +85,8 @@ public class ActionRepeaterTest {
         .thenThrow(NoSuchWindowException.class);
 
     try {
-      new ActionRepeater<WebDriver>(mockedDriver, 1, 100).tryTo(performFindElement(By.name("foo")));
+      new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+          .tryTo(performFindElement(By.name("foo")));
       fail("Exception expected");
     } catch (Throwable t) {
       assertThat(t, instanceOf(NoSuchWindowException.class));

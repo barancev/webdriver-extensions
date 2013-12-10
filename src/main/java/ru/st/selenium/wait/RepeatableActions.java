@@ -18,8 +18,6 @@ package ru.st.selenium.wait;
 
 import org.openqa.selenium.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RepeatableActions {
@@ -29,109 +27,114 @@ public class RepeatableActions {
   }
 
   public static RepeatableAction<SearchContext, WebElement> performFindElement(final By locator) {
-    return new RepeatableAction<SearchContext, WebElement>() {
+    return new AbstractRepeatableAction<SearchContext, WebElement>() {
       @Override
       public WebElement apply(SearchContext context) {
         return context.findElement(locator);
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(NoSuchElementException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof NoSuchElementException;
       }
     };
   }
 
   public static RepeatableAction<SearchContext, List<WebElement>> performFindElements(final By locator) {
-    return new RepeatableAction<SearchContext, List<WebElement>>() {
+    return new AbstractRepeatableAction<SearchContext, List<WebElement>>() {
       @Override
       public List<WebElement> apply(SearchContext context) {
         return context.findElements(locator);
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(NoSuchElementException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof NoSuchElementException;
+      }
+
+      @Override
+      public boolean shouldIgnoreResult(List<WebElement> result) {
+        return result.isEmpty();
       }
     };
   }
 
-  public static RepeatableAction<WebElement, Void> performClick() {
-    return new RepeatableAction<WebElement, Void>() {
+  public static RepeatableAction<WebElement, Boolean> performClick() {
+    return new AbstractRepeatableAction<WebElement, Boolean>() {
       @Override
-      public Void apply(WebElement element) {
+      public Boolean apply(WebElement element) {
         element.click();
-        return null;
+        return true;
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(ElementNotVisibleException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof ElementNotVisibleException;
       }
     };
   }
 
-  public static RepeatableAction<WebElement, Void> performSubmit() {
-    return new RepeatableAction<WebElement, Void>() {
+  public static RepeatableAction<WebElement, Boolean> performSubmit() {
+    return new AbstractRepeatableAction<WebElement, Boolean>() {
       @Override
-      public Void apply(WebElement element) {
+      public Boolean apply(WebElement element) {
         element.submit();
-        return null;
+        return true;
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(ElementNotVisibleException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof ElementNotVisibleException;
       }
     };
   }
 
-  public static RepeatableAction<WebElement, Void> performSendKeys(final CharSequence... keysToSend) {
-    return new RepeatableAction<WebElement, Void>() {
+  public static RepeatableAction<WebElement, Boolean> performSendKeys(final CharSequence... keysToSend) {
+    return new AbstractRepeatableAction<WebElement, Boolean>() {
       @Override
-      public Void apply(WebElement element) {
+      public Boolean apply(WebElement element) {
         element.sendKeys(keysToSend);
-        return null;
+        return true;
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(ElementNotVisibleException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof ElementNotVisibleException;
       }
     };
   }
 
-  public static RepeatableAction<WebElement, Void> performClear() {
-    return new RepeatableAction<WebElement, Void>() {
+  public static RepeatableAction<WebElement, Boolean> performClear() {
+    return new AbstractRepeatableAction<WebElement, Boolean>() {
       @Override
-      public Void apply(WebElement element) {
+      public Boolean apply(WebElement element) {
         element.clear();
-        return null;
+        return true;
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(ElementNotVisibleException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof ElementNotVisibleException;
       }
     };
   }
 
   public static RepeatableAction<WebElement, Boolean> checkIsSelected() {
-    return new RepeatableAction<WebElement, Boolean>() {
+    return new AbstractRepeatableAction<WebElement, Boolean>() {
       @Override
       public Boolean apply(WebElement element) {
         return element.isSelected();
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(ElementNotVisibleException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof ElementNotVisibleException;
       }
     };
   }
 
   public static RepeatableAction<WebElement, Boolean> checkIsEnabled() {
-    return new RepeatableAction<WebElement, Boolean>() {
+    return new AbstractRepeatableAction<WebElement, Boolean>() {
       @Override
       public Boolean apply(WebElement element) {
         return element.isEnabled();
       }
       @Override
-      public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(ElementNotVisibleException.class));
+      public boolean shouldIgnoreException(Throwable t) {
+        return t instanceof ElementNotVisibleException;
       }
     };
   }

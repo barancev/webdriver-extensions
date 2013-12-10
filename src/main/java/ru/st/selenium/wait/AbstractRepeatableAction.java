@@ -16,11 +16,14 @@
  */
 package ru.st.selenium.wait;
 
-import com.google.common.base.Function;
+public abstract class AbstractRepeatableAction<T, V> implements RepeatableAction<T, V> {
 
-public interface RepeatableAction <T, V> extends Function<T, V> {
+  public boolean shouldIgnoreException(Throwable t) {
+    return false;
+  }
 
-  boolean shouldIgnoreException(Throwable t);
-  boolean shouldIgnoreResult(V result);
+  public boolean shouldIgnoreResult(V result) {
+    return false;
+  }
 
 }

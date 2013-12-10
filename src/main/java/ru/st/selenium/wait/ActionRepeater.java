@@ -16,17 +16,60 @@
  */
 package ru.st.selenium.wait;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.Duration;
 import org.openqa.selenium.support.ui.Sleeper;
 import org.openqa.selenium.support.ui.SystemClock;
 
 import java.util.concurrent.TimeUnit;
 
-public class ActionRepeater <T> extends FluentWait<T> {
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+/**
+ * Each ActionRepeater instance defines the maximum amount of time to attempt to perform an action,
+ * as well as the frequency with which to call the action.
+ *
+ * <p>
+ * Sample usage: <code><pre>
+ *   // Try to look for an element to be present on the page, checking
+ *   // for its presence once every 5 seconds until timeout of 30 seconds is expired.
+ *   ActionRepeater&lt;WebDriver&gt; repeater = new ActionRepeater&lt;WebDriver&gt;(driver)
+ *       .withTimeout(30, SECONDS)
+ *       .pollingEvery(5, SECONDS);
+ *
+ *   WebElement foo = repeater.tryTo(new AbstractRepeatableAction&lt;SearchContext, WebElement&gt;() {
+ *     public WebElement apply(SearchContext context) {
+ *       return driver.findElement(By.id("foo"));
+ *     }
+ *     public boolean shouldIgnoreException(Throwable t) {
+ *       return t instanceof NoSuchElementException;
+ *     }
+ *   });
+ * </pre></code>
+ *
+ * <p>
+ * <em>This class makes no thread safety guarantees.</em>
+ *
+ * @param <T> The action execution context type.
+ */
+public class ActionRepeater <T> {
+
+  public static Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
+
+  private final T context;
+  private final Clock clock;
+  private final Sleeper sleeper;
+
+  private Duration timeout = FIVE_HUNDRED_MILLIS;
+  private Duration interval = FIVE_HUNDRED_MILLIS;
+  private String message = null;
 
   public final static long DEFAULT_SLEEP_TIMEOUT = 500;
 
@@ -47,11 +90,11 @@ public class ActionRepeater <T> extends FluentWait<T> {
   }
 
   public ActionRepeater(T context) {
-    this(context, new SystemClock(), Sleeper.SYSTEM_SLEEPER, DEFAULT_SLEEP_TIMEOUT, DEFAULT_SLEEP_TIMEOUT);
+    this(context, DEFAULT_SLEEP_TIMEOUT);
   }
 
   public ActionRepeater(T context, long timeOutInSeconds) {
-    this(context, new SystemClock(), Sleeper.SYSTEM_SLEEPER, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT);
+    this(context, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT);
   }
 
   public ActionRepeater(T context, long timeOutInSeconds, long sleepInMillis) {
@@ -59,32 +102,109 @@ public class ActionRepeater <T> extends FluentWait<T> {
   }
 
   /**
-   * @param context The WebDriver instance to pass to the expected conditions
+   * @param context The execution context to pass to the action
    * @param clock The clock to use when measuring the timeout
    * @param sleeper Object used to make the current thread go to sleep.
    * @param timeOutInSeconds The timeout in seconds when an expectation is
-   * @param sleepTimeOut The timeout used whilst sleeping. Defaults to 500ms called.
+   * @param sleepTimeOut The timeout used whilst sleeping. Defaults to {@link #FIVE_HUNDRED_MILLIS}.
    */
   protected ActionRepeater(T context, Clock clock, Sleeper sleeper, long timeOutInSeconds, long sleepTimeOut) {
-    super(context, clock, sleeper);
+    this.context = checkNotNull(context);
+    this.clock = checkNotNull(clock);
+    this.sleeper = checkNotNull(sleeper);
     withTimeout(timeOutInSeconds, TimeUnit.SECONDS);
     pollingEvery(sleepTimeOut, TimeUnit.MILLISECONDS);
   }
 
-  @Override
-  public void until(Predicate<T> isTrue) {
-    throw new UnsupportedOperationException("Use method tryTo instead");
+  /**
+   * Sets how long to wait for the action to return a result that should not be ignored.
+   * The default timeout is {@link #FIVE_HUNDRED_MILLIS}.
+   *
+   * @param duration The timeout duration.
+   * @param unit The unit of time.
+   * @return A self reference.
+   */
+  public ActionRepeater<T> withTimeout(long duration, TimeUnit unit) {
+    this.timeout = new Duration(duration, unit);
+    return this;
   }
 
-  @Override
-  public <V> V until(Function<? super T, V> isTrue) {
-    throw new UnsupportedOperationException("Use method tryTo instead");
+  /**
+   * Sets the message to be displayed when time expires.
+   *
+   * @param message to be appended to default.
+   * @return A self reference.
+   */
+  public ActionRepeater<T> withMessage(String message) {
+    this.message = message;
+    return this;
   }
 
+  /**
+   * Sets how often the action should be repeated.
+   *
+   * <p>
+   * In reality, the interval may be greater as the cost of actually evaluating the action
+   * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
+   *
+   * @param duration The timeout duration.
+   * @param unit The unit of time.
+   * @return A self reference.
+   */
+  public ActionRepeater<T> pollingEvery(long duration, TimeUnit unit) {
+    this.interval = new Duration(duration, unit);
+    return this;
+  }
+
+  /**
+   * Repeatedly attempts to perform the action until one of the following occurs:
+   * <ol>
+   * <li>the function returns a value that should not be ignored,</li>
+   * <li>the function throws a exception that should not be ignored,</li>
+   * <li>the timeout expires,
+   * <li>
+   * <li>the current thread is interrupted</li>
+   * </ol>
+   *
+   * @param action the action to be performed repeatedly
+   * @param <V> The action's expected return type.
+   * @return The action' return value if the action returned a result that should not be ignored.
+   * @throws org.openqa.selenium.TimeoutException If the timeout expires.
+   */
   public <V> V tryTo(RepeatableAction<? super T, V> action) {
-    cleanIgnoreList();
-    ignoreAll(action.ignoredExceptions());
-    return super.until(action);
-  }
+    long end = clock.laterBy(timeout.in(MILLISECONDS));
+    Throwable lastException = null;
+    while (true) {
+      try {
+        V result = action.apply(context);
+        if (! action.shouldIgnoreResult(result)) {
+          return result;
+        }
+      } catch (Throwable e) {
+        if (! action.shouldIgnoreException(e)) {
+          throw Throwables.propagate(e);
+        } else {
+          lastException = e;
+        }
+      }
 
+      // Check the timeout after evaluating the function to ensure conditions
+      // with a zero timeout can succeed.
+      if (!clock.isNowBefore(end)) {
+        String toAppend = message == null ?
+            " trying to perform action " + action.toString() : ": " + message;
+
+        String timeoutMessage = String.format("Timed out after %d seconds%s",
+            timeout.in(SECONDS), toAppend);
+        throw new TimeoutException(timeoutMessage, lastException);
+      }
+
+      try {
+        sleeper.sleep(interval);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new WebDriverException(e);
+      }
+    }
+  }
 }
