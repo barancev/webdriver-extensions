@@ -38,7 +38,7 @@ public class RepeatableActions {
       }
       @Override
       public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(NotFoundException.class));
+        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(NoSuchElementException.class));
       }
     };
   }
@@ -51,7 +51,7 @@ public class RepeatableActions {
       }
       @Override
       public List<Class<? extends Throwable>> ignoredExceptions() {
-        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(NotFoundException.class));
+        return new ArrayList<Class<? extends Throwable>>(Arrays.asList(NoSuchElementException.class));
       }
     };
   }

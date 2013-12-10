@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface RepeatableAction <T, V> extends Function<T, V> {
 
-  public List<Class<? extends Throwable>> ignoredExceptions();
+  List<Class<? extends Throwable>> ignoredExceptions();
 
 }
