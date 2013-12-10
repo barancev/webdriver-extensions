@@ -16,8 +16,6 @@
  */
 package ru.st.selenium.wait;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
