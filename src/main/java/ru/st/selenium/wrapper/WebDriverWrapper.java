@@ -64,7 +64,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return WebElementWrapper.wrapOriginal(this, element, getElementWrapperClass());
   }
 
-  private List<WebElement> wrapElements(final List<WebElement> elements) {
+  protected List<WebElement> wrapElements(final List<WebElement> elements) {
     for (ListIterator<WebElement> iterator = elements.listIterator(); iterator.hasNext(); ) {
       iterator.set(wrapElement(iterator.next()));
     }
