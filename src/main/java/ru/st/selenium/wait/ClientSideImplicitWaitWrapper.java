@@ -16,11 +16,13 @@
  */
 package ru.st.selenium.wait;
 
+import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
 import ru.st.selenium.wrapper.WebDriverWrapper;
 
 import static ru.st.selenium.wait.RepeatableActions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,46 +62,52 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     return ImplicitWaitTargetLocatorWrapper.class;
   }
 
-  private static final int DEFAULT_TIMEOUT = 10;
+  private static final long DEFAULT_TIMEOUT = 10;
 
-  private int timeout = DEFAULT_TIMEOUT;
+  private long timeout = DEFAULT_TIMEOUT;
+  private long interval = ActionRepeater.DEFAULT_SLEEP_TIMEOUT;
 
   public ClientSideImplicitWaitWrapper(final WebDriver driver) {
     this(driver, DEFAULT_TIMEOUT);
   }
 
-  public ClientSideImplicitWaitWrapper(final WebDriver driver, int timeoutInSeconds) {
+  public ClientSideImplicitWaitWrapper(final WebDriver driver, long timeoutInSeconds) {
+    this(driver, timeoutInSeconds, ActionRepeater.DEFAULT_SLEEP_TIMEOUT);
+  }
+
+  public ClientSideImplicitWaitWrapper(final WebDriver driver, long timeoutInSeconds, long sleepTimeOut) {
     super(driver);
     this.timeout = timeoutInSeconds;
+    this.interval = sleepTimeOut;
     driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
   }
 
-  public int getTimeout() {
-    return timeout;
-  }
-
-  public void setTimeout(int timeout) {
-    this.timeout = timeout;
-  }
-
   protected ActionRepeater<WebDriver> withWebDriver() {
-    return with(getWrappedDriver(), timeout);
+    return with(getWrappedDriver(), timeout, interval);
   }
 
   @Override
   public WebElement findElement(By locator) {
-    return withWebDriver().tryTo(performFindElement(locator));
+    try {
+      return wrapElement(withWebDriver().tryTo(performFindElement(locator)));
+    } catch (TimeoutException te) {
+      throw Throwables.propagate(te.getCause());
+    }
   }
 
   @Override
   public List<WebElement> findElements(By locator) {
-    return withWebDriver().tryTo(performFindElements(locator));
+    try {
+      return wrapElements(withWebDriver().tryTo(performFindElements(locator)));
+    } catch (TimeoutException te) {
+      return new ArrayList<WebElement>();
+    }
   }
 
   public class ImplicitWaitElementWrapper extends WebElementWrapper {
 
-    public ImplicitWaitElementWrapper(WebDriverWrapper driverWrapper, WebElement element) {
-      super(driverWrapper, element);
+    public ImplicitWaitElementWrapper(WebElement element) {
+      super(ClientSideImplicitWaitWrapper.this, element);
     }
 
     protected ActionRepeater<WebElement> withWebElement() {
@@ -108,54 +116,97 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
 
     @Override
     public void click() {
-      withWebElement().tryTo(performClick());
+      try {
+        withWebElement().tryTo(performClick());
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public void submit() {
-      withWebElement().tryTo(performSubmit());
+      try {
+        withWebElement().tryTo(performSubmit());
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public void sendKeys(CharSequence... keysToSend) {
-      withWebElement().tryTo(performSendKeys(keysToSend));
+      try {
+        withWebElement().tryTo(performSendKeys(keysToSend));
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public void clear() {
-      withWebElement().tryTo(performClear());
+      try {
+        withWebElement().tryTo(performClear());
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public boolean isSelected() {
-      return withWebElement().tryTo(checkIsSelected());
+      try {
+        return withWebElement().tryTo(checkIsSelected());
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public boolean isEnabled() {
-      return withWebElement().tryTo(checkIsEnabled());
+      try {
+        return withWebElement().tryTo(checkIsEnabled());
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public WebElement findElement(By locator) {
-      return withWebElement().tryTo(performFindElement(locator));
+      try {
+        return withWebElement().tryTo(performFindElement(locator));
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
 
     @Override
     public List<WebElement> findElements(By locator) {
-      return withWebElement().tryTo(performFindElements(locator));
+      try {
+        return withWebElement().tryTo(performFindElements(locator));
+      } catch (TimeoutException te) {
+        return new ArrayList<WebElement>();
+      }
     }
   }
 
   public class ImplicitWaitTargetLocatorWrapper extends TargetLocatorWrapper {
 
-    public ImplicitWaitTargetLocatorWrapper(WebDriverWrapper driverWrapper, TargetLocator targetLocator) {
-      super(driverWrapper, targetLocator);
+    public ImplicitWaitTargetLocatorWrapper(TargetLocator targetLocator) {
+      super(ClientSideImplicitWaitWrapper.this, targetLocator);
     }
 
     @Override
     public Alert alert() {
-      return withWebDriver().tryTo(performSwitchToAlert());
+      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
+      return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, Alert>() {
+          @Override
+          public Alert apply(TargetLocator target) {
+            return target.alert();
+          }
+          @Override
+          public boolean shouldIgnoreException(Throwable t) {
+            return t instanceof NoAlertPresentException;
+          }
+        }
+      );
     }
   }
 }
