@@ -189,4 +189,27 @@ public abstract class AbstractWrapper<T> {
     }
     extractInterfaces(collector, clazz.getSuperclass());
   }
+
+  @Override
+  public String toString() {
+    return "Wrapper for {" + original + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+
+    if (o instanceof AbstractWrapper) {
+      AbstractWrapper that = (AbstractWrapper) o;
+      return original.equals(that.original);
+
+    } else {
+      return this.original.equals(o);
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return original.hashCode();
+  }
 }
