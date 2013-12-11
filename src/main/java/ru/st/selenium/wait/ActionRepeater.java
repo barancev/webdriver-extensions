@@ -18,9 +18,7 @@ package ru.st.selenium.wait;
 
 import com.google.common.base.Throwables;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.Duration;
 import org.openqa.selenium.support.ui.Sleeper;
@@ -72,22 +70,6 @@ public class ActionRepeater <T> {
   private String message = null;
 
   public final static long DEFAULT_SLEEP_TIMEOUT = 500;
-
-  public static ActionRepeater<WebDriver> with(WebDriver driver) {
-    return new ActionRepeater<WebDriver>(driver);
-  }
-
-  public static ActionRepeater<WebDriver> with(WebDriver driver, long timeOutInSeconds) {
-    return new ActionRepeater<WebDriver>(driver, timeOutInSeconds);
-  }
-
-  public static ActionRepeater<WebElement> with(WebElement element) {
-    return new ActionRepeater<WebElement>(element);
-  }
-
-  public static ActionRepeater<WebElement> with(WebElement element, long timeOutInSeconds) {
-    return new ActionRepeater<WebElement>(element, timeOutInSeconds);
-  }
 
   public ActionRepeater(T context) {
     this(context, DEFAULT_SLEEP_TIMEOUT);

@@ -17,16 +17,38 @@
 package ru.st.selenium.wait;
 
 import org.openqa.selenium.*;
-import ru.st.selenium.wait.ActionRepeater;
 import ru.st.selenium.wrapper.WebDriverWrapper;
 
-import static ru.st.selenium.wait.ActionRepeater.*;
 import static ru.st.selenium.wait.RepeatableActions.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
+
+  public static ActionRepeater<WebDriver> with(WebDriver driver) {
+    return new ActionRepeater<WebDriver>(driver);
+  }
+
+  public static ActionRepeater<WebDriver> with(WebDriver driver, long timeOutInSeconds) {
+    return new ActionRepeater<WebDriver>(driver, timeOutInSeconds);
+  }
+
+  public static ActionRepeater<WebDriver> with(WebDriver driver, long timeOutInSeconds, long sleepInMillis) {
+    return new ActionRepeater<WebDriver>(driver, timeOutInSeconds, sleepInMillis);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element) {
+    return new ActionRepeater<WebElement>(element);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element, long timeOutInSeconds) {
+    return new ActionRepeater<WebElement>(element, timeOutInSeconds);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element, long timeOutInSeconds, long sleepInMillis) {
+    return new ActionRepeater<WebElement>(element, timeOutInSeconds, sleepInMillis);
+  }
 
   @Override
   protected Class<? extends WebElementWrapper> getElementWrapperClass() {
