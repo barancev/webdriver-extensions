@@ -111,7 +111,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     }
 
     protected ActionRepeater<WebElement> withWebElement() {
-      return with(getWrappedElement(), timeout);
+      return with(getWrappedElement(), timeout, interval);
     }
 
     @Override

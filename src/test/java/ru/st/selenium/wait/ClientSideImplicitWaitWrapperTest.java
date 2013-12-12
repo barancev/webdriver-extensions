@@ -102,6 +102,21 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
+  public void findElementShouldReturnEmptyListIfNoElementIsFound() {
+    final WebDriver mockedDriver = getMockedDriver();
+
+    when(mockedDriver.findElements(By.name("foo")))
+        .thenReturn(new ArrayList<WebElement>());
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    List<WebElement> elements = driver.findElements(By.name("foo"));
+
+    verify(mockedDriver, times(11)).findElements(By.name("foo"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test
   public void clickShouldImplicitlyWaitForTheElementToBeVisible() {
     final WebDriver mockedDriver = getMockedDriver();
     final WebElement mockedElement = mock(WebElement.class);
@@ -120,6 +135,30 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).findElement(By.name("foo"));
     verify(mockedElement, times(3)).click();
+  }
+
+  @Test
+  public void clickShouldThrowIfTheElementIsNotVisible() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    doThrow(ElementNotVisibleException.class)
+        .when(mockedElement).click();
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.findElement(By.name("foo")).click();
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(ElementNotVisibleException.class));
+    }
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).click();
   }
 
   @Test
