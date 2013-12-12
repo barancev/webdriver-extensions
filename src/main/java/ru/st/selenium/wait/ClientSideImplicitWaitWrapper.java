@@ -196,17 +196,21 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     @Override
     public Alert alert() {
       ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
-      return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, Alert>() {
-          @Override
-          public Alert apply(TargetLocator target) {
-            return target.alert();
+      try {
+        return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, Alert>() {
+            @Override
+            public Alert apply(TargetLocator target) {
+              return target.alert();
+            }
+            @Override
+            public boolean shouldIgnoreException(Throwable t) {
+              return t instanceof NoAlertPresentException;
+            }
           }
-          @Override
-          public boolean shouldIgnoreException(Throwable t) {
-            return t instanceof NoAlertPresentException;
-          }
-        }
-      );
+        );
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
     }
   }
 }

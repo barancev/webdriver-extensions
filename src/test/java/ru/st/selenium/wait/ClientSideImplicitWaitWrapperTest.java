@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -183,6 +182,30 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
+  public void submitShouldThrowIfTheElementIsNotVisible() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    doThrow(ElementNotVisibleException.class)
+        .when(mockedElement).submit();
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.findElement(By.name("foo")).submit();
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(ElementNotVisibleException.class));
+    }
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).submit();
+  }
+
+  @Test
   public void sendKeysShouldImplicitlyWaitForTheElementToBeVisible() {
     final String text = "To be or not to be";
     final WebDriver mockedDriver = getMockedDriver();
@@ -205,6 +228,31 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
+  public void sendKeysShouldThrowIfTheElementIsNotVisible() {
+    final String text = "To be or not to be";
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    doThrow(ElementNotVisibleException.class)
+        .when(mockedElement).sendKeys(text);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.findElement(By.name("foo")).sendKeys(text);
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(ElementNotVisibleException.class));
+    }
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).sendKeys(text);
+  }
+
+  @Test
   public void clearShouldImplicitlyWaitForTheElementToBeVisible() {
     final WebDriver mockedDriver = getMockedDriver();
     final WebElement mockedElement = mock(WebElement.class);
@@ -223,6 +271,30 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).findElement(By.name("foo"));
     verify(mockedElement, times(3)).clear();
+  }
+
+  @Test
+  public void clearShouldThrowIfTheElementIsNotVisible() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    doThrow(ElementNotVisibleException.class)
+        .when(mockedElement).clear();
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.findElement(By.name("foo")).clear();
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(ElementNotVisibleException.class));
+    }
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).clear();
   }
 
   @Test
@@ -270,6 +342,30 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
+  public void isSelectedShouldThrowIfTheElementIsNotVisible() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    when(mockedElement.isSelected())
+        .thenThrow(ElementNotVisibleException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.findElement(By.name("foo")).isSelected();
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(ElementNotVisibleException.class));
+    }
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).isSelected();
+  }
+
+  @Test
   public void isEnabledShouldImplicitlyWaitForTheElementToBeVisible() {
     final WebDriver mockedDriver = getMockedDriver();
     final WebElement mockedElement = mock(WebElement.class);
@@ -314,6 +410,30 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
+  public void isEnabledShouldThrowIfTheElementIsNotVisible() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    when(mockedElement.isEnabled())
+        .thenThrow(ElementNotVisibleException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.findElement(By.name("foo")).isEnabled();
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(ElementNotVisibleException.class));
+    }
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).isEnabled();
+  }
+
+  @Test
   public void switchToAlertShouldImplicitlyWaitForAnAlertToBePresent() {
     final WebDriver mockedDriver = getMockedDriver();
     final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
@@ -332,6 +452,28 @@ public class ClientSideImplicitWaitWrapperTest {
     verify(mockedDriver, times(1)).switchTo();
     verify(mockedSwitch, times(3)).alert();
     assertThat(alert, is(mockedAlert));
+  }
+
+  @Test
+  public void switchToAlertShouldThrowIfThereIsNoAlert() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.alert())
+        .thenThrow(NoAlertPresentException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.switchTo().alert();
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(NoAlertPresentException.class));
+    }
+
+    verify(mockedDriver, times(1)).switchTo();
+    verify(mockedSwitch, times(11)).alert();
   }
 
 }
