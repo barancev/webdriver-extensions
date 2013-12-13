@@ -101,7 +101,7 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
-  public void findElementShouldReturnEmptyListIfNoElementIsFound() {
+  public void findElementsShouldReturnEmptyListIfNoElementIsFound() {
     final WebDriver mockedDriver = getMockedDriver();
 
     when(mockedDriver.findElements(By.name("foo")))
@@ -434,6 +434,246 @@ public class ClientSideImplicitWaitWrapperTest {
   }
 
   @Test
+  public void findElementInAnotherElementShouldImplicitlyWaitForAnElementToBePresent() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+    final WebElement mockedElement2 = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement);
+
+    when(mockedElement.findElement(By.name("bar")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement2);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 1).getDriver();
+
+    WebElement element = driver.findElement(By.name("foo"));
+    WebElement element2 = element.findElement(By.name("bar"));
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verify(mockedElement, times(3)).findElement(By.name("bar"));
+    assertThat(mockedElement2, equalTo(element2));
+  }
+
+  @Test
+  public void findElementInAnotherElementShouldThrowIfElementIsNotFound() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement);
+
+    when(mockedElement.findElement(By.name("bar")))
+        .thenThrow(NoSuchElementException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    WebElement element = driver.findElement(By.name("foo"));
+
+    try {
+      element.findElement(By.name("bar"));
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(NoSuchElementException.class));
+    }
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).findElement(By.name("bar"));
+  }
+
+  @Test
+  public void findElementsInAnotherElementShouldImplicitlyWaitForAtLeastOneElementToBePresent() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+    final WebElement mockedElement1 = mock(WebElement.class);
+    final WebElement mockedElement2 = mock(WebElement.class);
+    final List<WebElement> mockedElements = Lists.newArrayList(mockedElement1, mockedElement2);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement);
+
+    when(mockedElement.findElements(By.name("bar")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(mockedElements);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 1).getDriver();
+
+    WebElement element = driver.findElement(By.name("foo"));
+    List<WebElement> elements = element.findElements(By.name("bar"));
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verify(mockedElement, times(3)).findElements(By.name("bar"));
+    assertThat(mockedElements, equalTo(elements));
+  }
+
+  @Test
+  public void findElementsInAnotherElementShouldReturnEmptyListIfNoElementIsFound() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement);
+
+    when(mockedElement.findElements(By.name("foo")))
+        .thenReturn(new ArrayList<WebElement>());
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    WebElement element = driver.findElement(By.name("foo"));
+    List<WebElement> elements = element.findElements(By.name("foo"));
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verify(mockedElement, times(11)).findElements(By.name("foo"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test
+  public void findElementChainShouldImplicitlyWaitForAnElementToBePresent() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement1 = mock(WebElement.class);
+    final WebElement mockedElement2 = mock(WebElement.class);
+    final WebElement mockedElement3 = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement1);
+
+    when(mockedElement1.findElement(By.name("bar")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement2);
+
+    when(mockedElement2.findElement(By.name("baz")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement3);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 1).getDriver();
+
+    WebElement element1 = driver.findElement(By.name("foo"));
+    WebElement element2 = element1.findElement(By.name("bar"));
+    WebElement element3 = element2.findElement(By.name("baz"));
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verify(mockedElement1, times(3)).findElement(By.name("bar"));
+    verify(mockedElement2, times(3)).findElement(By.name("baz"));
+    assertThat(mockedElement3, equalTo(element3));
+  }
+
+  @Test
+  public void findElementChainShouldThrowIfElementIsNotFound() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement1 = mock(WebElement.class);
+    final WebElement mockedElement2 = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement1);
+
+    when(mockedElement1.findElement(By.name("bar")))
+        .thenThrow(NoSuchElementException.class)
+        .thenThrow(NoSuchElementException.class)
+        .thenReturn(mockedElement2);
+
+    when(mockedElement2.findElement(By.name("baz")))
+        .thenThrow(NoSuchElementException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    WebElement element1 = driver.findElement(By.name("foo"));
+    WebElement element2 = element1.findElement(By.name("bar"));
+
+    try {
+      element2.findElement(By.name("baz"));
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(NoSuchElementException.class));
+    }
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verify(mockedElement1, times(3)).findElement(By.name("bar"));
+    verify(mockedElement2, times(11)).findElement(By.name("baz"));
+  }
+
+  @Test
+  public void findElementsChainShouldImplicitlyWaitForAnElementToBePresent() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement1 = mock(WebElement.class);
+    final WebElement mockedElement2 = mock(WebElement.class);
+    final WebElement mockedElement3 = mock(WebElement.class);
+
+    when(mockedDriver.findElements(By.name("foo")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(Lists.newArrayList(mockedElement1));
+
+    when(mockedElement1.findElements(By.name("bar")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(Lists.newArrayList(mockedElement2));
+
+    when(mockedElement2.findElements(By.name("baz")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(Lists.newArrayList(mockedElement3));
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 1).getDriver();
+
+    List<WebElement> elements1 = driver.findElements(By.name("foo"));
+    List<WebElement> elements2 = elements1.get(0).findElements(By.name("bar"));
+    List<WebElement> elements3 = elements2.get(0).findElements(By.name("baz"));
+
+    verify(mockedDriver, times(3)).findElements(By.name("foo"));
+    verify(mockedElement1, times(3)).findElements(By.name("bar"));
+    verify(mockedElement2, times(3)).findElements(By.name("baz"));
+    assertThat(mockedElement3, equalTo(elements3.get(0)));
+  }
+
+  @Test
+  public void findElementsChainShouldThrowIfElementIsNotFound() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebElement mockedElement1 = mock(WebElement.class);
+    final WebElement mockedElement2 = mock(WebElement.class);
+
+    when(mockedDriver.findElements(By.name("foo")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(Lists.newArrayList(mockedElement1));
+
+    when(mockedElement1.findElements(By.name("bar")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(Lists.newArrayList(mockedElement2));
+
+    when(mockedElement2.findElements(By.name("baz")))
+        .thenReturn(new ArrayList<WebElement>());
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    List<WebElement> elements1 = driver.findElements(By.name("foo"));
+    List<WebElement> elements2 = elements1.get(0).findElements(By.name("bar"));
+    List<WebElement> elements3 = elements2.get(0).findElements(By.name("baz"));
+
+    verify(mockedDriver, times(3)).findElements(By.name("foo"));
+    verify(mockedElement1, times(3)).findElements(By.name("bar"));
+    verify(mockedElement2, times(11)).findElements(By.name("baz"));
+    assertThat(elements3.size(), is(0));
+  }
+
+  @Test
   public void switchToAlertShouldImplicitlyWaitForAnAlertToBePresent() {
     final WebDriver mockedDriver = getMockedDriver();
     final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
@@ -451,7 +691,7 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).switchTo();
     verify(mockedSwitch, times(3)).alert();
-    assertThat(alert, is(mockedAlert));
+    assertThat(mockedAlert, is(alert));
   }
 
   @Test
