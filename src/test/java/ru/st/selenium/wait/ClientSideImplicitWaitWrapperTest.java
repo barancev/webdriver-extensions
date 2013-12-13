@@ -716,4 +716,88 @@ public class ClientSideImplicitWaitWrapperTest {
     verify(mockedSwitch, times(11)).alert();
   }
 
+  @Test
+  public void switchToFrameByIndexShouldImplicitlyWaitForAFrameToBePresent() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.frame(1))
+        .thenThrow(NoSuchFrameException.class)
+        .thenThrow(NoSuchFrameException.class)
+        .thenReturn(mockedDriver);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 1).getDriver();
+
+    WebDriver newDriver = driver.switchTo().frame(1);
+
+    verify(mockedDriver, times(1)).switchTo();
+    verify(mockedSwitch, times(3)).frame(1);
+    assertThat(newDriver, is(driver));
+  }
+
+  @Test
+  public void switchToFrameByIndexShouldThrowIfThereIsNoFrame() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.frame(1))
+        .thenThrow(NoSuchFrameException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.switchTo().frame(1);
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(NoSuchFrameException.class));
+    }
+
+    verify(mockedDriver, times(1)).switchTo();
+    verify(mockedSwitch, times(11)).frame(1);
+  }
+
+  @Test
+  public void switchToFrameByNameShouldImplicitlyWaitForAFrameToBePresent() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.frame("myname"))
+        .thenThrow(NoSuchFrameException.class)
+        .thenThrow(NoSuchFrameException.class)
+        .thenReturn(mockedDriver);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 1).getDriver();
+
+    WebDriver newDriver = driver.switchTo().frame("myname");
+
+    verify(mockedDriver, times(1)).switchTo();
+    verify(mockedSwitch, times(3)).frame("myname");
+    assertThat(newDriver, is(driver));
+  }
+
+  @Test
+  public void switchToFrameByNameShouldThrowIfThereIsNoFrame() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final WebDriver.TargetLocator mockedSwitch = mock(WebDriver.TargetLocator.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedSwitch);
+    when(mockedSwitch.frame("myname"))
+        .thenThrow(NoSuchFrameException.class);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+
+    try {
+      driver.switchTo().frame("myname");
+      fail("Exception expected");
+    } catch (Throwable t) {
+      assertThat(t, instanceOf(NoSuchFrameException.class));
+    }
+
+    verify(mockedDriver, times(1)).switchTo();
+    verify(mockedSwitch, times(11)).frame("myname");
+  }
+
 }

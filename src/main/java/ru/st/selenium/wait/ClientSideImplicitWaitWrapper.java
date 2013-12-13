@@ -212,5 +212,46 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
         throw Throwables.propagate(te.getCause());
       }
     }
+
+    @Override
+    public WebDriver frame(final int index) {
+      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
+      try {
+        return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, WebDriver>() {
+          @Override
+          public WebDriver apply(TargetLocator target) {
+            return target.frame(index);
+          }
+          @Override
+          public boolean shouldIgnoreException(Throwable t) {
+            return t instanceof NoSuchFrameException;
+          }
+        }
+        );
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
+    }
+
+    @Override
+    public WebDriver frame(final String idOrName) {
+      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
+      try {
+        return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, WebDriver>() {
+          @Override
+          public WebDriver apply(TargetLocator target) {
+            return target.frame(idOrName);
+          }
+          @Override
+          public boolean shouldIgnoreException(Throwable t) {
+            return t instanceof NoSuchFrameException;
+          }
+        }
+        );
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
+    }
   }
+
 }
