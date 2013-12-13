@@ -180,7 +180,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     @Override
     public List<WebElement> findElements(By locator) {
       try {
-        return withWebElement().tryTo(performFindElements(locator));
+        return wrapElements(withWebElement().tryTo(performFindElements(locator)));
       } catch (TimeoutException te) {
         return new ArrayList<WebElement>();
       }
