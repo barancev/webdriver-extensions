@@ -75,7 +75,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return TargetLocatorWrapper.class;
   }
 
-  private TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
+  protected TargetLocator wrapTargetLocator(final TargetLocator targetLocator) {
     return TargetLocatorWrapper.wrapOriginal(this, targetLocator, getTargetLocatorWrapperClass());
   }
 
@@ -83,7 +83,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return AlertWrapper.class;
   }
 
-  private Alert wrapAlert(final Alert alert) {
+  protected Alert wrapAlert(final Alert alert) {
     return AlertWrapper.wrapOriginal(this, alert, getAlertWrapperClass());
   }
 
@@ -91,7 +91,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return NavigationWrapper.class;
   }
 
-  private Navigation wrapNavigation(final Navigation navigator) {
+  protected Navigation wrapNavigation(final Navigation navigator) {
     return NavigationWrapper.wrapOriginal(this, navigator, getNavigationWrapperClass());
   }
 
@@ -99,7 +99,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return OptionsWrapper.class;
   }
 
-  private Options wrapOptions(final Options options) {
+  protected Options wrapOptions(final Options options) {
     return OptionsWrapper.wrapOriginal(this, options, getOptionsWrapperClass());
   }
 
@@ -107,7 +107,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return TimeoutsWrapper.class;
   }
 
-  private Timeouts wrapTimeouts(final Timeouts timeouts) {
+  protected Timeouts wrapTimeouts(final Timeouts timeouts) {
     return TimeoutsWrapper.wrapOriginal(this, timeouts, getTimeoutsWrapperClass());
   }
 
@@ -115,7 +115,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return WindowWrapper.class;
   }
 
-  private Window wrapWindow(final Window window) {
+  protected Window wrapWindow(final Window window) {
     return WindowWrapper.wrapOriginal(this, window, getWindowWrapperClass());
   }
 
@@ -123,7 +123,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return CoordinatesWrapper.class;
   }
 
-  private Coordinates wrapCoordinates(final Coordinates coordinates) {
+  protected Coordinates wrapCoordinates(final Coordinates coordinates) {
     return CoordinatesWrapper.wrapOriginal(this, coordinates, getCoordinatesWrapperClass());
   }
 
@@ -131,7 +131,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return KeyboardWrapper.class;
   }
 
-  private Keyboard wrapKeyboard(final Keyboard keyboard) {
+  protected Keyboard wrapKeyboard(final Keyboard keyboard) {
     return KeyboardWrapper.wrapOriginal(this, keyboard, getKeyboardWrapperClass());
   }
 
@@ -139,7 +139,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return MouseWrapper.class;
   }
 
-  private Mouse wrapMouse(final Mouse mouse) {
+  protected Mouse wrapMouse(final Mouse mouse) {
     return MouseWrapper.wrapOriginal(this, mouse, getMouseWrapperClass());
   }
 
@@ -147,7 +147,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     return TouchScreenWrapper.class;
   }
 
-  private TouchScreen wrapTouchScreen(final TouchScreen touchScreen) {
+  protected TouchScreen wrapTouchScreen(final TouchScreen touchScreen) {
     return TouchScreenWrapper.wrapOriginal(this, touchScreen, getTouchScreenWrapperClass());
   }
 

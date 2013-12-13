@@ -200,7 +200,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
         return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, Alert>() {
             @Override
             public Alert apply(TargetLocator target) {
-              return target.alert();
+              return wrapAlert(target.alert());
             }
             @Override
             public boolean shouldIgnoreException(Throwable t) {
