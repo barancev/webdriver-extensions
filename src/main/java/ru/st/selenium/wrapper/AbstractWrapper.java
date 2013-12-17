@@ -69,12 +69,14 @@ public abstract class AbstractWrapper<T> {
         try {
           constructor = findMatchingConstructor(wrapperClass, wrapperClass.getEnclosingClass(), original.getClass());
         } catch (Exception e) {
+          throw new Error("Can't create a new wrapper object", e);
         }
       }
       if (constructor == null) {
         try {
           constructor = findMatchingConstructor(wrapperClass, WebDriverWrapper.class, original.getClass());
         } catch (Exception e) {
+          throw new Error("Can't create a new wrapper object", e);
         }
       }
       if (constructor == null) {

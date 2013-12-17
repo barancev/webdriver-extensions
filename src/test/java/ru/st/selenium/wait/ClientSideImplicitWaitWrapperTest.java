@@ -18,15 +18,19 @@ package ru.st.selenium.wait;
 
 import com.google.common.collect.Lists;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -34,7 +38,8 @@ import static org.mockito.Mockito.*;
 public class ClientSideImplicitWaitWrapperTest {
 
   private WebDriver getMockedDriver() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebDriver mockedDriver = mock(WebDriver.class,
+        withSettings().extraInterfaces(HasInputDevices.class));
     final WebDriver.Options mockedOptions = mock(WebDriver.Options.class);
     final WebDriver.Timeouts mockedTimeouts = mock(WebDriver.Timeouts.class);
     when(mockedDriver.manage()).thenReturn(mockedOptions);
@@ -798,6 +803,40 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).switchTo();
     verify(mockedSwitch, times(11)).frame("myname");
+  }
+
+  private interface LocatableElement extends WebElement, Locatable {}
+
+  @Test
+  public void interactionsClickShouldImplicitlyWaitForTheElementToBeVisible() {
+    final WebDriver mockedDriver = getMockedDriver();
+    final Keyboard mockedKeyboard = mock(Keyboard.class);
+    final Mouse mockedMouse = mock(Mouse.class);
+
+    final LocatableElement mockedElement = mock(LocatableElement.class);
+    final Coordinates mockedCoords = mock(Coordinates.class);
+
+    when(((HasInputDevices) mockedDriver).getKeyboard())
+        .thenReturn(mockedKeyboard);
+    when(((HasInputDevices) mockedDriver).getMouse())
+        .thenReturn(mockedMouse);
+
+    when(mockedDriver.findElement(By.name("foo")))
+        .thenReturn(mockedElement);
+
+    when(mockedElement.getCoordinates())
+        .thenThrow(new ElementNotVisibleException("1"))
+        .thenThrow(new ElementNotVisibleException("2"))
+        .thenReturn(mockedCoords);
+
+    WebDriver driver = new ClientSideImplicitWaitWrapper(mockedDriver, 1, 100).getDriver();
+    final Actions actions = new Actions(driver);
+    WebElement element = driver.findElement(By.name("foo"));
+    actions.click(element).perform();
+
+    verify(mockedDriver, times(1)).findElement(By.name("foo"));
+    verify(mockedElement, times(5)).getCoordinates(); // there are 2 extra calls
+    verify(mockedMouse, times(1)).click((Coordinates) anyObject());
   }
 
 }

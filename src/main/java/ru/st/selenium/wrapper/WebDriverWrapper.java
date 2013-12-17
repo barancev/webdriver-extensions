@@ -306,7 +306,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
    * The methods {@link WebDriverWrapper#wrapElement(WebElement)}/{@link WebDriverWrapper#wrapElements(List<WebElement>)} will
    * be called on the related {@link WebDriverWrapper} to wrap the elements returned by {@link #findElement(By)}/{@link #findElements(By)}.
    */
-  public static class WebElementWrapper extends AbstractWrapper<WebElement> implements WebElement, WrapsElement {
+  public static class WebElementWrapper extends AbstractWrapper<WebElement> implements WebElement, WrapsElement, Locatable {
 
     public WebElementWrapper(final WebDriverWrapper driverWrapper, final WebElement element) {
       super(driverWrapper, element);

@@ -18,6 +18,8 @@ package ru.st.selenium.wait;
 
 import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import ru.st.selenium.wrapper.WebDriverWrapper;
 
 import static ru.st.selenium.wait.RepeatableActions.*;
@@ -185,6 +187,26 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
         return new ArrayList<WebElement>();
       }
     }
+
+    @Override
+    public Coordinates getCoordinates() {
+      try {
+        return withWebElement().tryTo(new AbstractRepeatableAction<WebElement, Coordinates>() {
+          @Override
+          public Coordinates apply(WebElement target) {
+            return wrapCoordinates(((Locatable) target).getCoordinates());
+          }
+
+          @Override
+          public boolean shouldIgnoreException(Throwable t) {
+            return t instanceof ElementNotVisibleException;
+          }
+        }
+        );
+      } catch (TimeoutException te) {
+        throw Throwables.propagate(te.getCause());
+      }
+    }
   }
 
   public class ImplicitWaitTargetLocatorWrapper extends TargetLocatorWrapper {
@@ -202,6 +224,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
             public Alert apply(TargetLocator target) {
               return wrapAlert(target.alert());
             }
+
             @Override
             public boolean shouldIgnoreException(Throwable t) {
               return t instanceof NoAlertPresentException;
@@ -218,15 +241,16 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
       ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
       try {
         return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, WebDriver>() {
-          @Override
-          public WebDriver apply(TargetLocator target) {
-            return target.frame(index);
+            @Override
+            public WebDriver apply(TargetLocator target) {
+              return target.frame(index);
+            }
+
+            @Override
+            public boolean shouldIgnoreException(Throwable t) {
+              return t instanceof NoSuchFrameException;
+            }
           }
-          @Override
-          public boolean shouldIgnoreException(Throwable t) {
-            return t instanceof NoSuchFrameException;
-          }
-        }
         );
       } catch (TimeoutException te) {
         throw Throwables.propagate(te.getCause());
@@ -238,15 +262,16 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
       ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
       try {
         return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, WebDriver>() {
-          @Override
-          public WebDriver apply(TargetLocator target) {
-            return target.frame(idOrName);
+            @Override
+            public WebDriver apply(TargetLocator target) {
+              return target.frame(idOrName);
+            }
+
+            @Override
+            public boolean shouldIgnoreException(Throwable t) {
+              return t instanceof NoSuchFrameException;
+            }
           }
-          @Override
-          public boolean shouldIgnoreException(Throwable t) {
-            return t instanceof NoSuchFrameException;
-          }
-        }
         );
       } catch (TimeoutException te) {
         throw Throwables.propagate(te.getCause());
