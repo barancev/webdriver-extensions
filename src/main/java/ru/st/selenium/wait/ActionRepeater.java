@@ -18,7 +18,9 @@ package ru.st.selenium.wait;
 
 import com.google.common.base.Throwables;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.Duration;
 import org.openqa.selenium.support.ui.Sleeper;
@@ -58,6 +60,30 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @param <T> The action execution context type.
  */
 public class ActionRepeater <T> {
+
+  public static ActionRepeater<WebDriver> with(WebDriver driver) {
+    return new ActionRepeater<WebDriver>(driver);
+  }
+
+  public static ActionRepeater<WebDriver> with(WebDriver driver, long timeOutInSeconds) {
+    return new ActionRepeater<WebDriver>(driver, timeOutInSeconds);
+  }
+
+  public static ActionRepeater<WebDriver> with(WebDriver driver, long timeOutInSeconds, long sleepInMillis) {
+    return new ActionRepeater<WebDriver>(driver, timeOutInSeconds, sleepInMillis);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element) {
+    return new ActionRepeater<WebElement>(element);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element, long timeOutInSeconds) {
+    return new ActionRepeater<WebElement>(element, timeOutInSeconds);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element, long timeOutInSeconds, long sleepInMillis) {
+    return new ActionRepeater<WebElement>(element, timeOutInSeconds, sleepInMillis);
+  }
 
   public static Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
 
@@ -108,17 +134,6 @@ public class ActionRepeater <T> {
    */
   public ActionRepeater<T> withTimeout(long duration, TimeUnit unit) {
     this.timeout = new Duration(duration, unit);
-    return this;
-  }
-
-  /**
-   * Sets the message to be displayed when time expires.
-   *
-   * @param message to be appended to default.
-   * @return A self reference.
-   */
-  public ActionRepeater<T> withMessage(String message) {
-    this.message = message;
     return this;
   }
 
