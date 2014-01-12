@@ -67,7 +67,7 @@ public class UnhandledAlertHandlingWrapper extends WebDriverWrapper {
 //  }
 
   @Override
-  protected Object onErrorGlobal(Object target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
+  protected Object onErrorGlobal(AbstractWrapper target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
     Throwable te = e.getTargetException();
     if (te instanceof UnhandledAlertException) {
       handleUnhandledAlert((UnhandledAlertException) te);

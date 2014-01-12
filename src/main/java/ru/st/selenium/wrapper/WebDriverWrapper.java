@@ -160,17 +160,17 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     }
   }
 
-  protected void beforeMethodGlobal(Object target, Method method, Object[] args) {
+  protected void beforeMethodGlobal(AbstractWrapper target, Method method, Object[] args) {
   }
 
-  protected Object callMethodGlobal(Object target, Method method, Object[] args) throws Throwable {
+  protected Object callMethodGlobal(AbstractWrapper target, Method method, Object[] args) throws Throwable {
     return method.invoke(target, args);
   }
 
-  protected void afterMethodGlobal(Object target, Method method, Object res, Object[] args) {
+  protected void afterMethodGlobal(AbstractWrapper target, Method method, Object res, Object[] args) {
   }
 
-  protected Object onErrorGlobal(Object target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
+  protected Object onErrorGlobal(AbstractWrapper target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
     throw Throwables.propagate(e.getTargetException());
   }
 
