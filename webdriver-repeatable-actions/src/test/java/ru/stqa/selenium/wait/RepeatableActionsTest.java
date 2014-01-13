@@ -17,8 +17,8 @@
 package ru.stqa.selenium.wait;
 
 import com.google.common.collect.Lists;
+import org.junit.Test;
 import org.openqa.selenium.*;
-import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;

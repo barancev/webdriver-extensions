@@ -16,8 +16,8 @@
  */
 package ru.stqa.selenium.wait;
 
+import org.junit.Test;
 import org.openqa.selenium.*;
-import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

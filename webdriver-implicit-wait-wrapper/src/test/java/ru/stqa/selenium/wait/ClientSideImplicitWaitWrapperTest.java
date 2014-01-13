@@ -17,6 +17,7 @@
 package ru.stqa.selenium.wait;
 
 import com.google.common.collect.Lists;
+import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
@@ -24,7 +25,6 @@ import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
-import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;

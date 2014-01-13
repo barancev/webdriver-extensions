@@ -2,6 +2,7 @@ package ru.stqa.selenium.wrapper;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.UnhandledAlertException;
