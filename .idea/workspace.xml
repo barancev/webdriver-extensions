@@ -2,35 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a2fb7c7-c551-46d2-88c9-fcb038a7ef76" name="Default" comment="">
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\WebDriverFactory.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/WebDriverFactory.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\JUnitWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/JUnitWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\NoInitWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/NoInitWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\RestartingWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/RestartingWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\TestNgWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/TestNgWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\VariousBrowsersWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/VariousBrowsersWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\AbstractRepeatableAction.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/AbstractRepeatableAction.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ActionRepeater.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ActionRepeater.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ClientSideImplicitWaitWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ClientSideImplicitWaitWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedCondition.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedCondition.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedConditions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedConditions.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedElementCondition.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedElementCondition.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedElementConditions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedElementConditions.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\RepeatableAction.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/RepeatableAction.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\RepeatableActions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/RepeatableActions.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\AbstractWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/AbstractWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\LoggingWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/LoggingWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\UnhandledAlertHandler.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/UnhandledAlertHandler.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\UnhandledAlertHandlingWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/UnhandledAlertHandlingWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\WebDriverWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/WebDriverWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\StubDriver.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/StubDriver.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\TestBase.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/TestBase.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\ActionRepeaterTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/ActionRepeaterTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\ClientSideImplicitWaitWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/ClientSideImplicitWaitWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\ExpectedConditionsTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/ExpectedConditionsTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\RepeatableActionsTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/RepeatableActionsTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wrapper\LoggingWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wrapper/LoggingWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wrapper\UnhandledAlertHandlingWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wrapper/UnhandledAlertHandlingWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wrapper\WebDriverWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wrapper/WebDriverWrapperTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webdriver-factory/pom.xml" afterPath="$PROJECT_DIR$/webdriver-factory/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webdriver-wrapper/pom.xml" afterPath="$PROJECT_DIR$/webdriver-wrapper/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webdriver-extensions.iml" afterPath="$PROJECT_DIR$/webdriver-extensions.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webdriver-factory/webdriver-factory.iml" afterPath="$PROJECT_DIR$/webdriver-factory/webdriver-factory.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webdriver-wrapper/webdriver-wrapper.iml" afterPath="$PROJECT_DIR$/webdriver-wrapper/webdriver-wrapper.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="selenium-extensions.iws" />
@@ -218,79 +196,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-wrapper" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
               <option name="myItemId" value="webdriver-extensions" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-wrapper" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-extensions" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-wrapper" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-extensions" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-factory" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-extensions" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webdriver-factory" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -727,14 +633,14 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2786325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2786325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15098634" sideWeight="0.72136754" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24355084" sideWeight="0.72136754" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24355084" sideWeight="0.72136754" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24208567" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />

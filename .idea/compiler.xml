@@ -26,6 +26,11 @@
         <module name="webdriver-wrapper" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="webdriver-extensions" target="1.6" />
+      <module name="webdriver-factory" target="1.6" />
+      <module name="webdriver-wrapper" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 
