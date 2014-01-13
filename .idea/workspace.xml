@@ -2,38 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a2fb7c7-c551-46d2-88c9-fcb038a7ef76" name="Default" comment="">
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\pom.xml" afterPath="$PROJECT_DIR$/webdriver-wrapper/pom.xml" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\factory\WebDriverFactory.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/st/selenium/factory/WebDriverFactory.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\factory\samples\JUnitWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/st/selenium/factory/samples/JUnitWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\factory\samples\NoInitWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/st/selenium/factory/samples/NoInitWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\factory\samples\RestartingWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/st/selenium/factory/samples/RestartingWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\factory\samples\TestNgWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/st/selenium/factory/samples/TestNgWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\factory\samples\VariousBrowsersWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/st/selenium/factory/samples/VariousBrowsersWebDriverSample.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\AbstractRepeatableAction.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/AbstractRepeatableAction.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\ActionRepeater.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/ActionRepeater.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\ClientSideImplicitWaitWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/ClientSideImplicitWaitWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\ExpectedCondition.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/ExpectedCondition.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\ExpectedConditions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/ExpectedConditions.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\ExpectedElementCondition.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/ExpectedElementCondition.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\ExpectedElementConditions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/ExpectedElementConditions.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\RepeatableAction.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/RepeatableAction.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wait\RepeatableActions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wait/RepeatableActions.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wrapper\AbstractWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wrapper/AbstractWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wrapper\LoggingWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wrapper/LoggingWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wrapper\UnhandledAlertHandler.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wrapper/UnhandledAlertHandler.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wrapper\UnhandledAlertHandlingWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wrapper/UnhandledAlertHandlingWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\main\java\ru\st\selenium\wrapper\WebDriverWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/st/selenium/wrapper/WebDriverWrapper.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\StubDriver.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/StubDriver.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\TestBase.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/TestBase.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wait\ActionRepeaterTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wait/ActionRepeaterTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wait\ClientSideImplicitWaitWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wait/ClientSideImplicitWaitWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wait\ExpectedConditionsTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wait/ExpectedConditionsTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wait\RepeatableActionsTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wait/RepeatableActionsTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wrapper\LoggingWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wrapper/LoggingWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wrapper\UnhandledAlertHandlingWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wrapper/UnhandledAlertHandlingWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\java\ru\st\selenium\wrapper\WebDriverWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/st/selenium/wrapper/WebDriverWrapperTest.java" />
-      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\src\test\resources\test.html" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/resources/test.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\WebDriverFactory.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/WebDriverFactory.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\JUnitWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/JUnitWebDriverSample.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\NoInitWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/NoInitWebDriverSample.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\RestartingWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/RestartingWebDriverSample.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\TestNgWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/TestNgWebDriverSample.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-factory\src\main\java\ru\st\selenium\factory\samples\VariousBrowsersWebDriverSample.java" afterPath="$PROJECT_DIR$/webdriver-factory/src/main/java/ru/stqa/selenium/factory/samples/VariousBrowsersWebDriverSample.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\AbstractRepeatableAction.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/AbstractRepeatableAction.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ActionRepeater.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ActionRepeater.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ClientSideImplicitWaitWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ClientSideImplicitWaitWrapper.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedCondition.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedCondition.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedConditions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedConditions.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedElementCondition.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedElementCondition.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\ExpectedElementConditions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/ExpectedElementConditions.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\RepeatableAction.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/RepeatableAction.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wait\RepeatableActions.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wait/RepeatableActions.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\AbstractWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/AbstractWrapper.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\LoggingWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/LoggingWrapper.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\UnhandledAlertHandler.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/UnhandledAlertHandler.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\UnhandledAlertHandlingWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/UnhandledAlertHandlingWrapper.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\main\java\ru\st\selenium\wrapper\WebDriverWrapper.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/main/java/ru/stqa/selenium/wrapper/WebDriverWrapper.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\StubDriver.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/StubDriver.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\TestBase.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/TestBase.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\ActionRepeaterTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/ActionRepeaterTest.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\ClientSideImplicitWaitWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/ClientSideImplicitWaitWrapperTest.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\ExpectedConditionsTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/ExpectedConditionsTest.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wait\RepeatableActionsTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wait/RepeatableActionsTest.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wrapper\LoggingWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wrapper/LoggingWrapperTest.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wrapper\UnhandledAlertHandlingWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wrapper/UnhandledAlertHandlingWrapperTest.java" />
+      <change type="MOVED" beforePath="C:\Devel\webdriver-extensions\webdriver-wrapper\src\test\java\ru\st\selenium\wrapper\WebDriverWrapperTest.java" afterPath="$PROJECT_DIR$/webdriver-wrapper/src/test/java/ru/stqa/selenium/wrapper/WebDriverWrapperTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="selenium-extensions.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -71,7 +69,6 @@
     <file path="$PROJECT_DIR$/../selenium/java/client/test/org/openqa/selenium/WindowTest.java" changelist="7a2fb7c7-c551-46d2-88c9-fcb038a7ef76" time="1386962477445" ignored="false" />
     <file path="/ClientSideImplicitWaitWrapperIntegrationTest.java" changelist="7a2fb7c7-c551-46d2-88c9-fcb038a7ef76" time="1389556070031" ignored="false" />
     <file path="/LogginWrapperTest.java" changelist="7a2fb7c7-c551-46d2-88c9-fcb038a7ef76" time="1389561803743" ignored="false" />
-    <file path="$PROJECT_DIR$/webdriver-factory/pom.xml" changelist="7a2fb7c7-c551-46d2-88c9-fcb038a7ef76" time="1389637114779" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,7 +196,7 @@
       <showMembers />
       <showModules />
       <showLibraryContents />
-      <hideEmptyPackages />
+      <hideEmptyPackages ProjectPane="false" />
       <abbreviatePackageNames />
       <autoscrollToSource />
       <autoscrollFromSource />
@@ -222,6 +219,78 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="webdriver-wrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-extensions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-wrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-extensions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-wrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-extensions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-factory" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-extensions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webdriver-factory" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -274,10 +343,10 @@
     </key>
   </component>
   <component name="RunManager" selected="TestNG.ClientSideImplicitWaitWrapperIntegrationTest">
-    <configuration default="false" name="ru.st.selenium.wait" type="TestNG" factoryName="TestNG" temporary="true">
+    <configuration default="false" name="ru.stqa.selenium.wait" type="TestNG" factoryName="TestNG" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wait.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wait.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -285,7 +354,7 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="SUITE_NAME" value="" />
-      <option name="PACKAGE_NAME" value="ru.st.selenium.wait" />
+      <option name="PACKAGE_NAME" value="ru.stqa.selenium.wait" />
       <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
       <option name="GROUP_NAME" value="" />
@@ -314,7 +383,7 @@
     <configuration default="false" name="RepeatableActionsTest" type="TestNG" factoryName="TestNG" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wait.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wait.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -323,7 +392,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="SUITE_NAME" />
       <option name="PACKAGE_NAME" value="ru.st.selenium.wait" />
-      <option name="MAIN_CLASS_NAME" value="ru.st.selenium.wait.RepeatableActionsTest" />
+      <option name="MAIN_CLASS_NAME" value="ru.stqa.selenium.wait.RepeatableActionsTest" />
       <option name="METHOD_NAME" />
       <option name="GROUP_NAME" />
       <option name="TEST_OBJECT" value="CLASS" />
@@ -349,7 +418,7 @@
     <configuration default="false" name="ClientSideImplicitWaitWrapperTest" type="TestNG" factoryName="TestNG" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wait.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wait.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -358,7 +427,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="SUITE_NAME" />
       <option name="PACKAGE_NAME" value="ru.st.selenium.wait" />
-      <option name="MAIN_CLASS_NAME" value="ru.st.selenium.wait.ClientSideImplicitWaitWrapperTest" />
+      <option name="MAIN_CLASS_NAME" value="ru.stqa.selenium.wait.ClientSideImplicitWaitWrapperTest" />
       <option name="METHOD_NAME" />
       <option name="GROUP_NAME" />
       <option name="TEST_OBJECT" value="CLASS" />
@@ -390,7 +459,7 @@
     <configuration default="false" name="ClientSideImplicitWaitWrapperTest.interactionsClickShouldImplicitlyWaitForTheElementToBeVisible" type="TestNG" factoryName="TestNG" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wait.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wait.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -399,7 +468,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="SUITE_NAME" />
       <option name="PACKAGE_NAME" value="ru.st.selenium.wait" />
-      <option name="MAIN_CLASS_NAME" value="ru.st.selenium.wait.ClientSideImplicitWaitWrapperTest" />
+      <option name="MAIN_CLASS_NAME" value="ru.stqa.selenium.wait.ClientSideImplicitWaitWrapperTest" />
       <option name="METHOD_NAME" value="interactionsClickShouldImplicitlyWaitForTheElementToBeVisible" />
       <option name="GROUP_NAME" />
       <option name="TEST_OBJECT" value="METHOD" />
@@ -425,7 +494,7 @@
     <configuration default="false" name="ClientSideImplicitWaitWrapperIntegrationTest" type="TestNG" factoryName="TestNG" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wait.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wait.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -545,15 +614,15 @@
     <configuration default="false" name="UnhandledAlertHandlingWrapperTest" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wrapper.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wrapper.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <module name="selenium-extensions" />
+      <module name="webdriver-wrapper" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="ru.st.selenium.wrapper" />
-      <option name="MAIN_CLASS_NAME" value="ru.st.selenium.wrapper.UnhandledAlertHandlingWrapperTest" />
+      <option name="PACKAGE_NAME" value="ru.stqa.selenium.wrapper" />
+      <option name="MAIN_CLASS_NAME" value="ru.stqa.selenium.wrapper.UnhandledAlertHandlingWrapperTest" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -573,7 +642,7 @@
     <configuration default="false" name="ActionRepeaterTest" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="ru.st.selenium.wait.*" />
+          <option name="PATTERN" value="ru.stqa.selenium.wait.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -582,7 +651,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="SUITE_NAME" />
       <option name="PACKAGE_NAME" value="ru.st.selenium.wait" />
-      <option name="MAIN_CLASS_NAME" value="ru.st.selenium.wait.ActionRepeaterTest" />
+      <option name="MAIN_CLASS_NAME" value="ru.stqa.selenium.wait.ActionRepeaterTest" />
       <option name="METHOD_NAME" />
       <option name="GROUP_NAME" />
       <option name="TEST_OBJECT" value="CLASS" />
@@ -614,7 +683,7 @@
     <list size="7">
       <item index="0" class="java.lang.String" itemvalue="JUnit.UnhandledAlertHandlingWrapperTest" />
       <item index="1" class="java.lang.String" itemvalue="TestNG.ActionRepeaterTest" />
-      <item index="2" class="java.lang.String" itemvalue="TestNG.ru.st.selenium.wait" />
+      <item index="2" class="java.lang.String" itemvalue="TestNG.ru.stqa.selenium.wait" />
       <item index="3" class="java.lang.String" itemvalue="TestNG.RepeatableActionsTest" />
       <item index="4" class="java.lang.String" itemvalue="TestNG.ClientSideImplicitWaitWrapperTest" />
       <item index="5" class="java.lang.String" itemvalue="TestNG.ClientSideImplicitWaitWrapperTest.interactionsClickShouldImplicitlyWaitForTheElementToBeVisible" />
@@ -626,7 +695,7 @@
         <item index="1" class="java.lang.String" itemvalue="TestNG.ClientSideImplicitWaitWrapperTest.interactionsClickShouldImplicitlyWaitForTheElementToBeVisible" />
         <item index="2" class="java.lang.String" itemvalue="TestNG.ClientSideImplicitWaitWrapperTest" />
         <item index="3" class="java.lang.String" itemvalue="TestNG.RepeatableActionsTest" />
-        <item index="4" class="java.lang.String" itemvalue="TestNG.ru.st.selenium.wait" />
+        <item index="4" class="java.lang.String" itemvalue="TestNG.ru.stqa.selenium.wait" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
@@ -658,14 +727,14 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2786325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2786325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15098634" sideWeight="0.72136754" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24355084" sideWeight="0.72136754" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24355084" sideWeight="0.72136754" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24208567" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
