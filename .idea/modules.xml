@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/webdriver-extensions.iml" filepath="$PROJECT_DIR$/webdriver-extensions.iml" />
       <module fileurl="file://$PROJECT_DIR$/webdriver-factory/webdriver-factory.iml" filepath="$PROJECT_DIR$/webdriver-factory/webdriver-factory.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webdriver-logging-wrapper/webdriver-logging-wrapper.iml" filepath="$PROJECT_DIR$/webdriver-logging-wrapper/webdriver-logging-wrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/webdriver-wrapper/webdriver-wrapper.iml" filepath="$PROJECT_DIR$/webdriver-wrapper/webdriver-wrapper.iml" />
     </modules>
   </component>

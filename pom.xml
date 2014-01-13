@@ -27,8 +27,8 @@
 
   <developers>
     <developer> 
-      <id>simon.m.stewart</id> 
-      <name>Simon Stewart</name> 
+      <id>barancev</id> 
+      <name>Alexei Barantsev</name> 
       <roles> 
         <role>Owner</role> 
       </roles> 
@@ -38,6 +38,7 @@
   <modules>
     <module>webdriver-factory</module>
     <module>webdriver-wrapper</module>
+    <module>webdriver-logging-wrapper</module>
   </modules>
 
   <dependencyManagement>
@@ -66,16 +67,6 @@
             <artifactId>selenium-server</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.7.5</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.0.13</version>
       </dependency>
 
       <dependency>
