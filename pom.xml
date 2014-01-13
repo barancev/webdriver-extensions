@@ -38,6 +38,7 @@
   <modules>
     <module>webdriver-factory</module>
     <module>webdriver-repeatable-actions</module>
+    <module>webdriver-expected-conditions</module>
     <module>webdriver-wrapper</module>
     <module>webdriver-logging-wrapper</module>
   </modules>

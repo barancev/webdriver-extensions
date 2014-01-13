@@ -15,11 +15,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>ru.stqa.selenium</groupId>
-      <artifactId>webdriver-repeatable-actions</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
     </dependency>

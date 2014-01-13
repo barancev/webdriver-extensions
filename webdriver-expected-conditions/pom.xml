@@ -8,17 +8,12 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>webdriver-repeatable-actions</artifactId>
+  <artifactId>webdriver-expected-conditions</artifactId>
   <packaging>jar</packaging>
 
-  <name>webdriver-repeatable-actions</name>
+  <name>webdriver-expected-conditions</name>
 
   <dependencies>
-    <dependency>
-      <groupId>ru.stqa.selenium</groupId>
-      <artifactId>webdriver-wrapper</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>

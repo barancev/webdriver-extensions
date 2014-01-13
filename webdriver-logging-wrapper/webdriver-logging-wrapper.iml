@@ -12,7 +12,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="webdriver-wrapper" />
-    <orderEntry type="module" module-name="webdriver-repeatable-actions" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-java:2.39.0" level="project" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-android-driver:2.39.0" level="project" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-remote-driver:2.39.0" level="project" />
