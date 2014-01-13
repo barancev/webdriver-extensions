@@ -41,6 +41,7 @@
     <module>webdriver-expected-conditions</module>
     <module>webdriver-wrapper</module>
     <module>webdriver-logging-wrapper</module>
+    <module>webdriver-implicit-wait-wrapper</module>
   </modules>
 
   <dependencyManagement>

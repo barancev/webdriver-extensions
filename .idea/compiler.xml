@@ -24,6 +24,7 @@
         <processorPath useClasspath="true" />
         <module name="webdriver-expected-conditions" />
         <module name="webdriver-factory" />
+        <module name="webdriver-implicit-wait-wrapper" />
         <module name="webdriver-logging-wrapper" />
         <module name="webdriver-repeatable-actions" />
         <module name="webdriver-wrapper" />
@@ -33,6 +34,7 @@
       <module name="webdriver-expected-conditions" target="1.6" />
       <module name="webdriver-extensions" target="1.6" />
       <module name="webdriver-factory" target="1.6" />
+      <module name="webdriver-implicit-wait-wrapper" target="1.6" />
       <module name="webdriver-logging-wrapper" target="1.6" />
       <module name="webdriver-repeatable-actions" target="1.6" />
       <module name="webdriver-wrapper" target="1.6" />
