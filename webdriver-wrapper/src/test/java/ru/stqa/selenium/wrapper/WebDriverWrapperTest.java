@@ -30,13 +30,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import org.openqa.selenium.*;
 
-import ru.stqa.selenium.StubDriver;
-
 public class WebDriverWrapperTest {
 
   @Test
   public void shouldNotAddInterfacesNotAvailableInTheOriginalDriver() {
-    final WebDriver driver = new StubDriver();
+    final WebDriver driver = mock(WebDriver.class);
     assertThat(driver, not(instanceOf(SomeOtherInterface.class)));
 
     final WebDriver wrapper = WebDriverWrapper.wrapDriver(driver, SimpleWebDriverWrapper.class);
