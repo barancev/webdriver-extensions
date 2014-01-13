@@ -16,24 +16,57 @@
  */
 package ru.stqa.selenium.wrapper;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import uk.org.lidalia.slf4jtest.LoggingEvent;
+import uk.org.lidalia.slf4jtest.TestLogger;
+import uk.org.lidalia.slf4jtest.TestLoggerFactory;
+
+import java.util.List;
 
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class LoggingWrapperTest {
 
+  TestLogger logger = TestLoggerFactory.getTestLogger("WebDriver");
+
+  @Test
+  public void logsWrapperInitialization() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+
+    final WebDriver driver = new LoggingWrapper(mockedDriver).getDriver();
+
+    List<LoggingEvent> log = logger.getLoggingEvents();
+    assertThat(log.size(), is(1));
+    String message = log.get(0).getMessage();
+    assertThat(message, startsWith("Init tracer"));
+  }
+
   @Test
   public void testLogging() {
-    WebDriver driver = new LoggingWrapper(new FirefoxDriver()).getDriver();
+    final WebDriver mockedDriver = mock(WebDriver.class);
+
+    final WebDriver driver = new LoggingWrapper(mockedDriver).getDriver();
+
     driver.get("http://localhost/");
-    WebElement body = driver.findElement(By.tagName("body"));
-    body.isDisplayed();
-    body.getAttribute("class");
-    driver.quit();
+
+    verify(mockedDriver, times(1)).get("http://localhost/");
+
+    List<LoggingEvent> log = logger.getLoggingEvents();
+    assertThat(log.size(), is(3));
+    assertThat(log.get(1).getMessage(), startsWith("-> get(\"http://localhost/\")"));
+    assertThat(log.get(2).getMessage(), startsWith("<- get(\"http://localhost/\") = null"));
+  }
+
+  @After
+  public void clearLogger() {
+    TestLoggerFactory.clear();
   }
 
 }

@@ -56,13 +56,13 @@ public class LoggingWrapper extends WebDriverWrapper {
     StringBuilder message = new StringBuilder();
     message.append("<- ");
     appendMethod(message, method, args);
-    message.append(" on ").append(target.getWrappedOriginal());
     message.append(" = ");
     if (res instanceof String) {
         message.append("\"").append(res).append("\"");
     } else {
       message.append(res);
     }
+    message.append(" on ").append(target.getWrappedOriginal());
     DRIVER_LOG.info(message.toString());
 
     if (dumpBrowserLogs) {
