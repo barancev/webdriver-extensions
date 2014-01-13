@@ -76,16 +76,13 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>1.9.5</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.11</version>
-      </dependency>
-      <dependency>
-        <groupId>org.webbitserver</groupId>
-        <artifactId>webbit</artifactId>
-        <version>0.4.14</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
