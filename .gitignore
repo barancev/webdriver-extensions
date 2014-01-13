@@ -7,6 +7,3 @@
 
 target/
 test-output/
-
-.idea/
-selenium-extensions.iml
