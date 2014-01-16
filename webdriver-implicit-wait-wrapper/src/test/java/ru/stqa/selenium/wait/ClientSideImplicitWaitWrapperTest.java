@@ -63,7 +63,7 @@ public class ClientSideImplicitWaitWrapperTest {
     WebElement element = driver.findElement(By.name("foo"));
 
     verify(mockedDriver, times(3)).findElement(By.name("foo"));
-    assertThat(mockedElement, equalTo(element));
+    assertThat(element, equalTo(mockedElement));
   }
 
   @Test
@@ -102,7 +102,7 @@ public class ClientSideImplicitWaitWrapperTest {
     List<WebElement> elements = driver.findElements(By.name("foo"));
 
     verify(mockedDriver, times(3)).findElements(By.name("foo"));
-    assertThat(mockedElements, equalTo(elements));
+    assertThat(elements, equalTo(mockedElements));
   }
 
   @Test
@@ -461,7 +461,7 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(3)).findElement(By.name("foo"));
     verify(mockedElement, times(3)).findElement(By.name("bar"));
-    assertThat(mockedElement2, equalTo(element2));
+    assertThat(element2, equalTo(mockedElement2));
   }
 
   @Test
@@ -517,7 +517,7 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(3)).findElement(By.name("foo"));
     verify(mockedElement, times(3)).findElements(By.name("bar"));
-    assertThat(mockedElements, equalTo(elements));
+    assertThat(elements, equalTo(mockedElements));
   }
 
   @Test
@@ -574,7 +574,7 @@ public class ClientSideImplicitWaitWrapperTest {
     verify(mockedDriver, times(3)).findElement(By.name("foo"));
     verify(mockedElement1, times(3)).findElement(By.name("bar"));
     verify(mockedElement2, times(3)).findElement(By.name("baz"));
-    assertThat(mockedElement3, equalTo(element3));
+    assertThat(element3, equalTo(mockedElement3));
   }
 
   @Test
@@ -644,7 +644,7 @@ public class ClientSideImplicitWaitWrapperTest {
     verify(mockedDriver, times(3)).findElements(By.name("foo"));
     verify(mockedElement1, times(3)).findElements(By.name("bar"));
     verify(mockedElement2, times(3)).findElements(By.name("baz"));
-    assertThat(mockedElement3, equalTo(elements3.get(0)));
+    assertThat(elements3.get(0), equalTo(mockedElement3));
   }
 
   @Test
@@ -696,7 +696,7 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).switchTo();
     verify(mockedSwitch, times(3)).alert();
-    assertThat(mockedAlert, is(alert));
+    assertThat(alert, is(mockedAlert));
   }
 
   @Test
@@ -738,7 +738,7 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).switchTo();
     verify(mockedSwitch, times(3)).frame(1);
-    assertThat(newDriver, is(driver));
+    assertThat(driver, is(newDriver));
   }
 
   @Test
@@ -780,7 +780,7 @@ public class ClientSideImplicitWaitWrapperTest {
 
     verify(mockedDriver, times(1)).switchTo();
     verify(mockedSwitch, times(3)).frame("myname");
-    assertThat(newDriver, is(driver));
+    assertThat(driver, is(newDriver));
   }
 
   @Test
