@@ -22,6 +22,7 @@ import org.openqa.selenium.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static ru.stqa.selenium.wait.ActionRepeater.with;
 import static ru.stqa.selenium.wait.RepeatableActions.*;
 
 public class ActionRepeaterTest {
@@ -34,7 +35,7 @@ public class ActionRepeaterTest {
     when(mockedDriver.findElement(By.name("foo")))
         .thenReturn(mockedElement);
 
-    WebElement element = new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+    WebElement element = with(mockedDriver, 1, 1)
         .tryTo(performFindElement(By.name("foo")));
 
     verify(mockedDriver, times(1)).findElement(By.name("foo"));
@@ -51,7 +52,7 @@ public class ActionRepeaterTest {
         .thenThrow(NoSuchElementException.class)
         .thenReturn(mockedElement);
 
-    WebElement element = new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+    WebElement element = with(mockedDriver, 1, 1)
         .tryTo(performFindElement(By.name("foo")));
 
     verify(mockedDriver, times(3)).findElement(By.name("foo"));
@@ -65,14 +66,17 @@ public class ActionRepeaterTest {
     when(mockedDriver.findElement(By.name("foo")))
         .thenThrow(NoSuchElementException.class);
 
+    TestingClock clock = new TestingClock();
+
     try {
-      new ActionRepeater<WebDriver>(mockedDriver, 1, 100)
+      with(mockedDriver, clock, clock, 1, 100)
           .tryTo(performFindElement(By.name("foo")));
       fail("Exception expected");
     } catch (Throwable t) {
       assertThat(t, instanceOf(TimeoutException.class));
     }
 
+    assertThat(clock.now(), is(1000L));
     verify(mockedDriver, times(11)).findElement(By.name("foo"));
   }
 
@@ -85,7 +89,7 @@ public class ActionRepeaterTest {
         .thenThrow(NoSuchWindowException.class);
 
     try {
-      new ActionRepeater<WebDriver>(mockedDriver, 1, 1)
+      with(mockedDriver, 1, 1)
           .tryTo(performFindElement(By.name("foo")));
       fail("Exception expected");
     } catch (Throwable t) {

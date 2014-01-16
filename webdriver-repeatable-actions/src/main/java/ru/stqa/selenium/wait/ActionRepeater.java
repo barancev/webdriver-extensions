@@ -73,6 +73,10 @@ public class ActionRepeater <T> {
     return new ActionRepeater<WebDriver>(driver, timeOutInSeconds, sleepInMillis);
   }
 
+  public static ActionRepeater<WebDriver> with(WebDriver driver, Clock clock, Sleeper sleeper, long timeOutInSeconds, long sleepInMillis) {
+    return new ActionRepeater<WebDriver>(driver, clock, sleeper, timeOutInSeconds, sleepInMillis);
+  }
+
   public static ActionRepeater<WebElement> with(WebElement element) {
     return new ActionRepeater<WebElement>(element);
   }
@@ -83,6 +87,10 @@ public class ActionRepeater <T> {
 
   public static ActionRepeater<WebElement> with(WebElement element, long timeOutInSeconds, long sleepInMillis) {
     return new ActionRepeater<WebElement>(element, timeOutInSeconds, sleepInMillis);
+  }
+
+  public static ActionRepeater<WebElement> with(WebElement element, Clock clock, Sleeper sleeper, long timeOutInSeconds, long sleepInMillis) {
+    return new ActionRepeater<WebElement>(element, clock, sleeper, timeOutInSeconds, sleepInMillis);
   }
 
   public static Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);

@@ -20,6 +20,9 @@ import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.Sleeper;
+import org.openqa.selenium.support.ui.SystemClock;
 import ru.stqa.selenium.wrapper.WebDriverWrapper;
 
 import static ru.stqa.selenium.wait.RepeatableActions.*;
@@ -44,6 +47,8 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
 
   private long timeout = DEFAULT_TIMEOUT;
   private long interval = ActionRepeater.DEFAULT_SLEEP_TIMEOUT;
+  private Clock clock;
+  private Sleeper sleeper;
 
   public ClientSideImplicitWaitWrapper(final WebDriver driver) {
     this(driver, DEFAULT_TIMEOUT);
@@ -54,14 +59,20 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
   }
 
   public ClientSideImplicitWaitWrapper(final WebDriver driver, long timeoutInSeconds, long sleepTimeOut) {
+    this(driver, new SystemClock(), Sleeper.SYSTEM_SLEEPER, timeoutInSeconds, sleepTimeOut);
+  }
+
+  protected ClientSideImplicitWaitWrapper(final WebDriver driver, Clock clock, Sleeper sleeper, long timeoutInSeconds, long sleepTimeOut) {
     super(driver);
     this.timeout = timeoutInSeconds;
     this.interval = sleepTimeOut;
+    this.clock = clock;
+    this.sleeper = sleeper;
     driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
   }
 
   protected ActionRepeater<WebDriver> withWebDriver() {
-    return ActionRepeater.with(getWrappedDriver(), timeout, interval);
+    return ActionRepeater.with(getWrappedDriver(), clock, sleeper, timeout, interval);
   }
 
   @Override
@@ -89,7 +100,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
     }
 
     protected ActionRepeater<WebElement> withWebElement() {
-      return ActionRepeater.with(getWrappedElement(), timeout, interval);
+      return ActionRepeater.with(getWrappedElement(), clock, sleeper, timeout, interval);
     }
 
     @Override
@@ -193,7 +204,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
 
     @Override
     public Alert alert() {
-      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
+      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), clock, sleeper, timeout, interval);
       try {
         return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, Alert>() {
             @Override
@@ -214,7 +225,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
 
     @Override
     public WebDriver frame(final int index) {
-      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
+      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), clock, sleeper, timeout, interval);
       try {
         return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, WebDriver>() {
             @Override
@@ -235,7 +246,7 @@ public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
 
     @Override
     public WebDriver frame(final String idOrName) {
-      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), timeout, interval);
+      ActionRepeater<TargetLocator> repeater = new ActionRepeater<TargetLocator>(getWrappedTargetLocator(), clock, sleeper, timeout, interval);
       try {
         return repeater.tryTo(new AbstractRepeatableAction<TargetLocator, WebDriver>() {
             @Override
