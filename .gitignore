@@ -8,6 +8,8 @@
 target/
 test-output/
 
+*.log
+
 .idea/vcs.xml
 .idea/misc.xml
 .idea/workspace.xml
