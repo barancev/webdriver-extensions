@@ -103,9 +103,14 @@ public abstract class AbstractWrapper<T> {
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
           if (wrapperInterfaces.contains(method.getDeclaringClass())) {
-            beforeMethod(method, args);
+            boolean isUnwrap = method.getName().equals("getWrappedElement");
+            if (! isUnwrap) {
+              beforeMethod(method, args);
+            }
             Object result = callMethod(method, args);
-            afterMethod(method, result, args);
+            if (! isUnwrap) {
+              afterMethod(method, result, args);
+            }
             return result;
           }
           return method.invoke(original, args);

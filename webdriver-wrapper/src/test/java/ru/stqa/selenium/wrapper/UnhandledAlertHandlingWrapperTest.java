@@ -24,8 +24,10 @@ public class UnhandledAlertHandlingWrapperTest {
   public void testAlertIsIgnored() {
     WebDriver original = new FirefoxDriver();
 
+    WebDriver highlighter = new HighlightingWrapper(original).getDriver();
+
     SimpleUnhandledAlertHandler handler = new SimpleUnhandledAlertHandler();
-    UnhandledAlertHandlingWrapper wrapper = new UnhandledAlertHandlingWrapper(original);
+    UnhandledAlertHandlingWrapper wrapper = new UnhandledAlertHandlingWrapper(highlighter);
     wrapper.registerAlertHandler(handler);
     WebDriver driver = wrapper.getDriver();
 
