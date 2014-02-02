@@ -22,7 +22,7 @@ import java.util.Set;
 
 public abstract class AbstractWrapper<T> {
 
-  private final T original;
+  private T original;
   private final WebDriverWrapper driverWrapper;
 
   public AbstractWrapper(final WebDriverWrapper driverWrapper, final T original) {
@@ -36,6 +36,10 @@ public abstract class AbstractWrapper<T> {
 
   public final T getWrappedOriginal() {
     return original;
+  }
+
+  protected void setWrappedOriginal(final T original) {
+    this.original = original;
   }
 
   public WebDriverWrapper getDriverWrapper() {
