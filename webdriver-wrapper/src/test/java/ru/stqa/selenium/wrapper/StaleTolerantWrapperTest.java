@@ -55,7 +55,7 @@ public class StaleTolerantWrapperTest {
 
     driver.get("http://fiddle.jshell.net/barancev/5Z9bd/show/light/");
     WebElement button1 = driver.findElement(By.id("b1"));
-    WebElement button3 = driver.findElement(By.id("b3"));
+    WebElement button3 = driver.findElement(By.id("div3")).findElement(By.id("b3"));
 
     button1.click();
     button3.click();
@@ -74,7 +74,7 @@ public class StaleTolerantWrapperTest {
 
     driver.get("http://fiddle.jshell.net/barancev/5Z9bd/show/light/");
     WebElement button1 = driver.findElement(By.id("b1"));
-    WebElement button4 = driver.findElement(By.id("b4"));
+    WebElement button4 = driver.findElement(By.id("div4")).findElement(By.id("b4"));
 
     button1.click();
     button4.click();

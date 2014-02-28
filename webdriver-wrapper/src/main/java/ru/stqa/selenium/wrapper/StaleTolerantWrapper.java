@@ -37,7 +37,7 @@ public class StaleTolerantWrapper extends WebDriverWrapper {
     super.afterMethodGlobal(target, method, res, args);
     if (method.getName().equals("findElement")) {
       Rediscoverable elementWrapper = (Rediscoverable) res;
-      elementWrapper.setSearchContext((SearchContext) target);
+      elementWrapper.setSearchContext((SearchContext) target.wrapOriginal());
       elementWrapper.setLocator((By) args[0]);
     }
   }
