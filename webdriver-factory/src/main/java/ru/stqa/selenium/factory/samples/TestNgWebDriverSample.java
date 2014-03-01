@@ -22,7 +22,7 @@ public class TestNgWebDriverSample {
 
   @AfterSuite
   public void stopBrowser() {
-    WebDriverFactory.dismissDriver();
+    WebDriverFactory.dismissDriver(driver);
   }
 
   @Test
