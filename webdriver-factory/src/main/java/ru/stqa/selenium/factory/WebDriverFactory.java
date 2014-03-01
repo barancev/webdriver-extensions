@@ -31,8 +31,6 @@ public class WebDriverFactory {
     factoryInternal.setDefaultHub(defaultHub);
   }
 
-  // Factory
-
   public static WebDriver getDriver(String hub, Capabilities capabilities) {
     return factoryInternal.getDriver(hub, capabilities);
   }
@@ -43,6 +41,14 @@ public class WebDriverFactory {
 
   public static void dismissDriver(WebDriver driver) {
     factoryInternal.dismissDriver(driver);
+  }
+
+  public static void dismissAll() {
+    factoryInternal.dismissAll();
+  }
+
+  public static boolean isEmpty() {
+    return factoryInternal.isEmpty();
   }
 
   static {
