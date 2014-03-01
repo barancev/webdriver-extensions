@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -83,7 +84,14 @@ abstract class WebDriverFactoryInternal {
       return new PhantomJSDriver(capabilities);
     if (browserType.equals(BrowserType.HTMLUNIT))
       return new HtmlUnitDriver(capabilities);
-    throw new Error("Unrecognized browser type: " + browserType);
+
+    try {
+      Class<?> driverClass = WebDriverFactoryInternal.class.getClassLoader().loadClass(browserType);
+      Constructor<?> constructor = driverClass.getConstructor(Capabilities.class);
+      return (WebDriver) constructor.newInstance(capabilities);
+    } catch (Exception e) {
+      throw new Error("Unrecognized browser type: " + browserType);
+    }
   }
 
 }
