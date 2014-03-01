@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 
 public class StaleTolerantWrapperTest {
 
-  @Test
+  //@Test
   public void testCanRediscoverAReplacedElement() {
     WebDriver original = new FirefoxDriver();
 
@@ -46,7 +46,7 @@ public class StaleTolerantWrapperTest {
     driver.quit();
   }
 
-  @Test
+  //@Test
   public void testCanRediscoverAReplacedChildElement() {
     WebDriver original = new FirefoxDriver();
 
@@ -65,7 +65,7 @@ public class StaleTolerantWrapperTest {
     driver.quit();
   }
 
-  @Test
+  //@Test
   public void testCanRediscoverAReplacedSubtree() {
     WebDriver original = new FirefoxDriver();
 

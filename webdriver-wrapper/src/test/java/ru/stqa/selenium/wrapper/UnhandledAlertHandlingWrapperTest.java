@@ -20,7 +20,7 @@ public class UnhandledAlertHandlingWrapperTest {
     }
   }
 
-  @Test
+  //@Test
   public void testAlertIsIgnored() {
     WebDriver original = new FirefoxDriver();
 
