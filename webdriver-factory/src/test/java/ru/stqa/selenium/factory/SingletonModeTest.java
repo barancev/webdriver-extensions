@@ -16,61 +16,74 @@
 
 package ru.stqa.selenium.factory;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.*;
 
-public class WebDriverFactoryTest {
+public class SingletonModeTest {
 
   DesiredCapabilities capabilities;
 
   @Before
-  public void initCapabilities() {
+  public void initFactoryAndCapabilities() {
+    WebDriverFactory.dismissAll();
+    WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
+
     capabilities = new DesiredCapabilities();
     capabilities.setBrowserName(FakeWebDriver.class.getName());
   }
 
+  private boolean isActive(WebDriver driver) {
+    return ((FakeWebDriver) driver).isActive();
+  }
+
   @Test
   public void testCanInstantiateAndDismissADriver() {
-    assertTrue(WebDriverFactory.isEmpty());
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
-    assertThat(driver, instanceOf(FakeWebDriver.class));
+    assertTrue(isActive(driver));
     assertFalse(WebDriverFactory.isEmpty());
+
     WebDriverFactory.dismissDriver(driver);
+    assertFalse(isActive(driver));
     assertTrue(WebDriverFactory.isEmpty());
   }
 
   @Test
   public void testCanDismissAllDrivers() {
-    assertTrue(WebDriverFactory.isEmpty());
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
-    assertThat(driver, instanceOf(FakeWebDriver.class));
+    assertTrue(isActive(driver));
     assertFalse(WebDriverFactory.isEmpty());
+
     WebDriverFactory.dismissAll();
+    assertFalse(isActive(driver));
     assertTrue(WebDriverFactory.isEmpty());
   }
 
   @Test
-  public void testCanChangeModeIfEmpty() {
-    assertTrue(WebDriverFactory.isEmpty());
-    WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
-    assertTrue(WebDriverFactory.isEmpty());
+  public void testShouldReuseADriverWithSameCapabilities() {
+    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    assertTrue(isActive(driver));
+
+    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    assertSame(driver2, driver);
+    assertTrue(isActive(driver));
   }
 
-  @Test(expected = Error.class)
-  public void testCantChangeModeIfNonEmpty() {
-    assertTrue(WebDriverFactory.isEmpty());
+  @Test
+  public void testShouldRecreateADriverWithDifferentCapabilities() {
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
-    try {
-      WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
-    } finally {
-      WebDriverFactory.dismissDriver(driver);
-      assertTrue(WebDriverFactory.isEmpty());
-    }
+    assertTrue(isActive(driver));
+
+    capabilities.setCapability("foo", "bar");
+    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    assertNotSame(driver2, driver);
+    assertTrue(isActive(driver2));
+    assertFalse(isActive(driver));
   }
 
 }
