@@ -76,8 +76,10 @@ class SingletonStorage extends WebDriverFactoryInternal {
   }
 
   private void dismissDriver() {
-    driver.quit();
-    driver = null;
-    key = null;
+    if (driver != null) {
+      driver.quit();
+      driver = null;
+      key = null;
+    }
   }
 }
