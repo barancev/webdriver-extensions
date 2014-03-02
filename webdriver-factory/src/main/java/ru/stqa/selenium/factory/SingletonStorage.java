@@ -41,7 +41,6 @@ class SingletonStorage extends WebDriverFactoryInternal {
         try {
           driver.getCurrentUrl();
         } catch (Throwable t) {
-          t.printStackTrace();
           createNewDriver(hub, capabilities);
         }
 

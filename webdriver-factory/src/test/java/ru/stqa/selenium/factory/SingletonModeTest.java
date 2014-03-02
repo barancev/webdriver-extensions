@@ -21,8 +21,6 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.*;
 
 public class SingletonModeTest {
@@ -84,6 +82,29 @@ public class SingletonModeTest {
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));
+  }
+
+  @Test
+  public void testShouldRecreateAnInactiveDriver() {
+    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    assertTrue(isActive(driver));
+    driver.quit();
+
+    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    assertNotSame(driver2, driver);
+    assertTrue(isActive(driver2));
+    assertFalse(isActive(driver));
+  }
+
+  @Test(expected = Error.class)
+  public void testShouldDismissOwnedDriversOnly() {
+    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    assertTrue(isActive(driver));
+
+    WebDriver driver2 = new FakeWebDriver(capabilities);
+    assertNotSame(driver2, driver);
+
+    WebDriverFactory.dismissDriver(driver2);
   }
 
 }
