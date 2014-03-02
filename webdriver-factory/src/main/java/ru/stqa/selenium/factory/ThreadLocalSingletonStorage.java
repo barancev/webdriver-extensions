@@ -20,6 +20,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
@@ -51,7 +52,6 @@ class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
           try {
             tlDriver.get().getCurrentUrl();
           } catch (Throwable t) {
-            t.printStackTrace();
             createNewDriver(capabilities, hub);
           }
         }
@@ -75,7 +75,7 @@ class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
 
   @Override
   public void dismissAll() {
-    for (WebDriver driver : driverToKeyMap.keySet()) {
+    for (WebDriver driver : new HashSet<WebDriver>(driverToKeyMap.keySet())) {
       driver.quit();
       driverToKeyMap.remove(driver);
     }
