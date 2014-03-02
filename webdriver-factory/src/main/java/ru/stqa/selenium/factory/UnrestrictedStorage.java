@@ -20,6 +20,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -64,7 +65,7 @@ class UnrestrictedStorage extends WebDriverFactoryInternal {
 
   @Override
   public void dismissAll() {
-    for (WebDriver driver : driverToKeyMap.keySet()) {
+    for (WebDriver driver : new HashSet<WebDriver>(driverToKeyMap.keySet())) {
       driver.quit();
       String key = driverToKeyMap.remove(driver);
       keyToDriverMap.remove(key);
