@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>webdriver-factory</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>webdriver-factory</name>
@@ -22,10 +23,22 @@
     <dependency>
       <groupId>com.opera</groupId>
       <artifactId>operadriver</artifactId>
+      <version>1.5</version>
     </dependency>
     <dependency>
       <groupId>com.github.detro.ghostdriver</groupId>
       <artifactId>phantomjsdriver</artifactId>
+      <version>1.0.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-remote-driver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-server</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -39,6 +52,5 @@
       <version>6.8.7</version>
     </dependency>
   </dependencies>
-
 
 </project>
