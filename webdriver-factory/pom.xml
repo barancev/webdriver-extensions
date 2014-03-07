@@ -14,6 +14,12 @@
 
   <name>webdriver-factory</name>
 
+  <scm>
+    <connection>scm:git:https://github.com/barancev/webdriver-extensions</connection>
+    <developerConnection>scm:git:https://github.com/barancev/webdriver-extensions</developerConnection>
+    <url>https://github.com/barancev/webdriver-extensions</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
