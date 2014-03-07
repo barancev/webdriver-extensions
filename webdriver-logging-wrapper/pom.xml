@@ -14,6 +14,12 @@
 
   <name>webdriver-logging-wrapper</name>
 
+  <scm>
+    <connection>scm:git:git@github.com:barancev/webdriver-extensions.git</connection>
+    <developerConnection>scm:git:git@github.com:barancev/webdriver-extensions.git</developerConnection>
+    <url>https://github.com/barancev/webdriver-extensions</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>ru.stqa.selenium</groupId>
