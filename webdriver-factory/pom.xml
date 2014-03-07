@@ -13,7 +13,6 @@
   <packaging>jar</packaging>
 
   <name>webdriver-factory</name>
-  <url>https://github.com/barancev/selenium-extensions/webdriver-factory</url>
 
   <dependencies>
     <dependency>
