@@ -3,7 +3,7 @@
 
   <groupId>ru.stqa.selenium</groupId>
   <artifactId>webdriver-extensions</artifactId>
-  <version>1.2.42-SNAPSHOT</version>
+  <version>1.2.41</version>
   <packaging>pom</packaging>
 
   <name>webdriver-extensions</name>
