@@ -5,7 +5,7 @@
   <parent>
     <groupId>ru.stqa.selenium</groupId>
     <artifactId>webdriver-extensions</artifactId>
-    <version>1.2.40</version>
+    <version>1.2.41</version>
   </parent>
 
   <artifactId>webdriver-repeatable-actions</artifactId>
@@ -41,5 +41,14 @@
       <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

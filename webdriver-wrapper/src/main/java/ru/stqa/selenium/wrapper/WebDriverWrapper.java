@@ -425,7 +425,13 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
       getWrappedTargetLocator().frame(frameElement);
       return getDriverWrapper().getDriver();
     }
-  
+
+    @Override
+    public WebDriver parentFrame() {
+      getWrappedTargetLocator().parentFrame();
+      return getDriverWrapper().getDriver();
+    }
+
     @Override
     public WebDriver window(String windowName) {
       getWrappedTargetLocator().window(windowName);
