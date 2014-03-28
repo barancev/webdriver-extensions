@@ -53,6 +53,7 @@ public abstract class AbstractWrapper<T> {
    * @param driverWrapper        the underlying driver's wrapper
    * @param original             the underlying original object
    * @param wrapperClass         the class of a wrapper
+   * @return                     a proxy that wraps the original object
    */
   public static <T> T wrapOriginal(final WebDriverWrapper driverWrapper, final T original, final Class<? extends AbstractWrapper<T>> wrapperClass) {
     AbstractWrapper<T> wrapper;
@@ -98,6 +99,8 @@ public abstract class AbstractWrapper<T> {
   /**
    * Builds a {@link java.lang.reflect.Proxy} implementing all interfaces of original object. It will delegate calls to
    * wrapper when wrapper implements the requested method otherwise to original object.
+   *
+   * @return a proxy that wraps the original object
    */
   public final T wrapOriginal() {
     final T original = getWrappedOriginal();

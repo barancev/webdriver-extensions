@@ -38,14 +38,10 @@ import org.openqa.selenium.security.Credentials;
 /**
  * This class allows to extend WebDriver by adding new functionality to a wrapper.
  * Example of use:
- * <code><pre>
- * WebDriver driver = WebDriverWrapper.wrapDriver(originalDriver, MyWebDriverWrapper.class);
- * </pre></code>
+ * <code>WebDriver driver = WebDriverWrapper.wrapDriver(originalDriver, MyWebDriverWrapper.class);</code>
  * or
- * <code><pre>
- * MyWebDriverWrapper wrapper = new MyWebDriverWrapper(originalDriver, otherParameter);
- * WebDriver driver = new MyWebDriverWrapper(originalDriver, otherParameter).getDriver();
- * </pre></code>
+ * <code>MyWebDriverWrapper wrapper = new MyWebDriverWrapper(originalDriver, otherParameter);<br>
+ * WebDriver driver = new MyWebDriverWrapper(originalDriver, otherParameter).getDriver();</code>
  */
 public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     implements WebDriver, WrapsDriver, JavascriptExecutor, HasInputDevices, HasTouchScreen {
@@ -285,6 +281,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
    *
    * @param driver               the underlying driver
    * @param wrapperClass         the class of a wrapper
+   * @return                     a proxy that wraps the original driver
    */
   public static WebDriver wrapDriver(final WebDriver driver, final Class<? extends WebDriverWrapper> wrapperClass) {
     return wrapOriginal(null, driver, wrapperClass);
@@ -303,7 +300,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
 
   /**
    * Simple {@link WrapsElement} delegating all calls to the wrapped {@link WebElement}.
-   * The methods {@link WebDriverWrapper#wrapElement(WebElement)}/{@link WebDriverWrapper#wrapElements(List<WebElement>)} will
+   * The methods {@link WebDriverWrapper#wrapElement(WebElement)}/{@link WebDriverWrapper#wrapElements(List)} will
    * be called on the related {@link WebDriverWrapper} to wrap the elements returned by {@link #findElement(By)}/{@link #findElements(By)}.
    */
   public static class WebElementWrapper extends AbstractWrapper<WebElement> implements WebElement, WrapsElement, Locatable {

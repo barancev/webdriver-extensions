@@ -37,22 +37,22 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * as well as the frequency with which to call the action.
  *
  * <p>
- * Sample usage: <code><pre>
- *   // Try to look for an element to be present on the page, checking
- *   // for its presence once every 5 seconds until timeout of 30 seconds is expired.
- *   ActionRepeater&lt;WebDriver&gt; repeater = new ActionRepeater&lt;WebDriver&gt;(driver)
- *       .withTimeout(30, SECONDS)
- *       .pollingEvery(5, SECONDS);
- *
- *   WebElement foo = repeater.tryTo(new AbstractRepeatableAction&lt;SearchContext, WebElement&gt;() {
- *     public WebElement apply(SearchContext context) {
- *       return driver.findElement(By.id("foo"));
- *     }
- *     public boolean shouldIgnoreException(Throwable t) {
- *       return t instanceof NoSuchElementException;
- *     }
+ * Sample usage: <code>
+ *   // Try to look for an element to be present on the page, checking<br>
+ *   // for its presence once every 5 seconds until timeout of 30 seconds is expired.<br>
+ *   ActionRepeater&lt;WebDriver&gt; repeater = new ActionRepeater&lt;WebDriver&gt;(driver)<br>
+ *       .withTimeout(30, SECONDS)<br>
+ *       .pollingEvery(5, SECONDS);<br>
+ *<br>
+ *   WebElement foo = repeater.tryTo(new AbstractRepeatableAction&lt;SearchContext, WebElement&gt;() {<br>
+ *     public WebElement apply(SearchContext context) {<br>
+ *       return driver.findElement(By.id("foo"));<br>
+ *     }<br>
+ *     public boolean shouldIgnoreException(Throwable t) {<br>
+ *       return t instanceof NoSuchElementException;<br>
+ *     }<br>
  *   });
- * </pre></code>
+ * </code>
  *
  * <p>
  * <em>This class makes no thread safety guarantees.</em>

@@ -25,7 +25,7 @@ import org.openqa.selenium.WebElement;
  * neither null nor false. Examples would include determining if an element is visible.
  * <p>
  * Note that it is expected that ExpectedConditions are idempotent. They will be called in a loop by
- * the {@link WebDriverWait} and any modification of the state of the application under test may
+ * the WebDriverWait and any modification of the state of the application under test may
  * have unexpected side-effects.
  * 
  * @param <T> The return type
