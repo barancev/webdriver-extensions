@@ -1,5 +1,6 @@
 package ru.stqa.selenium.factory.samples;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -17,6 +18,11 @@ public class JUnitWebDriverSample {
   @Before
   public void startBrowser() {
     driver = WebDriverFactory.getDriver(DesiredCapabilities.internetExplorer());
+  }
+
+  @AfterClass
+  public static void stopAllBrowsers() {
+    WebDriverFactory.dismissAll();
   }
 
   @Test

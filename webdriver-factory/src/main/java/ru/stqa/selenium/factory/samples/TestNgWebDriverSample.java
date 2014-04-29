@@ -21,8 +21,8 @@ public class TestNgWebDriverSample {
   }
 
   @AfterSuite
-  public void stopBrowser() {
-    WebDriverFactory.dismissDriver(driver);
+  public void stopAllBrowsers() {
+    WebDriverFactory.dismissAll();
   }
 
   @Test

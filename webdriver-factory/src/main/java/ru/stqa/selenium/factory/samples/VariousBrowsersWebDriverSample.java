@@ -1,5 +1,6 @@
 package ru.stqa.selenium.factory.samples;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +11,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.stqa.selenium.factory.WebDriverFactory;
 
 public class VariousBrowsersWebDriverSample {
+
+  @AfterClass
+  public static void stopAllBrowsers() {
+    WebDriverFactory.dismissAll();
+  }
 
   @Test
   public void test1() {
