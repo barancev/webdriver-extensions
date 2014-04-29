@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 public class WebDriverFactory {
 
-  private static WebDriverFactoryInternal factoryInternal = new SingletonStorage();
+  private static WebDriverFactoryInternal factoryInternal = new ThreadLocalSingletonStorage();
 
   public static void setMode(WebDriverFactoryMode newMode) {
     if (! factoryInternal.isEmpty()) {
