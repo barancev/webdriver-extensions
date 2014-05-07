@@ -19,8 +19,8 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:https://github.com/barancev/webdriver-extensions</connection>
-    <developerConnection>scm:git:https://github.com/barancev/webdriver-extensions</developerConnection>
+    <connection>scm:git:git@github.com:barancev/webdriver-extensions.git</connection>
+    <developerConnection>scm:git:git@github.com:barancev/webdriver-extensions.git</developerConnection>
     <url>https://github.com/barancev/webdriver-extensions</url>
   </scm>
 
