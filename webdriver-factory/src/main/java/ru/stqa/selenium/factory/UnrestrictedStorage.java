@@ -19,62 +19,39 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 class UnrestrictedStorage extends WebDriverFactoryInternal {
 
-  private Map<String, WebDriver> keyToDriverMap = new HashMap<String, WebDriver>();
-  private Map<WebDriver, String> driverToKeyMap = new WeakHashMap<WebDriver, String>();
+  private List<WebDriver> drivers = new ArrayList<WebDriver>();
 
   @Override
   public WebDriver getDriver(String hub, Capabilities capabilities) {
-    String key = createKey(capabilities, hub);
-    WebDriver driver = keyToDriverMap.get(key);
-    if (driver == null) {
-      driver = newDriver(hub, capabilities);
-      keyToDriverMap.put(key, driver);
-      driverToKeyMap.put(driver, key);
-
-    } else {
-      // Check the browser is alive
-      try {
-        driver.getCurrentUrl();
-      } catch (Throwable t) {
-        t.printStackTrace();
-        driver = newDriver(hub, capabilities);
-        keyToDriverMap.put(key, driver);
-        driverToKeyMap.put(driver, key);
-      }
-    }
-
+    WebDriver driver = newDriver(hub, capabilities);
+    drivers.add(driver);
     return driver;
   }
 
   @Override
   public void dismissDriver(WebDriver driver) {
-    if (driverToKeyMap.get(driver) == null) {
+    if (! drivers.contains(driver)) {
       throw new Error("The driver is not owned by the factory: " + driver);
     }
     driver.quit();
-    String key = driverToKeyMap.remove(driver);
-    keyToDriverMap.remove(key);
+    drivers.remove(driver);
   }
 
   @Override
   public void dismissAll() {
-    for (WebDriver driver : new HashSet<WebDriver>(driverToKeyMap.keySet())) {
+    for (WebDriver driver : new ArrayList<WebDriver>(drivers)) {
       driver.quit();
-      String key = driverToKeyMap.remove(driver);
-      keyToDriverMap.remove(key);
+      drivers.remove(driver);
     }
   }
 
   @Override
   public boolean isEmpty() {
-    return driverToKeyMap.isEmpty();
+    return drivers.isEmpty();
   }
 
 }

@@ -63,12 +63,13 @@ public class UnrestrictedModeTest {
   }
 
   @Test
-  public void testShouldReuseADriverWithSameCapabilities() {
+  public void testShouldCreateAnotherDriverWithSameCapabilities() {
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
     assertTrue(isActive(driver));
 
     WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
-    assertSame(driver2, driver);
+    assertNotSame(driver2, driver);
+    assertTrue(isActive(driver2));
     assertTrue(isActive(driver));
   }
 
