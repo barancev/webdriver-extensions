@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package ru.stqa.selenium.wait;
 
-import com.google.common.base.Function;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.Sleeper;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
+public class Waiter extends WebDriverWait {
 
-public interface ExpectedListCondition<T> extends Function<List<WebElement>, T> {}
+  public Waiter(WebDriver driver, Clock clock, Sleeper sleeper, long timeOutInSeconds, long sleepTimeOut) {
+    super(driver, clock, sleeper, timeOutInSeconds, sleepTimeOut);
+  }
+}

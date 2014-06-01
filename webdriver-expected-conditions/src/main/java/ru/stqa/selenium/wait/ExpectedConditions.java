@@ -32,17 +32,17 @@ public class ExpectedConditions {
 
   public static ExpectedCondition<WebElement> element(
       final WebElement element, final Function<WebElement, Boolean> condition) {
-  return new ExpectedCondition<WebElement>() {
-    @Override
-    public WebElement apply(SearchContext context) {
-      if (element != null && condition.apply(element)) {
-        return element;
-      } else {
-        return null;
+    return new ExpectedCondition<WebElement>() {
+      @Override
+      public WebElement apply(SearchContext context) {
+        if (element != null && condition.apply(element)) {
+          return element;
+        } else {
+          return null;
+        }
       }
-    }
-  };
-}
+    };
+  }
 
   public static ExpectedCondition<WebElement> firstElementLocated(
         final By locator, final Function<WebElement, Boolean> condition) {
@@ -59,8 +59,8 @@ public class ExpectedConditions {
     };
   }
 
-  public static ExpectedCondition<WebElement> anyElementLocated(
-        final By locator, final Function<WebElement, Boolean> condition) {
+  public static ExpectedCondition<WebElement> someElementLocated(
+      final By locator, final Function<WebElement, Boolean> condition) {
     return new ExpectedCondition<WebElement>() {
       @Override
       public WebElement apply(SearchContext context) {
@@ -71,17 +71,6 @@ public class ExpectedConditions {
           }
         }
         return null;
-      }
-    };
-  }
-
-  public static ExpectedCondition<List<WebElement>> listOfElementsLocated(
-      final By locator, final Function<List<WebElement>, Boolean> condition) {
-    return new ExpectedCondition<List<WebElement>>() {
-      @Override
-      public List<WebElement> apply(SearchContext context) {
-        List<WebElement> elements = context.findElements(locator);
-        return condition.apply(elements) ? elements : null;
       }
     };
   }
@@ -98,6 +87,17 @@ public class ExpectedConditions {
           }
         }
         return elements;
+      }
+    };
+  }
+
+  public static ExpectedCondition<List<WebElement>> listOfElementsLocated(
+      final By locator, final Function<List<WebElement>, Boolean> condition) {
+    return new ExpectedCondition<List<WebElement>>() {
+      @Override
+      public List<WebElement> apply(SearchContext context) {
+        List<WebElement> elements = context.findElements(locator);
+        return condition.apply(elements) ? elements : null;
       }
     };
   }

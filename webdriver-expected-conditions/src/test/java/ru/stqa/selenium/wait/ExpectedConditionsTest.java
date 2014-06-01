@@ -16,18 +16,149 @@
  */
 package ru.stqa.selenium.wait;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import static ru.stqa.selenium.wait.ExpectedConditions.*;
 import static ru.stqa.selenium.wait.ExpectedElementConditions.*;
+import static ru.stqa.selenium.wait.ExpectedListConditions.*;
 
 public class ExpectedConditionsTest {
 
-  public void sample() {
-    WebDriver driver = null;
-    WebDriverWait wait = new WebDriverWait(driver, 10);
-    wait.until(firstElementLocated(By.id("my-id"), isPresent())).click();
+  @Test
+  public void testFirstElementLocatedIsPresent() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final List<WebElement> list = new ArrayList<WebElement>() {{
+      add(mock(WebElement.class));
+      add(mock(WebElement.class));
+    }};
+    when(mockedDriver.findElements(By.id("my-id")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(list);
+
+    TestingClock clock = new TestingClock();
+    WebDriverWait wait = new Waiter(mockedDriver, clock, clock, 1, 100);
+
+    WebElement element = wait.until(firstElementLocated(By.id("my-id"), isPresent()));
+
+    assertEquals(element, list.get(0));
+    assertEquals(clock.now(), 100L);
+    verify(mockedDriver, times(2)).findElements(By.id("my-id"));
+    verifyZeroInteractions(list.get(0));
+    verifyZeroInteractions(list.get(1));
+  }
+
+  @Test
+  public void testFirstElementLocatedIsDisplayed() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final List<WebElement> list = new ArrayList<WebElement>() {{
+      add(mock(WebElement.class));
+      add(mock(WebElement.class));
+    }};
+    when(mockedDriver.findElements(By.id("my-id")))
+        .thenReturn(list);
+    when(list.get(0).isDisplayed())
+        .thenReturn(false)
+        .thenReturn(true);
+
+    TestingClock clock = new TestingClock();
+    WebDriverWait wait = new Waiter(mockedDriver, clock, clock, 1, 100);
+
+    WebElement element = wait.until(firstElementLocated(By.id("my-id"), isVisible()));
+
+    assertEquals(element, list.get(0));
+    assertEquals(clock.now(), 100L);
+    verify(mockedDriver, times(2)).findElements(By.id("my-id"));
+    verify(list.get(0), times(2)).isDisplayed();
+    verifyZeroInteractions(list.get(1));
+  }
+
+  @Test
+  public void testSomeElementLocatedIsDisplayed() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final List<WebElement> list = new ArrayList<WebElement>() {{
+      add(mock(WebElement.class));
+      add(mock(WebElement.class));
+    }};
+    when(mockedDriver.findElements(By.id("my-id")))
+        .thenReturn(list);
+    when(list.get(0).isDisplayed())
+        .thenReturn(false)
+        .thenReturn(false)
+        .thenReturn(true);
+    when(list.get(1).isDisplayed())
+        .thenReturn(false)
+        .thenReturn(true)
+        .thenReturn(true);
+
+    TestingClock clock = new TestingClock();
+    WebDriverWait wait = new Waiter(mockedDriver, clock, clock, 1, 100);
+
+    WebElement element = wait.until(someElementLocated(By.id("my-id"), isVisible()));
+
+    assertEquals(element, list.get(1));
+    assertEquals(clock.now(), 100L);
+    verify(mockedDriver, times(2)).findElements(By.id("my-id"));
+    verify(list.get(0), times(2)).isDisplayed();
+    verify(list.get(1), times(2)).isDisplayed();
+  }
+
+  @Test
+  public void testEachElementLocatedIsDisplayed() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final List<WebElement> list = new ArrayList<WebElement>() {{
+      add(mock(WebElement.class));
+      add(mock(WebElement.class));
+    }};
+    when(mockedDriver.findElements(By.id("my-id")))
+        .thenReturn(list);
+    when(list.get(0).isDisplayed())
+        .thenReturn(false)
+        .thenReturn(true);
+    when(list.get(1).isDisplayed())
+        .thenReturn(false)
+        .thenReturn(true);
+
+    TestingClock clock = new TestingClock();
+    WebDriverWait wait = new Waiter(mockedDriver, clock, clock, 1, 100);
+
+    List<WebElement> elements = wait.until(eachElementLocated(By.id("my-id"), isVisible()));
+
+    assertEquals(elements, list);
+    assertEquals(clock.now(), 200L);
+    verify(mockedDriver, times(3)).findElements(By.id("my-id"));
+    verify(list.get(0), times(3)).isDisplayed();
+    verify(list.get(1), times(2)).isDisplayed();
+  }
+
+  @Test
+  public void testListOfElementsLocatedIsNotEmpty() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final List<WebElement> list = new ArrayList<WebElement>() {{
+      add(mock(WebElement.class));
+      add(mock(WebElement.class));
+    }};
+    when(mockedDriver.findElements(By.id("my-id")))
+        .thenReturn(new ArrayList<WebElement>())
+        .thenReturn(list);
+
+    TestingClock clock = new TestingClock();
+    WebDriverWait wait = new Waiter(mockedDriver, clock, clock, 1, 100);
+
+    List<WebElement> elements = wait.until(listOfElementsLocated(By.id("my-id"), isNotEmpty()));
+
+    assertEquals(elements, list);
+    assertEquals(clock.now(), 100L);
+    verify(mockedDriver, times(2)).findElements(By.id("my-id"));
+    verifyZeroInteractions(list.get(0));
+    verifyZeroInteractions(list.get(1));
   }
 }

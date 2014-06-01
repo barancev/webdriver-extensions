@@ -57,4 +57,10 @@ public class ExpectedElementConditions {
     };
   }
 
+  // hasText("aaa")
+  // hasText(thatContains("aaa"))
+  // hasText(thatMatches("a*"))
+  // hasAttribute("value", "aaa")
+  // hasAttribute("value", thatContains("aaa"))
+  // hasAttribute("value", thatMatches("a*"))
 }
