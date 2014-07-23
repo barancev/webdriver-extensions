@@ -15,7 +15,6 @@
  */
 package ru.stqa.selenium.wait;
 
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class ExpectedListConditions {
   public static ExpectedListCondition<Boolean> isEmpty() {
     return new ExpectedListCondition<Boolean>() {
       @Override
-      public Boolean apply(List<?> list) {
+      public Boolean apply(List<WebElement> list) {
         return list.isEmpty();
       }
     };
@@ -38,7 +37,7 @@ public class ExpectedListConditions {
   public static ExpectedListCondition<Boolean> isNotEmpty() {
     return new ExpectedListCondition<Boolean>() {
       @Override
-      public Boolean apply(List<?> list) {
+      public Boolean apply(List<WebElement> list) {
         return ! list.isEmpty();
       }
     };
@@ -47,7 +46,7 @@ public class ExpectedListConditions {
   public static ExpectedListCondition<Boolean> hasSize(final int size) {
     return new ExpectedListCondition<Boolean>() {
       @Override
-      public Boolean apply(List<?> list) {
+      public Boolean apply(List<WebElement> list) {
         return list.size() == size;
       }
     };
@@ -56,7 +55,7 @@ public class ExpectedListConditions {
   public static ExpectedListCondition<Boolean> hasSizeLessThan(final int size) {
     return new ExpectedListCondition<Boolean>() {
       @Override
-      public Boolean apply(List<?> list) {
+      public Boolean apply(List<WebElement> list) {
         return list.size() < size;
       }
     };
@@ -65,7 +64,7 @@ public class ExpectedListConditions {
   public static ExpectedListCondition<Boolean> hasSizeGreaterThan(final int size) {
     return new ExpectedListCondition<Boolean>() {
       @Override
-      public Boolean apply(List<?> list) {
+      public Boolean apply(List<WebElement> list) {
         return list.size() > size;
       }
     };

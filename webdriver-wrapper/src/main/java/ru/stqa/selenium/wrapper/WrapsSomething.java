@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ru.stqa.selenium.wait;
 
-import com.google.common.base.Function;
-import org.openqa.selenium.WebElement;
+package ru.stqa.selenium.wrapper;
 
-import java.util.List;
+public interface WrapsSomething<T> {
 
-public interface ExpectedListCondition<T> extends Function<List<WebElement>, T> {}
+  T getWrappedOriginal();
+
+}

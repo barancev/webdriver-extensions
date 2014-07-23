@@ -1,3 +1,5 @@
 <component name="CopyrightManager">
-  <settings default="Alexei Barantsev" />
+  <settings default="Alexei Barantsev">
+    <module2copyright />
+  </settings>
 </component>

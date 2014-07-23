@@ -17,10 +17,12 @@
 package ru.stqa.selenium.wrapper;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractWrapper<T> {
+public abstract class AbstractWrapper<T> implements WrapsSomething<T> {
 
   private T original;
   private final WebDriverWrapper driverWrapper;
@@ -116,7 +118,7 @@ public abstract class AbstractWrapper<T> {
             }
             Object result = callMethod(method, args);
             if (! isUnwrap) {
-              afterMethod(method, result, args);
+              afterMethod(method, unwrap(result), args);
             }
             return result;
           }
@@ -135,6 +137,24 @@ public abstract class AbstractWrapper<T> {
         this.getClass().getClassLoader(),
         allInterfaces.toArray(allInterfacesArray),
         handler);
+  }
+
+  private Object unwrap(Object result) {
+    if (result instanceof WrapsSomething) {
+      return ((WrapsSomething) result).getWrappedOriginal();
+    }
+    if (result instanceof List) {
+      List<Object> newList = new ArrayList<Object>();
+      for (Object o : (List) result) {
+        if (o instanceof WrapsSomething) {
+          newList.add(((WrapsSomething) o).getWrappedOriginal());
+        } else {
+          newList.add(o);
+        }
+      }
+      return newList;
+    }
+    return result;
   }
 
   protected void beforeMethod(Method method, Object[] args) {
