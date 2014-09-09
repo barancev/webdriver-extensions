@@ -33,8 +33,13 @@ public class StaleTolerantWrapper extends WebDriverWrapper {
   }
 
   @Override
+  protected void afterMethod(Method method, Object res, Object[] args) {
+    afterMethodGlobal(this, method, res, args);
+  }
+
+  @Override
   protected void afterMethodGlobal(AbstractWrapper target, Method method, Object res, Object[] args) {
-    super.afterMethodGlobal(target, method, res, args);
+    super.afterMethodGlobal(target, method, unwrap(res), args);
     if (method.getName().equals("findElement")) {
       Rediscoverable elementWrapper = (Rediscoverable) res;
       elementWrapper.setSearchContext((SearchContext) target.wrapOriginal());
@@ -76,6 +81,11 @@ public class StaleTolerantWrapper extends WebDriverWrapper {
 
     public StaleTolerantWebElementWrapper(WebElement element) {
       super(StaleTolerantWrapper.this, element);
+    }
+
+    @Override
+    protected void afterMethod(Method method, Object res, Object[] args) {
+      afterMethodGlobal(this, method, res, args);
     }
 
     @Override

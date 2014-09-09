@@ -118,7 +118,7 @@ public abstract class AbstractWrapper<T> implements WrapsSomething<T> {
             }
             Object result = callMethod(method, args);
             if (! isUnwrap) {
-              afterMethod(method, unwrap(result), args);
+              afterMethod(method, result, args);
             }
             return result;
           }
@@ -139,7 +139,7 @@ public abstract class AbstractWrapper<T> implements WrapsSomething<T> {
         handler);
   }
 
-  private Object unwrap(Object result) {
+  protected Object unwrap(Object result) {
     if (result instanceof WrapsSomething) {
       return ((WrapsSomething) result).getWrappedOriginal();
     }
@@ -166,7 +166,7 @@ public abstract class AbstractWrapper<T> implements WrapsSomething<T> {
   }
 
   protected void afterMethod(Method method, Object res, Object[] args) {
-    getDriverWrapper().afterMethodGlobal(this, method, res, args);
+    getDriverWrapper().afterMethodGlobal(this, method, unwrap(res), args);
   }
 
   protected Object onError(Method method, InvocationTargetException e, Object[] args) throws Throwable {
