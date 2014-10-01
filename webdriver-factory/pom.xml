@@ -49,12 +49,8 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.8.7</version>
+      <version>4.11</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

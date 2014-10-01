@@ -1,7 +1,18 @@
-1.2.42 (to be released)
+1.2.44 (to be released)
 =======================
 
-* Selenium 2.42 support (TBD)
+* Selenium 2.44 support (TBD)
+* Samples are moved to a separate project to get rid of TestNG dependency
+
+1.2.43
+=======================
+
+* Selenium 2.43 support
+
+1.2.42
+=======================
+
+* Selenium 2.42 support
 * Defaut mode is set to THREADLOCAL_SINGLETON
 * Samples are updated to call WebDriverFactory.dismisslAll() explicitly; yes, there is a shutdown hook, but it is "the last resort", not the recommended practice
 
