@@ -1,7 +1,7 @@
-1.2.44 (to be released)
+1.2.45
 =======================
 
-* Selenium 2.44 support (TBD)
+* Selenium 2.45 support
 * Samples are moved to a separate project to get rid of TestNG dependency
 
 1.2.43
