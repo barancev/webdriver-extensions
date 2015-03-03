@@ -4,11 +4,11 @@
   <parent>
     <groupId>ru.stqa.selenium</groupId>
     <artifactId>webdriver-extensions</artifactId>
-    <version>1.2.44-SNAPSHOT</version>
+    <version>1.2.45</version>
   </parent>
 
   <artifactId>webdriver-repeatable-actions</artifactId>
-  <version>1.0.44-SNAPSHOT</version>
+  <version>1.0.45</version>
   <packaging>jar</packaging>
 
   <name>webdriver-repeatable-actions</name>
@@ -17,7 +17,7 @@
     <connection>scm:git:git@github.com:barancev/webdriver-extensions.git</connection>
     <developerConnection>scm:git:git@github.com:barancev/webdriver-extensions.git</developerConnection>
     <url>https://github.com/barancev/webdriver-extensions</url>
-    <tag>HEAD</tag>
+    <tag>webdriver-extensions-1.2.45</tag>
   </scm>
 
   <dependencies>
