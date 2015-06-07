@@ -1,3 +1,14 @@
+1.2.47 (to be released)
+=======================
+
+* Implemented ability to install custom driver providers 
+* Implemented ability to load driver providers via ServiceLoader
+
+1.2.46
+=======================
+
+* Selenium 2.46 support
+
 1.2.45
 =======================
 
