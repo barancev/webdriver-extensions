@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 abstract class WebDriverFactoryInternal {
 
@@ -55,12 +56,18 @@ abstract class WebDriverFactoryInternal {
     driverProviders.add(new DriverProvider.PhantomJS());
     driverProviders.add(new DriverProvider.HtmlUnit());
     driverProviders.add(new DriverProvider.ReflectionBased());
+    for (DriverProvider provider : ServiceLoader.load(DriverProvider.class)) {
+      driverProviders.add(provider);
+    }
   }
 
   private LinkedList<RemoteDriverProvider> remoteDriverProviders
       = new LinkedList<RemoteDriverProvider>();
   {
     remoteDriverProviders.add(new RemoteDriverProvider.Default());
+    for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {
+      remoteDriverProviders.add(provider);
+    }
   }
 
   void addDriverProvider(DriverProvider provider) {
