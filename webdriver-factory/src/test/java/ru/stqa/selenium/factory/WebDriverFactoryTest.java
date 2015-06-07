@@ -21,51 +21,63 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.*;
 
 public class WebDriverFactoryTest {
 
-  DesiredCapabilities capabilities;
-
-  @Before
-  public void initCapabilities() {
-    capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
-  }
-
   @Test
   public void testCanInstantiateAndDismissADriver() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setBrowserName(FakeWebDriver.class.getName());
+
     assertTrue(WebDriverFactory.isEmpty());
+
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(WebDriverFactory.isEmpty());
+
     WebDriverFactory.dismissDriver(driver);
     assertTrue(WebDriverFactory.isEmpty());
   }
 
   @Test
   public void testCanDismissAllDrivers() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setBrowserName(FakeWebDriver.class.getName());
+
     assertTrue(WebDriverFactory.isEmpty());
+
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(WebDriverFactory.isEmpty());
+
     WebDriverFactory.dismissAll();
     assertTrue(WebDriverFactory.isEmpty());
   }
 
   @Test
   public void testCanChangeModeIfEmpty() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setBrowserName(FakeWebDriver.class.getName());
+
     assertTrue(WebDriverFactory.isEmpty());
+
     WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
     assertTrue(WebDriverFactory.isEmpty());
   }
 
   @Test(expected = Error.class)
-  public void testCantChangeModeIfNonEmpty() {
+  public void testCannotChangeModeIfNonEmpty() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setBrowserName(FakeWebDriver.class.getName());
+
     assertTrue(WebDriverFactory.isEmpty());
+
     WebDriver driver = WebDriverFactory.getDriver(capabilities);
+
     try {
       WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
     } finally {

@@ -31,6 +31,9 @@ import org.openqa.selenium.safari.SafariDriver;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 abstract class WebDriverFactoryInternal {
 
@@ -41,6 +44,33 @@ abstract class WebDriverFactoryInternal {
 
   private String defaultHub = null;
 
+  private LinkedList<DriverProvider> driverProviders
+      = new LinkedList<DriverProvider>();
+  {
+    driverProviders.add(new DriverProvider.Firefox());
+    driverProviders.add(new DriverProvider.InternetExplorer());
+    driverProviders.add(new DriverProvider.Chrome());
+    driverProviders.add(new DriverProvider.Opera());
+    driverProviders.add(new DriverProvider.Safari());
+    driverProviders.add(new DriverProvider.PhantomJS());
+    driverProviders.add(new DriverProvider.HtmlUnit());
+    driverProviders.add(new DriverProvider.ReflectionBased());
+  }
+
+  private LinkedList<RemoteDriverProvider> remoteDriverProviders
+      = new LinkedList<RemoteDriverProvider>();
+  {
+    remoteDriverProviders.add(new RemoteDriverProvider.Default());
+  }
+
+  void addDriverProvider(DriverProvider provider) {
+    driverProviders.addFirst(provider);
+  }
+
+  void addRemoteDriverProvider(RemoteDriverProvider provider) {
+    remoteDriverProviders.addFirst(provider);
+  }
+
   public void setDefaultHub(String defaultHub) {
     this.defaultHub = defaultHub;
   }
@@ -49,49 +79,33 @@ abstract class WebDriverFactoryInternal {
     return getDriver(defaultHub, capabilities);
   }
 
-  protected static String createKey(Capabilities capabilities, String hub) {
+  protected String createKey(Capabilities capabilities, String hub) {
     return capabilities.toString() + ":" + hub;
   }
 
-  protected static WebDriver newDriver(String hub, Capabilities capabilities) {
+  protected WebDriver newDriver(String hub, Capabilities capabilities) {
     return (hub == null)
         ? createLocalDriver(capabilities)
         : createRemoteDriver(hub, capabilities);
   }
 
-  private static WebDriver createRemoteDriver(String hub, Capabilities capabilities) {
-    try {
-      return new RemoteWebDriver(new URL(hub), capabilities);
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-      throw new Error("Could not connect to WebDriver hub", e);
+  private WebDriver createRemoteDriver(String hub, Capabilities capabilities) {
+    for (RemoteDriverProvider provider : remoteDriverProviders) {
+      WebDriver driver = provider.createDriver(hub, capabilities);
+      if (driver != null) {
+        return driver;
+      }
     }
+    throw new Error("Can't find remote driver provider for capabilities " + capabilities);
   }
 
-  private static WebDriver createLocalDriver(Capabilities capabilities) {
-    String browserType = capabilities.getBrowserName();
-    if (browserType.equals(BrowserType.FIREFOX))
-      return new FirefoxDriver(capabilities);
-    if (browserType.equals(BrowserType.IE))
-      return new InternetExplorerDriver(capabilities);
-    if (browserType.equals(BrowserType.CHROME))
-      return new ChromeDriver(capabilities);
-    if (browserType.equals(BrowserType.OPERA_BLINK))
-      return new OperaDriver(capabilities);
-    if (browserType.equals(BrowserType.SAFARI))
-      return new SafariDriver(capabilities);
-    if (browserType.equals(BrowserType.PHANTOMJS))
-      return new PhantomJSDriver(capabilities);
-    if (browserType.equals(BrowserType.HTMLUNIT))
-      return new HtmlUnitDriver(capabilities);
-
-    try {
-      Class<?> driverClass = WebDriverFactoryInternal.class.getClassLoader().loadClass(browserType);
-      Constructor<?> constructor = driverClass.getConstructor(Capabilities.class);
-      return (WebDriver) constructor.newInstance(capabilities);
-    } catch (Exception e) {
-      throw new Error("Unrecognized browser type: " + browserType);
+  private WebDriver createLocalDriver(Capabilities capabilities) {
+    for (DriverProvider provider : driverProviders) {
+      WebDriver driver = provider.createDriver(capabilities);
+      if (driver != null) {
+        return driver;
+      }
     }
+    throw new Error("Can't find driver provider for capabilities " + capabilities);
   }
-
 }

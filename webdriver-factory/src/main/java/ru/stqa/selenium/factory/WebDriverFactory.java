@@ -27,6 +27,14 @@ public class WebDriverFactory {
     }
   }
 
+  public static void addDriverProvider (DriverProvider provider) {
+    factoryInternal.addDriverProvider(provider);
+  }
+
+  public static void addRemoteDriverProvider (RemoteDriverProvider provider) {
+    factoryInternal.addRemoteDriverProvider(provider);
+  }
+
   public static void setDefaultHub(String defaultHub) {
     factoryInternal.setDefaultHub(defaultHub);
   }
