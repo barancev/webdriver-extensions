@@ -13,3 +13,6 @@ test-output/
 .idea/vcs.xml
 .idea/misc.xml
 .idea/workspace.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/sonarIssues.xml

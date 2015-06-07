@@ -17,22 +17,52 @@
       <profile default="true" name="Default" enabled="false">
         <processorPath useClasspath="true" />
       </profile>
-      <profile default="false" name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+      <profile default="false" name="Annotation profile for webdriver-implicit-wait-wrapper" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="webdriver-implicit-wait-wrapper" />
+      </profile>
+      <profile default="false" name="Annotation profile for webdriver-expected-conditions" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="webdriver-expected-conditions" />
-        <module name="webdriver-factory" />
-        <module name="webdriver-implicit-wait-wrapper" />
-        <module name="webdriver-logging-wrapper" />
+      </profile>
+      <profile default="false" name="Annotation profile for webdriver-repeatable-actions" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="webdriver-repeatable-actions" />
+      </profile>
+      <profile default="false" name="Annotation profile for webdriver-logging-wrapper" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="webdriver-logging-wrapper" />
+      </profile>
+      <profile default="false" name="Annotation profile for webdriver-wrapper" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="webdriver-wrapper" />
+      </profile>
+      <profile default="false" name="Annotation profile for webdriver-factory" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="webdriver-factory" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="webdriver-expected-conditions" target="1.6" />
-      <module name="webdriver-extensions" target="1.6" />
+      <module name="webdriver-extensions" target="1.5" />
       <module name="webdriver-factory" target="1.6" />
       <module name="webdriver-implicit-wait-wrapper" target="1.6" />
       <module name="webdriver-logging-wrapper" target="1.6" />
@@ -41,4 +71,3 @@
     </bytecodeTargetLevel>
   </component>
 </project>
-

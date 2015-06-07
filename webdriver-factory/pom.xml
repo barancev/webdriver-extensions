@@ -26,11 +26,6 @@
       <artifactId>selenium-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.opera</groupId>
-      <artifactId>operadriver</artifactId>
-      <version>1.5</version>
-    </dependency>
-    <dependency>
       <groupId>com.codeborne</groupId>
       <artifactId>phantomjsdriver</artifactId>
       <version>1.2.1</version>

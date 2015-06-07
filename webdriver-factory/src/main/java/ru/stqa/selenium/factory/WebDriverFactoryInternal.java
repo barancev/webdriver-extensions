@@ -16,13 +16,13 @@
 
 package ru.stqa.selenium.factory;
 
-import com.opera.core.systems.OperaDriver;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -76,7 +76,7 @@ abstract class WebDriverFactoryInternal {
       return new InternetExplorerDriver(capabilities);
     if (browserType.equals(BrowserType.CHROME))
       return new ChromeDriver(capabilities);
-    if (browserType.equals(BrowserType.OPERA))
+    if (browserType.equals(BrowserType.OPERA_BLINK))
       return new OperaDriver(capabilities);
     if (browserType.equals(BrowserType.SAFARI))
       return new SafariDriver(capabilities);
