@@ -23,6 +23,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.DefaultDriverProvider;
+import org.openqa.selenium.remote.server.DriverProvider;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,6 +56,9 @@ public class WebDriverFactoryInternalTest {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setBrowserName(FakeWebDriver.class.getName());
 
+    factory.addDriverProvider(new DefaultDriverProvider(
+        capabilities, FakeWebDriver.class.getName()));
+
     WebDriver driver = factory.getDriver(capabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(factory.isEmpty());
@@ -70,7 +75,7 @@ public class WebDriverFactoryInternalTest {
     try {
       WebDriver driver = factory.getDriver(capabilities);
       fail("Exception expected");
-    } catch (Error expected) {
+    } catch (Exception expected) {
     }
 
     assertTrue(factory.isEmpty());
@@ -78,19 +83,10 @@ public class WebDriverFactoryInternalTest {
 
   @Test
   public void testCanInstantiateAndDismissADriverWithACustomDriverProvider() {
-    factory.addDriverProvider(new DriverProvider() {
-      @Override
-      public WebDriver createDriver(Capabilities capabilities) {
-        if ("FAKE".equals(capabilities.getBrowserName())) {
-          return new FakeWebDriver(capabilities);
-        } else {
-          return null;
-        }
-      }
-    });
-
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setBrowserName("FAKE");
+    factory.addDriverProvider(
+        new DefaultDriverProvider(capabilities, FakeWebDriver.class.getName()));
 
     WebDriver driver = factory.getDriver(capabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
@@ -102,16 +98,9 @@ public class WebDriverFactoryInternalTest {
 
   @Test
   public void testCanOverrideExistingDriverProvider() {
-    factory.addDriverProvider(new DriverProvider() {
-      @Override
-      public WebDriver createDriver(Capabilities capabilities) {
-        if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())) {
-          return new FakeWebDriver(capabilities);
-        } else {
-          return null;
-        }
-      }
-    });
+    factory.addDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.firefox(),
+            FakeWebDriver.class.getName()));
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeWebDriver.class));

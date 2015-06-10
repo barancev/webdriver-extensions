@@ -25,7 +25,12 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.server.DefaultDriverFactory;
+import org.openqa.selenium.remote.server.DefaultDriverProvider;
+import org.openqa.selenium.remote.server.DriverFactory;
+import org.openqa.selenium.remote.server.DriverProvider;
 import org.openqa.selenium.safari.SafariDriver;
 
 import java.lang.reflect.Constructor;
@@ -45,20 +50,32 @@ abstract class WebDriverFactoryInternal {
 
   private String defaultHub = null;
 
-  private LinkedList<DriverProvider> driverProviders
-      = new LinkedList<DriverProvider>();
+  private DriverFactory factory = new DefaultDriverFactory();
   {
-    driverProviders.add(new DriverProvider.Firefox());
-    driverProviders.add(new DriverProvider.InternetExplorer());
-    driverProviders.add(new DriverProvider.Chrome());
-    driverProviders.add(new DriverProvider.Opera());
-    driverProviders.add(new DriverProvider.Safari());
-    driverProviders.add(new DriverProvider.PhantomJS());
-    driverProviders.add(new DriverProvider.HtmlUnit());
-    driverProviders.add(new DriverProvider.ReflectionBased());
-    for (DriverProvider provider : ServiceLoader.load(DriverProvider.class)) {
-      driverProviders.add(provider);
-    }
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.chrome(),
+            "org.openqa.selenium.chrome.ChromeDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.firefox(),
+            "org.openqa.selenium.firefox.FirefoxDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
+            "org.openqa.selenium.ie.InternetExplorerDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.opera(),
+            "com.opera.core.systems.OperaDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.operaBlink(),
+            "org.openqa.selenium.opera.OperaDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.safari(),
+            "org.openqa.selenium.safari.SafariDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.phantomjs(),
+            "org.openqa.selenium.phantomjs.PhantomJSDriver"));
+    factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.htmlUnit(),
+            "org.openqa.selenium.htmlunit.HtmlUnitDriver"));
   }
 
   private LinkedList<RemoteDriverProvider> remoteDriverProviders
@@ -71,7 +88,7 @@ abstract class WebDriverFactoryInternal {
   }
 
   void addDriverProvider(DriverProvider provider) {
-    driverProviders.addFirst(provider);
+    factory.registerDriverProvider(provider);
   }
 
   void addRemoteDriverProvider(RemoteDriverProvider provider) {
@@ -107,12 +124,6 @@ abstract class WebDriverFactoryInternal {
   }
 
   private WebDriver createLocalDriver(Capabilities capabilities) {
-    for (DriverProvider provider : driverProviders) {
-      WebDriver driver = provider.createDriver(capabilities);
-      if (driver != null) {
-        return driver;
-      }
-    }
-    throw new Error("Can't find driver provider for capabilities " + capabilities);
+    return factory.newInstance(capabilities);
   }
 }

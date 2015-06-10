@@ -2,6 +2,7 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.server.DriverProvider;
 
 public class WebDriverFactory {
 
