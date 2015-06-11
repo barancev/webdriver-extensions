@@ -35,10 +35,17 @@ import static org.junit.Assert.fail;
 public class WebDriverFactoryInternalTest {
 
   private WebDriverFactoryInternal factory;
+  private DesiredCapabilities fakeCapabilities;
 
   @Before
   public void setUp() {
+    fakeCapabilities = new DesiredCapabilities();
+    fakeCapabilities.setBrowserName("FAKE");
+
     factory = new SingletonStorage();
+
+    factory.addDriverProvider(new DefaultDriverProvider(
+        fakeCapabilities, FakeWebDriver.class.getName()));
   }
 
   @Test
@@ -53,13 +60,7 @@ public class WebDriverFactoryInternalTest {
 
   @Test
   public void testCanInstantiateAndDismissADriverByClassName() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
-
-    factory.addDriverProvider(new DefaultDriverProvider(
-        capabilities, FakeWebDriver.class.getName()));
-
-    WebDriver driver = factory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(factory.isEmpty());
 
@@ -70,7 +71,7 @@ public class WebDriverFactoryInternalTest {
   @Test
   public void throwsOnAttemptToInstantiateADriverByBadClassName() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName("FAKE");
+    capabilities.setBrowserName("FAKE-2");
 
     try {
       WebDriver driver = factory.getDriver(capabilities);
@@ -83,12 +84,7 @@ public class WebDriverFactoryInternalTest {
 
   @Test
   public void testCanInstantiateAndDismissADriverWithACustomDriverProvider() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName("FAKE");
-    factory.addDriverProvider(
-        new DefaultDriverProvider(capabilities, FakeWebDriver.class.getName()));
-
-    WebDriver driver = factory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(factory.isEmpty());
 

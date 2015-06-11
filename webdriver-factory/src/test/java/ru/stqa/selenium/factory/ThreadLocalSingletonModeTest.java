@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.DefaultDriverProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +29,18 @@ import static org.junit.Assert.*;
 
 public class ThreadLocalSingletonModeTest {
 
-  DesiredCapabilities capabilities;
+  private WebDriverFactoryInternal factory;
+  private DesiredCapabilities fakeCapabilities;
 
   @Before
-  public void initFactoryAndCapabilities() {
-    WebDriverFactory.dismissAll();
-    WebDriverFactory.setMode(WebDriverFactoryMode.THREADLOCAL_SINGLETON);
+  public void setUp() {
+    fakeCapabilities = new DesiredCapabilities();
+    fakeCapabilities.setBrowserName("FAKE");
 
-    capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
+    factory = new ThreadLocalSingletonStorage();
+
+    factory.addDriverProvider(new DefaultDriverProvider(
+        fakeCapabilities, FakeWebDriver.class.getName()));
   }
 
   private boolean isActive(WebDriver driver) {
@@ -45,43 +49,43 @@ public class ThreadLocalSingletonModeTest {
 
   @Test
   public void testCanInstantiateAndDismissADriver() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
-    assertFalse(WebDriverFactory.isEmpty());
+    assertFalse(factory.isEmpty());
 
-    WebDriverFactory.dismissDriver(driver);
+    factory.dismissDriver(driver);
     assertFalse(isActive(driver));
-    assertTrue(WebDriverFactory.isEmpty());
+    assertTrue(factory.isEmpty());
   }
 
   @Test
   public void testCanDismissAllDrivers() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
-    assertFalse(WebDriverFactory.isEmpty());
+    assertFalse(factory.isEmpty());
 
-    WebDriverFactory.dismissAll();
+    factory.dismissAll();
     assertFalse(isActive(driver));
-    assertTrue(WebDriverFactory.isEmpty());
+    assertTrue(factory.isEmpty());
   }
 
   @Test
   public void testShouldReuseADriverWithSameCapabilities() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertSame(driver2, driver);
     assertTrue(isActive(driver));
   }
 
   @Test
   public void testShouldRecreateADriverWithDifferentCapabilities() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
-    capabilities.setCapability("foo", "bar");
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    fakeCapabilities.setCapability("foo", "bar");
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));
@@ -89,11 +93,11 @@ public class ThreadLocalSingletonModeTest {
 
   @Test
   public void testShouldRecreateAnInactiveDriver() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
     driver.quit();
 
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));
@@ -101,23 +105,23 @@ public class ThreadLocalSingletonModeTest {
 
   @Test(expected = Error.class)
   public void testShouldDismissOwnedDriversOnly() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
-    WebDriver driver2 = new FakeWebDriver(capabilities);
+    WebDriver driver2 = new FakeWebDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
 
-    WebDriverFactory.dismissDriver(driver2);
+    factory.dismissDriver(driver2);
   }
 
   @Test
   public void testShouldCreateADriverForEachThread() throws InterruptedException {
-    final WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    final WebDriver driver = factory.getDriver(fakeCapabilities);
 
     Thread t = new Thread() {
       @Override
       public void run() {
-        WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+        WebDriver driver2 = factory.getDriver(fakeCapabilities);
         assertNotSame(driver2, driver);
       }
     };
@@ -127,13 +131,13 @@ public class ThreadLocalSingletonModeTest {
 
   @Test
   public void testShouldNotDismissADriverFromAnotherThread() throws InterruptedException {
-    final WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    final WebDriver driver = factory.getDriver(fakeCapabilities);
     final List<Throwable> thrown = new ArrayList<Throwable>();
 
     Thread t = new Thread() {
       @Override
       public void run() {
-        WebDriverFactory.dismissDriver(driver);
+        factory.dismissDriver(driver);
       }
     };
     t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -147,33 +151,33 @@ public class ThreadLocalSingletonModeTest {
     t.join();
 
     assertTrue(isActive(driver));
-    assertFalse(WebDriverFactory.isEmpty());
+    assertFalse(factory.isEmpty());
     assertFalse(thrown.isEmpty());
   }
 
   @Test
   public void testDismissAllCanDismissDriversFromAllThreads() {
-    final WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    final WebDriver driver = factory.getDriver(fakeCapabilities);
 
     new Thread() {
       @Override
       public void run() {
-        WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+        WebDriver driver2 = factory.getDriver(fakeCapabilities);
         assertNotSame(driver2, driver);
       }
     }.start();
 
-    WebDriverFactory.dismissAll();
+    factory.dismissAll();
     assertFalse(isActive(driver));
-    assertTrue(WebDriverFactory.isEmpty());
+    assertTrue(factory.isEmpty());
   }
 
   @Test
   public void testShouldRecreateADriverAfterDismissAll() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
-    WebDriverFactory.dismissAll();
+    WebDriver driver = factory.getDriver(fakeCapabilities);
+    factory.dismissAll();
 
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));

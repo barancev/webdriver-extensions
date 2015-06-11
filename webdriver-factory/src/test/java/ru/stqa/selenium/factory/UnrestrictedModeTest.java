@@ -20,20 +20,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.DefaultDriverProvider;
 
 import static org.junit.Assert.*;
 
 public class UnrestrictedModeTest {
 
-  DesiredCapabilities capabilities;
+  private WebDriverFactoryInternal factory;
+  private DesiredCapabilities fakeCapabilities;
 
   @Before
-  public void initFactoryAndCapabilities() {
-    WebDriverFactory.dismissAll();
-    WebDriverFactory.setMode(WebDriverFactoryMode.UNRESTRICTED);
+  public void setUp() {
+    fakeCapabilities = new DesiredCapabilities();
+    fakeCapabilities.setBrowserName("FAKE");
 
-    capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
+    factory = new UnrestrictedStorage();
+
+    factory.addDriverProvider(new DefaultDriverProvider(
+        fakeCapabilities, FakeWebDriver.class.getName()));
   }
 
   private boolean isActive(WebDriver driver) {
@@ -42,32 +46,32 @@ public class UnrestrictedModeTest {
 
   @Test
   public void testCanInstantiateAndDismissADriver() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
-    assertFalse(WebDriverFactory.isEmpty());
+    assertFalse(factory.isEmpty());
 
-    WebDriverFactory.dismissDriver(driver);
+    factory.dismissDriver(driver);
     assertFalse(isActive(driver));
-    assertTrue(WebDriverFactory.isEmpty());
+    assertTrue(factory.isEmpty());
   }
 
   @Test
   public void testCanDismissAllDrivers() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
-    assertFalse(WebDriverFactory.isEmpty());
+    assertFalse(factory.isEmpty());
 
-    WebDriverFactory.dismissAll();
+    factory.dismissAll();
     assertFalse(isActive(driver));
-    assertTrue(WebDriverFactory.isEmpty());
+    assertTrue(factory.isEmpty());
   }
 
   @Test
   public void testShouldCreateAnotherDriverWithSameCapabilities() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertTrue(isActive(driver));
@@ -75,11 +79,11 @@ public class UnrestrictedModeTest {
 
   @Test
   public void testShouldCreateAnotherDriverWithDifferentCapabilities() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
-    capabilities.setCapability("foo", "bar");
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    fakeCapabilities.setCapability("foo", "bar");
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertTrue(isActive(driver));
@@ -87,11 +91,11 @@ public class UnrestrictedModeTest {
 
   @Test
   public void testShouldRecreateAnInactiveDriver() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
     driver.quit();
 
-    WebDriver driver2 = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));
@@ -99,13 +103,13 @@ public class UnrestrictedModeTest {
 
   @Test(expected = Error.class)
   public void testShouldDismissOwnedDriversOnly() {
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
-    WebDriver driver2 = new FakeWebDriver(capabilities);
+    WebDriver driver2 = new FakeWebDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
 
-    WebDriverFactory.dismissDriver(driver2);
+    factory.dismissDriver(driver2);
   }
 
 }

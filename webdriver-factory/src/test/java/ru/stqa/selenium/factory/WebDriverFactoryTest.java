@@ -23,19 +23,29 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.DefaultDriverProvider;
 
 import static org.junit.Assert.*;
 
 public class WebDriverFactoryTest {
 
+  private DesiredCapabilities fakeCapabilities;
+
+  @Before
+  public void setUp() {
+    fakeCapabilities = new DesiredCapabilities();
+    fakeCapabilities.setBrowserName("FAKE");
+
+    WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
+    WebDriverFactory.addDriverProvider(new DefaultDriverProvider(
+        fakeCapabilities, FakeWebDriver.class.getName()));
+  }
+
   @Test
   public void testCanInstantiateAndDismissADriver() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
-
     assertTrue(WebDriverFactory.isEmpty());
 
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = WebDriverFactory.getDriver(fakeCapabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(WebDriverFactory.isEmpty());
 
@@ -45,12 +55,9 @@ public class WebDriverFactoryTest {
 
   @Test
   public void testCanDismissAllDrivers() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
-
     assertTrue(WebDriverFactory.isEmpty());
 
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = WebDriverFactory.getDriver(fakeCapabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(WebDriverFactory.isEmpty());
 
@@ -60,9 +67,6 @@ public class WebDriverFactoryTest {
 
   @Test
   public void testCanChangeModeIfEmpty() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
-
     assertTrue(WebDriverFactory.isEmpty());
 
     WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
@@ -71,12 +75,9 @@ public class WebDriverFactoryTest {
 
   @Test(expected = Error.class)
   public void testCannotChangeModeIfNonEmpty() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName(FakeWebDriver.class.getName());
-
     assertTrue(WebDriverFactory.isEmpty());
 
-    WebDriver driver = WebDriverFactory.getDriver(capabilities);
+    WebDriver driver = WebDriverFactory.getDriver(fakeCapabilities);
 
     try {
       WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
