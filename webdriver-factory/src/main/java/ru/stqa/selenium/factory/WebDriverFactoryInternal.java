@@ -62,6 +62,9 @@ abstract class WebDriverFactoryInternal {
         new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
             "org.openqa.selenium.ie.InternetExplorerDriver"));
     factory.registerDriverProvider(
+        new DefaultDriverProvider(DesiredCapabilities.edge(),
+            "org.openqa.selenium.edge.EdgeDriver"));
+    factory.registerDriverProvider(
         new DefaultDriverProvider(DesiredCapabilities.opera(),
             "com.opera.core.systems.OperaDriver"));
     factory.registerDriverProvider(
