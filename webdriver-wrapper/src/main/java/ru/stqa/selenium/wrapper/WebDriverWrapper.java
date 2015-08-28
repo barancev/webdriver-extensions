@@ -393,6 +393,11 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
       Locatable locatable = (Locatable) getWrappedElement();
       return getDriverWrapper().wrapCoordinates(locatable.getCoordinates());
     }
+
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+      return getWrappedElement().getScreenshotAs(outputType);
+    }
   }
   
   public static class TargetLocatorWrapper extends AbstractWrapper<TargetLocator> implements TargetLocator {
@@ -522,6 +527,11 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     @Override
     public void sendKeys(String text) {
       getWrappedAlert().sendKeys(text);
+    }
+
+    @Override
+    public void setCredentials(Credentials credentials) {
+      getWrappedAlert().setCredentials(credentials);
     }
   }
 
