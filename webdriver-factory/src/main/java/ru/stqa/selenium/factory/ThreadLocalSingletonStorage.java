@@ -17,6 +17,7 @@
 package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
@@ -51,6 +52,8 @@ class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
           // Check the browser is alive
           try {
             tlDriver.get().getCurrentUrl();
+          } catch (UnhandledAlertException t) {
+            // ignore
           } catch (Throwable t) {
             createNewDriver(capabilities, hub);
           }

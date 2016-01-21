@@ -17,6 +17,7 @@
 package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 
 class SingletonStorage extends WebDriverFactoryInternal {
@@ -40,6 +41,8 @@ class SingletonStorage extends WebDriverFactoryInternal {
         // Check the browser is alive
         try {
           driver.getCurrentUrl();
+        } catch (UnhandledAlertException t) {
+          // ignore
         } catch (Throwable t) {
           createNewDriver(hub, capabilities);
         }

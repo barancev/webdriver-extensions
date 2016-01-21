@@ -21,16 +21,12 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.DefaultDriverProvider;
-import org.openqa.selenium.remote.server.DriverProvider;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class WebDriverFactoryInternalTest {
 
@@ -100,6 +96,24 @@ public class WebDriverFactoryInternalTest {
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeWebDriver.class));
+    assertFalse(factory.isEmpty());
+
+    factory.dismissDriver(driver);
+    assertTrue(factory.isEmpty());
+  }
+
+  @Test
+  public void testCanHandleAlertsOnDriverAvailabilityCheck() {
+    factory.addDriverProvider(
+            new DefaultDriverProvider(DesiredCapabilities.firefox(),
+                    FakeAlertiveWebDriver.class.getName()));
+
+    WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
+    assertThat(driver, instanceOf(FakeAlertiveWebDriver.class));
+    assertFalse(factory.isEmpty());
+
+    WebDriver driver2 = factory.getDriver(DesiredCapabilities.firefox());
+    assertSame(driver2, driver);
     assertFalse(factory.isEmpty());
 
     factory.dismissDriver(driver);
