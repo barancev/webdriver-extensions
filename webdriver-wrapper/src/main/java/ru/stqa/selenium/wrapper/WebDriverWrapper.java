@@ -385,6 +385,11 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     }
 
     @Override
+    public Rectangle getRect() {
+      return getWrappedElement().getRect();
+    }
+
+    @Override
     public String getCssValue(final String propertyName) {
       return getWrappedElement().getCssValue(propertyName);
     }
@@ -399,9 +404,9 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
       return getWrappedElement().getScreenshotAs(outputType);
     }
   }
-  
+
   public static class TargetLocatorWrapper extends AbstractWrapper<TargetLocator> implements TargetLocator {
-  
+
     public TargetLocatorWrapper(final WebDriverWrapper driverWrapper, final TargetLocator targetLocator) {
       super(driverWrapper, targetLocator);
     }
@@ -415,13 +420,13 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
       getWrappedTargetLocator().frame(frameIndex);
       return getDriverWrapper().getDriver();
     }
-  
+
     @Override
     public WebDriver frame(String frameName) {
       getWrappedTargetLocator().frame(frameName);
       return getDriverWrapper().getDriver();
     }
-  
+
     @Override
     public WebDriver frame(WebElement frameElement) {
       getWrappedTargetLocator().frame(frameElement);
@@ -439,26 +444,26 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
       getWrappedTargetLocator().window(windowName);
       return getDriverWrapper().getDriver();
     }
-  
+
     @Override
     public WebDriver defaultContent() {
       getWrappedTargetLocator().defaultContent();
       return getDriverWrapper().getDriver();
     }
-  
+
     @Override
     public WebElement activeElement() {
       return getDriverWrapper().wrapElement(getWrappedTargetLocator().activeElement());
     }
-  
+
     @Override
     public Alert alert() {
         return getDriverWrapper().wrapAlert(getWrappedTargetLocator().alert());
     }
   }
-  
+
   public static class NavigationWrapper extends AbstractWrapper<Navigation> implements Navigation {
-    
+
     public NavigationWrapper(final WebDriverWrapper driverWrapper, final Navigation navigator) {
       super(driverWrapper, navigator);
     }
@@ -492,7 +497,7 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
       getWrappedNavigation().refresh();
     }
   }
-  
+
   public static class AlertWrapper extends AbstractWrapper<Alert> implements Alert {
 
     public AlertWrapper(final WebDriverWrapper driverWrapper, final Alert alert) {
@@ -658,6 +663,11 @@ public class WebDriverWrapper extends AbstractWrapper<WebDriver>
     @Override
     public void maximize() {
       getWrappedWindow().maximize();
+    }
+
+    @Override
+    public void fullscreen() {
+      getWrappedWindow().fullscreen();
     }
   }
 
