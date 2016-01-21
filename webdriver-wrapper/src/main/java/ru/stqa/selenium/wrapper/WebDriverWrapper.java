@@ -16,15 +16,6 @@
  */
 package ru.stqa.selenium.wrapper;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.net.URL;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.base.Throwables;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
@@ -34,6 +25,15 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.security.Credentials;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URL;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class allows to extend WebDriver by adding new functionality to a wrapper.

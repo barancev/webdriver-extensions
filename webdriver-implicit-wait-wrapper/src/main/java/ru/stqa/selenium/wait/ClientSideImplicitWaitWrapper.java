@@ -25,11 +25,11 @@ import org.openqa.selenium.support.ui.Sleeper;
 import org.openqa.selenium.support.ui.SystemClock;
 import ru.stqa.selenium.wrapper.WebDriverWrapper;
 
-import static ru.stqa.selenium.wait.RepeatableActions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static ru.stqa.selenium.wait.RepeatableActions.*;
 
 public class ClientSideImplicitWaitWrapper extends WebDriverWrapper {
 

@@ -17,7 +17,6 @@
 package ru.stqa.selenium.wait;
 
 import com.google.common.base.Function;
-
 import org.openqa.selenium.WebElement;
 
 /**
@@ -27,7 +26,7 @@ import org.openqa.selenium.WebElement;
  * Note that it is expected that ExpectedConditions are idempotent. They will be called in a loop by
  * the WebDriverWait and any modification of the state of the application under test may
  * have unexpected side-effects.
- * 
+ *
  * @param <T> The return type
  */
 public interface ExpectedElementCondition<T> extends Function<WebElement, T> {}

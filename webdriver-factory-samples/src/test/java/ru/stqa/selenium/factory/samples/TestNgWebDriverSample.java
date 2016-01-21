@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import ru.stqa.selenium.factory.WebDriverFactory;
 
 public class TestNgWebDriverSample {

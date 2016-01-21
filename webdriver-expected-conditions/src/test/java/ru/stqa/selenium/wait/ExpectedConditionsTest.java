@@ -25,11 +25,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static ru.stqa.selenium.wait.ExpectedConditions.*;
-import static ru.stqa.selenium.wait.ExpectedElementConditions.*;
-import static ru.stqa.selenium.wait.ExpectedListConditions.*;
+import static ru.stqa.selenium.wait.ExpectedElementConditions.isPresent;
+import static ru.stqa.selenium.wait.ExpectedElementConditions.isVisible;
+import static ru.stqa.selenium.wait.ExpectedListConditions.isNotEmpty;
 
 public class ExpectedConditionsTest {
 

@@ -16,13 +16,12 @@
  */
 package ru.stqa.selenium.wait;
 
-import java.util.List;
-
+import com.google.common.base.Function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
-import com.google.common.base.Function;
+import java.util.List;
 
 public class ExpectedConditions {
 

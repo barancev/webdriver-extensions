@@ -16,10 +16,6 @@
  */
 package ru.stqa.selenium.wrapper;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
@@ -29,8 +25,10 @@ import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class LoggingWrapperTest {
 

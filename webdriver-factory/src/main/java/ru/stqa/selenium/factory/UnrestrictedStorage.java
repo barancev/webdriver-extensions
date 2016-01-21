@@ -19,7 +19,8 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class UnrestrictedStorage extends WebDriverFactoryInternal {
 

@@ -16,19 +16,19 @@
  */
 package ru.stqa.selenium.wrapper;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
-import org.openqa.selenium.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class WebDriverWrapperTest {
 
@@ -78,12 +78,12 @@ public class WebDriverWrapperTest {
     firstElement.click();
     assertThat(counter.get(), is(1));
 
-    // check that elements returned by WebElement.findElement are wrapped too 
+    // check that elements returned by WebElement.findElement are wrapped too
     final WebElement nestedElement = firstElement.findElement(By.tagName("div"));
     nestedElement.click();
     assertThat(counter.get(), is(2));
 
-    // check that methods that are not overwritten works normally 
+    // check that methods that are not overwritten works normally
     assertThat(nestedElement.isDisplayed(), is(true));
 
     verify(mockedDriver, times(1)).findElement(By.name("foo"));

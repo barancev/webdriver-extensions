@@ -19,11 +19,13 @@ package ru.stqa.selenium.wait;
 import org.junit.Test;
 import org.openqa.selenium.*;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static ru.stqa.selenium.wait.ActionRepeater.with;
-import static ru.stqa.selenium.wait.RepeatableActions.*;
+import static ru.stqa.selenium.wait.RepeatableActions.performFindElement;
 
 public class ActionRepeaterTest {
 
