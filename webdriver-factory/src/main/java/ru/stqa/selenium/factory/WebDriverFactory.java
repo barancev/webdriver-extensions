@@ -15,6 +15,10 @@ public class WebDriverFactory {
     factoryInternal = createFactoryInternal(newMode);
   }
 
+  public static void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker) {
+    factoryInternal.setDriverAlivenessChecker(alivenessChecker);
+  }
+
   private static WebDriverFactoryInternal createFactoryInternal(WebDriverFactoryMode mode) {
     switch (mode) {
       case SINGLETON:

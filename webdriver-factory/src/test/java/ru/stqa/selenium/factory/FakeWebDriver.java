@@ -18,6 +18,8 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,11 +42,7 @@ public class FakeWebDriver implements WebDriver {
 
   @Override
   public String getCurrentUrl() {
-    if (isActive) {
-      return "http://some.url/";
-    } else {
-      throw new WebDriverException("closed");
-    }
+    return null;
   }
 
   @Override
@@ -78,7 +76,11 @@ public class FakeWebDriver implements WebDriver {
 
   @Override
   public Set<String> getWindowHandles() {
-    return null;
+    if (isActive) {
+      return new HashSet<String>(Arrays.asList("12345"));
+    } else {
+      throw new WebDriverException("closed");
+    }
   }
 
   @Override

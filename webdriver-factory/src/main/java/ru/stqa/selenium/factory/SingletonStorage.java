@@ -39,14 +39,9 @@ class SingletonStorage extends WebDriverFactoryInternal {
 
       } else {
         // Check the browser is alive
-        try {
-          driver.getCurrentUrl();
-        } catch (UnhandledAlertException t) {
-          // ignore
-        } catch (Throwable t) {
+        if (! alivenessChecker.isAlive(driver)) {
           createNewDriver(hub, capabilities);
         }
-
       }
     }
 

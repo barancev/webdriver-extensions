@@ -35,6 +35,7 @@ abstract class WebDriverFactoryInternal {
   public abstract boolean isEmpty();
 
   private String defaultHub = null;
+  protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
 
   private DriverFactory factory = new DefaultDriverFactory();
   {
@@ -114,5 +115,9 @@ abstract class WebDriverFactoryInternal {
 
   private WebDriver createLocalDriver(Capabilities capabilities) {
     return factory.newInstance(capabilities);
+  }
+
+  public void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker) {
+    this.alivenessChecker = alivenessChecker;
   }
 }
