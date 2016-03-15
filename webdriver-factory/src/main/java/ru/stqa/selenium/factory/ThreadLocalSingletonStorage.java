@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
+public class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
 
   private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 
