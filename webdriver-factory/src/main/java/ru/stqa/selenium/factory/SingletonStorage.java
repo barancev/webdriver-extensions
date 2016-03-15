@@ -20,7 +20,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 
-class SingletonStorage extends WebDriverFactoryInternal {
+public class SingletonStorage extends WebDriverFactoryInternal {
 
   private String key;
   private WebDriver driver;

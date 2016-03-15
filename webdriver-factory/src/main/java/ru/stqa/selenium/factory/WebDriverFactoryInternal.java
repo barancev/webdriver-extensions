@@ -27,7 +27,7 @@ import org.openqa.selenium.remote.server.DriverProvider;
 import java.util.LinkedList;
 import java.util.ServiceLoader;
 
-abstract class WebDriverFactoryInternal {
+public abstract class WebDriverFactoryInternal {
 
   public abstract WebDriver getDriver(String hub, Capabilities capabilities);
   public abstract void dismissDriver(WebDriver driver);
