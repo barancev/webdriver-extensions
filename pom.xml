@@ -36,7 +36,6 @@
   </developers>
 
   <modules>
-    <module>webdriver-repeatable-actions</module>
     <module>webdriver-expected-conditions</module>
   </modules>
 

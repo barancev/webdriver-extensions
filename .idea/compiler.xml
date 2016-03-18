@@ -23,7 +23,6 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="webdriver-expected-conditions" />
-        <module name="webdriver-repeatable-actions" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
