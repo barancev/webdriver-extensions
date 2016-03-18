@@ -23,10 +23,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="webdriver-expected-conditions" />
-        <module name="webdriver-implicit-wait-wrapper" />
-        <module name="webdriver-logging-wrapper" />
         <module name="webdriver-repeatable-actions" />
-        <module name="webdriver-wrapper" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
