@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/webdriver-expected-conditions/webdriver-expected-conditions.iml" filepath="$PROJECT_DIR$/webdriver-expected-conditions/webdriver-expected-conditions.iml" />
       <module fileurl="file://$PROJECT_DIR$/webdriver-extensions.iml" filepath="$PROJECT_DIR$/webdriver-extensions.iml" />
-      <module fileurl="file://$PROJECT_DIR$/webdriver-factory/webdriver-factory.iml" filepath="$PROJECT_DIR$/webdriver-factory/webdriver-factory.iml" />
       <module fileurl="file://$PROJECT_DIR$/webdriver-implicit-wait-wrapper/webdriver-implicit-wait-wrapper.iml" filepath="$PROJECT_DIR$/webdriver-implicit-wait-wrapper/webdriver-implicit-wait-wrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/webdriver-logging-wrapper/webdriver-logging-wrapper.iml" filepath="$PROJECT_DIR$/webdriver-logging-wrapper/webdriver-logging-wrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/webdriver-repeatable-actions/webdriver-repeatable-actions.iml" filepath="$PROJECT_DIR$/webdriver-repeatable-actions/webdriver-repeatable-actions.iml" />
@@ -12,4 +11,3 @@
     </modules>
   </component>
 </project>
-
